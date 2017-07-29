@@ -1,0 +1,7 @@
+{
+    "httpPort" : "8080",
+    "apiBaseURL" : "https://api.stattleship.com",
+    "creds" : {
+        "accessToken" : ""
+    }
+}

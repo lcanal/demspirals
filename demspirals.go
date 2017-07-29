@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/lcanal/demspirals/routes"
 	"github.com/spf13/viper"
 )
 
@@ -16,7 +17,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/hello", hello)
-
+	mux.HandleFunc("/api/teams", routes.TeamRoster)
 	mux.Handle("/", http.FileServer(http.Dir(clientFiles)))
 	log.Fatal(http.ListenAndServe(":"+httpPort, mux))
 }
