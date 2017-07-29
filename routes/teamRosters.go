@@ -61,6 +61,10 @@ func TeamRoster(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Gotta return something...
-	length := strconv.Itoa(len(players))
-	fmt.Fprintf(w, length)
+	//length := strconv.Itoa(len(players))
+	var allplayers string
+	for _, player := range players {
+		allplayers += fmt.Sprintf("%-50s - %-50s %-30s\n", player.Slug, player.Name, player.Position)
+	}
+	fmt.Fprintf(w, allplayers)
 }
