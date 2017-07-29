@@ -14,10 +14,11 @@ import (
 
 //TeamRoster grabs full team roster
 func TeamRoster(w http.ResponseWriter, r *http.Request) {
-	var players []models.Player
+	var players map[string]models.Player
 	const MAXPAGECOUNT = 5
 
 	client := &http.Client{}
+	players = make(map[string]models.Player)
 
 	for currentPage := 1; currentPage < MAXPAGECOUNT; currentPage++ {
 		apiBase := viper.GetString("apiBaseURL") + "/football/nfl/rosters" + "?per_page=40&page="
@@ -53,7 +54,7 @@ func TeamRoster(w http.ResponseWriter, r *http.Request) {
 					Position: playerpos,
 				}
 
-				players = append(players, newPlayer)
+				players[playerslug] = newPlayer
 			},
 			"players",
 		)
