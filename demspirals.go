@@ -36,7 +36,7 @@ func configRead(configName string) (string, string) {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		panic(fmt.Errorf("Fata error config file: %s", err))
+		log.Fatalf("Fatal error config file: %s", err.Error())
 	}
 
 	apiBaseURL := viper.GetString("apiBaseURL")
