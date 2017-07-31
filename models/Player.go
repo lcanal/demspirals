@@ -6,9 +6,6 @@ type Player struct {
 	Slug     string      `json:"slug"`
 	Name     string      `json:"name"`
 	Position string      `json:"position"`
+	Team     Team        `json:"team"`
 	Stats    PlayerStats `json:"stats"`
-	ShortP   string      `json:"shortpos,omitempty"`
-	TeamID   string      `json:"teamid,omitempty"`
-	TeamName string      `json:"teamname,omitempty"`
-	Games    string      `json:"games,omitempty"`
 }

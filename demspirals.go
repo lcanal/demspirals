@@ -1,11 +1,12 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
 
-	"github.com/lcanal/demspirals/routes"
+	"github.com/lcanal/demspirals/jobs"
 	"github.com/spf13/viper"
 )
 
@@ -18,12 +19,21 @@ func main() {
 	muxie := http.NewServeMux()
 	muxie.HandleFunc("/api/hello", hello)
 	//muxie.HandleFunc("/api/teams", routes.TeamRoster)
-	muxie.HandleFunc("/api/playerstats", routes.PlayerStats)
+	//muxie.HandleFunc("/api/playerstats", routes.PlayerStats)
 	muxie.Handle("/", http.FileServer(http.Dir(clientFiles)))
 
-	fmt.Println("Loading all players....")
-	routes.LoadAllPlayers()
+	//Check if we want to run loads at startup...
+	doLoads := flag.Bool("doloads", false, "Run initial loads for loading teams, players, stats.")
+	flag.Parse()
+	if *doLoads {
+		fmt.Println("Loading all players....")
+		go jobs.LoadAllPlayers(10)
+		go jobs.LoadAllTeams()
+		go jobs.LoadAllPlayerStats(10)
 
+	}
+
+	log.Printf("Starting server on :%s", httpPort)
 	log.Fatal(http.ListenAndServe(":"+httpPort, muxie))
 }
 
