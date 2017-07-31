@@ -1,11 +1,8 @@
 package models
 
-import "github.com/jinzhu/gorm"
-
 //Stat tracks the stats we care about. Generally for fantasy points
 type Stat struct {
-	gorm.Model
-	Pid               string `json:"pid"`
+	Pid               string `json:"pid" gorm:"primary_key"`
 	Runs              int64  `json:"runs,omitempty"`
 	Passes            int64  `json:"passes,omitempty"`
 	Receptions        int64  `json:"receptions,omitempty"`

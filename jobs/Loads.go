@@ -36,12 +36,14 @@ func LoadAllPlayers(MAXPAGECOUNT int) {
 				playerpos, _ := jsonparser.GetString(player, "position_name")
 				playerslug, _ := jsonparser.GetString(player, "slug")
 				playerid, _ := jsonparser.GetString(player, "id")
+				playertid, _ := jsonparser.GetString(player, "team_id")
 
 				newPlayer := models.Player{
 					ID:       playerid,
 					Slug:     playerslug,
 					Name:     playername,
 					Position: playerpos,
+					Teamid:   playertid,
 				}
 				players[playerslug] = newPlayer
 			},
@@ -49,21 +51,12 @@ func LoadAllPlayers(MAXPAGECOUNT int) {
 		)
 	}
 
-	db := loader.ConnectDB()
-
-	insertPlayerStmt, err := db.Prepare("REPLACE INTO players (id,slug,name,position) VALUES (?,?,?,?)")
-	if err != nil {
-		log.Fatalf("Error preparing db statement: %s\n", err.Error())
+	db := loader.GormConnectDB()
+	for _, player := range players {
+		//log.Printf("Inserting player: %s\n", slug)
+		db.Create(player)
 	}
-
-	for slug, player := range players {
-		log.Printf("Inserting Player %s... \n", slug)
-		_, err := insertPlayerStmt.Exec(player.ID, player.Slug, player.Name, player.Position)
-		if err != nil {
-			log.Fatalf("Error inserting stat %s: %s", slug, err.Error())
-		}
-	}
-	insertPlayerStmt.Close()
+	log.Printf("Finished loading %d players",len(players))
 }
 
 //LoadAllTeams Loads team stats. Assumes a single page call.
@@ -102,21 +95,12 @@ func LoadAllTeams() {
 		"teams",
 	)
 
-	db := loader.ConnectDB()
-
-	insertTeamsStmt, err := db.Prepare("REPLACE INTO teams (id,slug,name,nickname,color,hashtag) VALUES (?,?,?,?,?,?)")
-	if err != nil {
-		log.Fatalf("Error preparing db statement: %s\n", err.Error())
+	db := loader.GormConnectDB()
+	for _, team := range teams {
+		//log.Printf("Inserting team: %s\n", slug)
+		db.Create(team)
 	}
-
-	for slug, team := range teams {
-		log.Printf("Inserting Team %s... \n", team.Slug)
-		_, err := insertTeamsStmt.Exec(team.ID, team.Slug, team.Name, team.Nickname, team.Color, team.Hashtag)
-		if err != nil {
-			log.Fatalf("Error inserting team %s: %s", slug, err.Error())
-		}
-	}
-	insertTeamsStmt.Close()
+	log.Printf("Finished loading %d teams",len(teams))
 }
 
 //LoadAllPlayerStats print player stas
@@ -192,45 +176,8 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 
 	db := loader.GormConnectDB()
 	for _, stat := range stats {
+		//log.Printf("Inserting stat for playerid: %s\n", pid)
 		db.Create(stat)
 	}
-
-	/*
-		insertStatStmt, err := db.Prepare(
-			`REPLACE INTO playerstats (
-				pID,
-				receptions,
-				receptionyards,
-				receptiontargets,
-				receptionyards10p,
-				receptionyards20p,
-				receptionyards30p,
-				receptionyards40p,
-				receptionyards50p,
-				rushyards,
-				rushattempts,
-				rushyards10p,
-				rushyards20p,
-				rushyards30p,
-				rushyards40p,
-				rushyards50p,
-				touchdownpasses,
-				touchdownrushes,
-				fumbles
-			)
-			VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-		`)
-		if err != nil {
-			log.Fatalf("Error preparing db statement: %s\n", err.Error())
-		}
-
-		for pid, stat := range stats {
-			log.Printf("Inserting Stats %s... \n", pid)
-			_, err := insertStatStmt.Exec(pid, stat.Runs, stat.Passes, stat.Receptions)
-			if err != nil {
-				log.Fatalf("Error inserting stat %s: %s", pid, err.Error())
-			}
-		}
-		insertStatStmt.Close()
-	*/
+	log.Printf("Finished loading %d stats",len(stats))
 }

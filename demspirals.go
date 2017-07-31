@@ -29,15 +29,16 @@ func main() {
 	doLoads := flag.Bool("doloads", false, "Run initial loads for loading teams, players, stats.")
 	flag.Parse()
 	if *doLoads {
+		fmt.Println("Creating tables ...")
+		db := loader.GormConnectDB()
+		db.CreateTable(&models.Stat{})
+		db.CreateTable(&models.Player{})
+		db.CreateTable(&models.Team{})
 		fmt.Println("Loading all players....")
 		go jobs.LoadAllPlayers(10)
 		go jobs.LoadAllTeams()
 		go jobs.LoadAllPlayerStats(10)
-
-	}
-
-	db := loader.GormConnectDB()
-	db.CreateTable(&models.Stat{})
+	}	
 	log.Printf("Starting server on :%s", httpPort)
 	log.Fatal(http.ListenAndServe(":"+httpPort, muxie))
 }
