@@ -14,6 +14,12 @@
   version = "v1.4.2"
 
 [[projects]]
+  name = "github.com/go-sql-driver/mysql"
+  packages = ["."]
+  revision = "a0583e0143b1624142adab07e0e97fe106d99561"
+  version = "v1.3"
+
+[[projects]]
   branch = "master"
   name = "github.com/hashicorp/hcl"
   packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
@@ -94,6 +100,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ab1e658fe58fee53863ee5eeabcd16d88055c0747d0b9ddbbb8f0d90fc7d164d"
+  inputs-digest = "8ec567bee1c4f2f6c50444025199cfdb4c75b810134da2e55bbc04da25714b4b"
   solver-name = "gps-cdcl"
   solver-version = 1
