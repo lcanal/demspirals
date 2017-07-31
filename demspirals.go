@@ -6,10 +6,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/lcanal/demspirals/models"
-    "github.com/lcanal/demspirals/routes"
 	"github.com/lcanal/demspirals/jobs"
 	"github.com/lcanal/demspirals/loader"
+	"github.com/lcanal/demspirals/models"
+	"github.com/lcanal/demspirals/routes"
 	"github.com/spf13/viper"
 )
 
@@ -38,7 +38,7 @@ func main() {
 		go jobs.LoadAllPlayers(10)
 		go jobs.LoadAllTeams()
 		go jobs.LoadAllPlayerStats(10)
-	}	
+	}
 	log.Printf("Starting server on :%s", httpPort)
 	log.Fatal(http.ListenAndServe(":"+httpPort, muxie))
 }

@@ -56,7 +56,7 @@ func LoadAllPlayers(MAXPAGECOUNT int) {
 		//log.Printf("Inserting player: %s\n", slug)
 		db.Create(player)
 	}
-	log.Printf("Finished loading %d players",len(players))
+	log.Printf("Finished loading %d players", len(players))
 }
 
 //LoadAllTeams Loads team stats. Assumes a single page call.
@@ -100,7 +100,7 @@ func LoadAllTeams() {
 		//log.Printf("Inserting team: %s\n", slug)
 		db.Create(team)
 	}
-	log.Printf("Finished loading %d teams",len(teams))
+	log.Printf("Finished loading %d teams", len(teams))
 }
 
 //LoadAllPlayerStats print player stas
@@ -179,5 +179,5 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 		//log.Printf("Inserting stat for playerid: %s\n", pid)
 		db.Create(stat)
 	}
-	log.Printf("Finished loading %d stats",len(stats))
+	log.Printf("Finished loading %d stats", len(stats))
 }
