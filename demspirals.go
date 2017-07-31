@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/lcanal/demspirals/models"
-
+    "github.com/lcanal/demspirals/routes"
 	"github.com/lcanal/demspirals/jobs"
 	"github.com/lcanal/demspirals/loader"
 	"github.com/spf13/viper"
@@ -21,7 +21,7 @@ func main() {
 
 	muxie := http.NewServeMux()
 	muxie.HandleFunc("/api/hello", hello)
-	//muxie.HandleFunc("/api/teams", routes.TeamRoster)
+	muxie.HandleFunc("/api/topten", routes.TopTen)
 	//muxie.HandleFunc("/api/playerstats", routes.PlayerStats)
 	muxie.Handle("/", http.FileServer(http.Dir(clientFiles)))
 
