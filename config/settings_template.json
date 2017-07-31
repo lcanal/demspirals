@@ -3,5 +3,11 @@
     "apiBaseURL" : "https://api.stattleship.com",
     "creds" : {
         "accessToken" : ""
+    },
+    "db": {
+        "host" : "",
+        "port" : "",
+        "user" : "",
+        "pass" : ""
     }
 }
