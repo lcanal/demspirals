@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -16,30 +17,18 @@ import (
 func TeamRoster(w http.ResponseWriter, r *http.Request) {
 	var players map[string]models.Player
 	const MAXPAGECOUNT = 5
-
-	client := &http.Client{}
 	players = make(map[string]models.Player)
 
 	for currentPage := 1; currentPage < MAXPAGECOUNT; currentPage++ {
 		apiBase := viper.GetString("apiBaseURL") + "/football/nfl/rosters" + "?per_page=40&page="
 		apiPagedURL := apiBase + strconv.Itoa(currentPage)
-		log.Printf("Grabbing URL: %s", apiPagedURL)
 
-		req, _ := http.NewRequest("GET", apiPagedURL, nil)
-		req.Header.Add("Authorization", "Token token="+viper.GetString("creds.accessToken"))
-		req.Header.Add("Content-Type", "application/json")
-		req.Header.Add("Accept", "application/vnd.stattleship.com; version=1")
-		resp, err := client.Do(req)
-		if err != nil {
-			log.Printf("Error pulling team rosters auth : %s\n", err)
+		data, _ := ioutil.ReadAll(CallAPI(apiPagedURL))
+		if len(data) <= 0 {
+			break
 		}
 
-		if resp.StatusCode != 200 {
-			log.Printf("Error with request: %s (%d)\n", resp.Status, resp.StatusCode)
-		}
-
-		data, _ := ioutil.ReadAll(resp.Body)
-		//log.Printf("data: %s\n", body)
+		fmt.Printf("Current page count %d, current data length %d\n", currentPage, len(data))
 
 		jsonparser.ArrayEach(
 			data,
@@ -47,13 +36,14 @@ func TeamRoster(w http.ResponseWriter, r *http.Request) {
 				playername, _ := jsonparser.GetString(player, "name")
 				playerpos, _ := jsonparser.GetString(player, "position_name")
 				playerslug, _ := jsonparser.GetString(player, "slug")
+				playerid, _ := jsonparser.GetString(player, "id")
 
 				newPlayer := models.Player{
+					ID:       playerid,
 					Slug:     playerslug,
 					Name:     playername,
 					Position: playerpos,
 				}
-
 				players[playerslug] = newPlayer
 			},
 			"players",
@@ -61,10 +51,34 @@ func TeamRoster(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Gotta return something...
-	//length := strconv.Itoa(len(players))
-	var allplayers string
-	for _, player := range players {
-		allplayers += fmt.Sprintf("%-50s - %-50s %-30s\n", player.Slug, player.Name, player.Position)
+	body, _ := json.Marshal(players)
+	err := ioutil.WriteFile("data/players.json", body, 0644)
+	if err != nil {
+		log.Printf("Error writing players.json: %s\n", err.Error())
 	}
-	fmt.Fprintf(w, allplayers)
+	fmt.Fprintf(w, string(body))
+}
+
+//PlayerStats print player stas
+func PlayerStats(w http.ResponseWriter, r *http.Request) {
+	const MAXPAGECOUNT = 5
+
+	for currentPage := 1; currentPage < MAXPAGECOUNT; currentPage++ {
+		apiBase := viper.GetString("apiBaseURL") + "/football/nfl/player_season_stats?interval_type=regularseason&season_id=nfl-2016-2017" + "&per_page=40&page="
+		apiPagedURL := apiBase + strconv.Itoa(currentPage)
+
+		data, _ := ioutil.ReadAll(CallAPI(apiPagedURL))
+		if len(data) <= 0 {
+			break
+		}
+
+		jsonparser.ArrayEach(
+			data,
+			func(pStats []byte, dataType jsonparser.ValueType, offset int, err error) {
+
+			},
+			"player_season_stats",
+		)
+
+	}
 }

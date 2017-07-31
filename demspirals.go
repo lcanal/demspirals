@@ -15,11 +15,12 @@ func main() {
 	httpPort := viper.GetString("httpPort")
 	clientFiles := viper.GetString("clientFiles")
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/api/hello", hello)
-	mux.HandleFunc("/api/teams", routes.TeamRoster)
-	mux.Handle("/", http.FileServer(http.Dir(clientFiles)))
-	log.Fatal(http.ListenAndServe(":"+httpPort, mux))
+	muxie := http.NewServeMux()
+	muxie.HandleFunc("/api/hello", hello)
+	muxie.HandleFunc("/api/teams", routes.TeamRoster)
+	muxie.HandleFunc("/api/playerstats", routes.PlayerStats)
+	muxie.Handle("/", http.FileServer(http.Dir(clientFiles)))
+	log.Fatal(http.ListenAndServe(":"+httpPort, muxie))
 }
 
 func hello(w http.ResponseWriter, r *http.Request) {
