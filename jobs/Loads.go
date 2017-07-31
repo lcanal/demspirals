@@ -141,16 +141,46 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 			func(player []byte, dataType jsonparser.ValueType, offset int, err error) {
 				pID, _ := jsonparser.GetString(player, "player_id")
 				receptions, _ := jsonparser.GetInt(player, "receptions")
-				/*receptionyards, _ := jsonparser.GetInt(player, "receptionyards")
-				receptionyards10p, _ := jsonparser.GetInt(player, "receptionyards10p")
-				receptionyards20p, _ := jsonparser.GetInt(player, "receptionyards20p")
-				receptionyards30p, _ := jsonparser.GetInt(player, "receptionyards30p")
-				receptionyards40p, _ := jsonparser.GetInt(player, "receptionyards40p")
-				receptionyards50p, _ := jsonparser.GetInt(player, "receptionyards50p")
-				touchdownpasses, _ := jsonparser.GetInt(player, "touchdownpasses")*/
+
+				receptionyards, _ := jsonparser.GetInt(player, "reception_yards")
+				receptiontargets, _ := jsonparser.GetInt(player, "reception_targets")
+				receptionyards10p, _ := jsonparser.GetInt(player, "reception_yards_10_plus")
+				receptionyards20p, _ := jsonparser.GetInt(player, "reception_yards_20_plus")
+				receptionyards30p, _ := jsonparser.GetInt(player, "reception_yards_30_plus")
+				receptionyards40p, _ := jsonparser.GetInt(player, "reception_yards_40_plus")
+				receptionyards50p, _ := jsonparser.GetInt(player, "reception_yards_50_plus")
+				rushyards, _ := jsonparser.GetInt(player, "rush_yards")
+				rushattempts, _ := jsonparser.GetInt(player, "rush_attempts")
+				rushyards10p, _ := jsonparser.GetInt(player, "rush_yards_10_plus")
+				rushyards20p, _ := jsonparser.GetInt(player, "rush_yards_20_plus")
+				rushyards30p, _ := jsonparser.GetInt(player, "rush_yards_30_plus")
+				rushyards40p, _ := jsonparser.GetInt(player, "rush_yards_40_plus")
+				rushyards50p, _ := jsonparser.GetInt(player, "rush_yards_50_plus")
+				touchdownpasses, _ := jsonparser.GetInt(player, "touchdown_passes")
+				touchdownrushes, _ := jsonparser.GetInt(player, "touchdown_rushes")
+
+				fumbles, _ := jsonparser.GetInt(player, "fumbles")
 
 				newStat := models.PlayerStats{
-					Receptions: receptions,
+					PID:               pID,
+					Receptions:        receptions,
+					Receptionyards:    receptionyards,
+					Receptiontargets:  receptiontargets,
+					Receptionyards10p: receptionyards10p,
+					Receptionyards20p: receptionyards20p,
+					Receptionyards30p: receptionyards30p,
+					Receptionyards40p: receptionyards40p,
+					Receptionyards50p: receptionyards50p,
+					Rushyards:         rushyards,
+					Rushattempts:      rushattempts,
+					Rushyards10p:      rushyards10p,
+					Rushyards20p:      rushyards20p,
+					Rushyards30p:      rushyards30p,
+					Rushyards40p:      rushyards40p,
+					Rushyards50p:      rushyards50p,
+					Touchdownpasses:   touchdownpasses,
+					Touchdownrushes:   touchdownrushes,
+					Fumbles:           fumbles,
 				}
 
 				stats[pID] = newStat
@@ -160,9 +190,32 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 
 	}
 
-	db := loader.ConnectDB()
+	/*db := loader.ConnectDB()
 
-	insertStatStmt, err := db.Prepare("REPLACE INTO playerstats (pid,runs,passes,receptions) VALUES (?,?,?,?)")
+	insertStatStmt, err := db.Prepare(
+		`REPLACE INTO playerstats (
+			pID,
+			receptions,
+			receptionyards,
+			receptiontargets,
+			receptionyards10p,
+			receptionyards20p,
+			receptionyards30p,
+			receptionyards40p,
+			receptionyards50p,
+			rushyards,
+			rushattempts,
+			rushyards10p,
+			rushyards20p,
+			rushyards30p,
+			rushyards40p,
+			rushyards50p,
+			touchdownpasses,
+			touchdownrushes,
+			fumbles
+		)
+		VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+	`)
 	if err != nil {
 		log.Fatalf("Error preparing db statement: %s\n", err.Error())
 	}
@@ -175,4 +228,5 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 		}
 	}
 	insertStatStmt.Close()
+	*/
 }
