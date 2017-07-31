@@ -3,4 +3,5 @@ node_modules/
 build/
 npm-debug.log
 demspirals
+demspirals.exe
 vendor/
