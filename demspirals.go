@@ -6,7 +6,10 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/lcanal/demspirals/models"
+
 	"github.com/lcanal/demspirals/jobs"
+	"github.com/lcanal/demspirals/loader"
 	"github.com/spf13/viper"
 )
 
@@ -33,6 +36,8 @@ func main() {
 
 	}
 
+	db := loader.GormConnectDB()
+	db.CreateTable(&models.Stat{})
 	log.Printf("Starting server on :%s", httpPort)
 	log.Fatal(http.ListenAndServe(":"+httpPort, muxie))
 }

@@ -121,7 +121,7 @@ func LoadAllTeams() {
 
 //LoadAllPlayerStats print player stas
 func LoadAllPlayerStats(MAXPAGECOUNT int) {
-	stats := make(map[string]models.PlayerStats)
+	stats := make(map[string]models.Stat)
 
 	for currentPage := 1; currentPage < MAXPAGECOUNT; currentPage++ {
 		apiBase := viper.GetString("apiBaseURL") + "/football/nfl/player_season_stats?interval_type=regularseason&season_id=nfl-2016-2017" + "&per_page=40&page="
@@ -139,7 +139,7 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 		jsonparser.ArrayEach(
 			data,
 			func(player []byte, dataType jsonparser.ValueType, offset int, err error) {
-				pID, _ := jsonparser.GetString(player, "player_id")
+				pid, _ := jsonparser.GetString(player, "player_id")
 				receptions, _ := jsonparser.GetInt(player, "receptions")
 
 				receptionyards, _ := jsonparser.GetInt(player, "reception_yards")
@@ -161,8 +161,8 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 
 				fumbles, _ := jsonparser.GetInt(player, "fumbles")
 
-				newStat := models.PlayerStats{
-					PID:               pID,
+				newStat := models.Stat{
+					Pid:               pid,
 					Receptions:        receptions,
 					Receptionyards:    receptionyards,
 					Receptiontargets:  receptiontargets,
@@ -183,50 +183,54 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 					Fumbles:           fumbles,
 				}
 
-				stats[pID] = newStat
+				stats[pid] = newStat
 			},
 			"player_season_stats",
 		)
 
 	}
 
-	/*db := loader.ConnectDB()
-
-	insertStatStmt, err := db.Prepare(
-		`REPLACE INTO playerstats (
-			pID,
-			receptions,
-			receptionyards,
-			receptiontargets,
-			receptionyards10p,
-			receptionyards20p,
-			receptionyards30p,
-			receptionyards40p,
-			receptionyards50p,
-			rushyards,
-			rushattempts,
-			rushyards10p,
-			rushyards20p,
-			rushyards30p,
-			rushyards40p,
-			rushyards50p,
-			touchdownpasses,
-			touchdownrushes,
-			fumbles
-		)
-		VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-	`)
-	if err != nil {
-		log.Fatalf("Error preparing db statement: %s\n", err.Error())
+	db := loader.GormConnectDB()
+	for _, stat := range stats {
+		db.Create(stat)
 	}
 
-	for pid, stat := range stats {
-		log.Printf("Inserting Stats %s... \n", pid)
-		_, err := insertStatStmt.Exec(pid, stat.Runs, stat.Passes, stat.Receptions)
+	/*
+		insertStatStmt, err := db.Prepare(
+			`REPLACE INTO playerstats (
+				pID,
+				receptions,
+				receptionyards,
+				receptiontargets,
+				receptionyards10p,
+				receptionyards20p,
+				receptionyards30p,
+				receptionyards40p,
+				receptionyards50p,
+				rushyards,
+				rushattempts,
+				rushyards10p,
+				rushyards20p,
+				rushyards30p,
+				rushyards40p,
+				rushyards50p,
+				touchdownpasses,
+				touchdownrushes,
+				fumbles
+			)
+			VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+		`)
 		if err != nil {
-			log.Fatalf("Error inserting stat %s: %s", pid, err.Error())
+			log.Fatalf("Error preparing db statement: %s\n", err.Error())
 		}
-	}
-	insertStatStmt.Close()
+
+		for pid, stat := range stats {
+			log.Printf("Inserting Stats %s... \n", pid)
+			_, err := insertStatStmt.Exec(pid, stat.Runs, stat.Passes, stat.Receptions)
+			if err != nil {
+				log.Fatalf("Error inserting stat %s: %s", pid, err.Error())
+			}
+		}
+		insertStatStmt.Close()
 	*/
 }
