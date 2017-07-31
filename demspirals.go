@@ -21,8 +21,8 @@ func main() {
 	muxie.HandleFunc("/api/playerstats", routes.PlayerStats)
 	muxie.Handle("/", http.FileServer(http.Dir(clientFiles)))
 
-	//fmt.Println("Loading all players....")
-	//routes.LoadAllPlayers()
+	fmt.Println("Loading all players....")
+	routes.LoadAllPlayers()
 
 	log.Fatal(http.ListenAndServe(":"+httpPort, muxie))
 }

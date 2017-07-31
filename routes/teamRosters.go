@@ -2,7 +2,6 @@ package routes
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -20,19 +19,20 @@ import _ "github.com/go-sql-driver/mysql"
 //LoadAllPlayers grabs full team roster
 func LoadAllPlayers() {
 	players := make(map[string]models.Player)
-	const MAXPAGECOUNT = 5
+	const MAXPAGECOUNT = 100
 
 	for currentPage := 1; currentPage < MAXPAGECOUNT; currentPage++ {
 		apiBase := viper.GetString("apiBaseURL") + "/football/nfl/rosters" + "?per_page=40&page="
 		apiPagedURL := apiBase + strconv.Itoa(currentPage)
 
 		data, _ := ioutil.ReadAll(CallAPI(apiPagedURL))
-		if len(data) <= 0 {
+		_, _, _, err := jsonparser.Get(data, "players")
+		if err != nil {
+			fmt.Printf("Reached my limit at %d page", currentPage)
 			break
 		}
 
 		fmt.Printf("Current page count %d, current data length %d\n", currentPage, len(data))
-
 		jsonparser.ArrayEach(
 			data,
 			func(player []byte, dataType jsonparser.ValueType, offset int, err error) {
@@ -53,17 +53,35 @@ func LoadAllPlayers() {
 		)
 	}
 
-	body, _ := json.Marshal(players)
-	err := ioutil.WriteFile("data/players.json", body, 0644)
+	host := viper.GetString("db.host")
+	port := viper.GetString("db.port")
+	user := viper.GetString("db.user")
+	pass := viper.GetString("db.pass")
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", user, pass, host, port, user)
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
-		log.Printf("Error writing players.json: %s\n", err.Error())
+		log.Fatalf("Error connecting to db: %s", err.Error())
 	}
+
+	insertPlayerStmt, err := db.Prepare("REPLACE INTO players (pid,slug,name,position) VALUES (?,?,?,?)")
+	if err != nil {
+		log.Fatalf("Error preparing db statement: %s\n", err.Error())
+	}
+
+	for pid, player := range players {
+		fmt.Printf("Inserting %s... \n", pid)
+		_, err := insertPlayerStmt.Exec(pid, player.Slug, player.Name, player.Position)
+		if err != nil {
+			log.Fatalf("Error inserting stat %s: %s", pid, err.Error())
+		}
+	}
+	insertPlayerStmt.Close()
 }
 
 //PlayerStats print player stas
 func PlayerStats(w http.ResponseWriter, r *http.Request) {
 	stats := make(map[string]models.PlayerStats)
-	const MAXPAGECOUNT = 5
+	const MAXPAGECOUNT = 100
 
 	for currentPage := 1; currentPage < MAXPAGECOUNT; currentPage++ {
 		apiBase := viper.GetString("apiBaseURL") + "/football/nfl/player_season_stats?interval_type=regularseason&season_id=nfl-2016-2017" + "&per_page=40&page="
@@ -122,6 +140,5 @@ func PlayerStats(w http.ResponseWriter, r *http.Request) {
 			log.Fatalf("Error inserting stat %s: %s", pid, err.Error())
 		}
 	}
-
 	insertStatStmt.Close()
 }
