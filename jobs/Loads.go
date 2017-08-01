@@ -45,7 +45,7 @@ func LoadAllPlayers(MAXPAGECOUNT int) {
 					Name:     playername,
 					Position: playerposition,
 					Pos:      playerpos,
-					Teamid:   playertid,
+					TeamID:   playertid,
 				}
 				players[playerslug] = newPlayer
 			},
@@ -55,7 +55,7 @@ func LoadAllPlayers(MAXPAGECOUNT int) {
 
 	db := loader.GormConnectDB()
 	for _, player := range players {
-		if db.Create(player).Error == nil {
+		if db.Create(player).Error != nil {
 			db.Save(player)
 		}
 	}
@@ -72,8 +72,6 @@ func LoadAllTeams() {
 		fmt.Printf("Error... no teams loaded!\n")
 		return
 	}
-
-	fmt.Printf("Loading teams...\n")
 
 	jsonparser.ArrayEach(
 		data,
@@ -100,7 +98,7 @@ func LoadAllTeams() {
 
 	db := loader.GormConnectDB()
 	for _, team := range teams {
-		if db.Create(team).Error == nil {
+		if db.Create(team).Error != nil {
 			db.Save(team)
 		}
 	}
@@ -180,7 +178,7 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 
 	db := loader.GormConnectDB()
 	for _, stat := range stats {
-		if db.Create(stat).Error == nil {
+		if db.Create(stat).Error != nil {
 			db.Save(stat)
 		}
 	}

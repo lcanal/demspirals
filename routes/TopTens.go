@@ -11,48 +11,16 @@ import (
 	"github.com/lcanal/demspirals/models"
 )
 
-//TopTen Returns top ten players
+//TopTen test function
 func TopTen(w http.ResponseWriter, r *http.Request) {
-	db := loader.GormConnectDB()
-	//Just grab any ten for now
-	var players []models.Player
-
-	db.Limit(10).Find(&players)
-
-	for slug, player := range players {
-		var team models.Team
-		var stat models.Stat
-		db.First(&team, "id = ?", player.Teamid)
-		db.First(&stat, "pid = ?", player.ID)
-		players[slug].Team = team
-		players[slug].Stats = stat
-	}
-
-	b, err := json.Marshal(players)
-	if err != nil {
-		log.Printf("Error marshalling top ten players: %s", err.Error())
-	}
-
-	fmt.Fprintf(w, string(b))
-}
-
-//TopTen2 test function
-func TopTen2(w http.ResponseWriter, r *http.Request) {
 	db := loader.GormConnectDB()
 	//Just grab any ten for now
 	var players []models.Player
 	var sortedPlayers []models.Player
 
-	db.Find(&players)
-
-	for slug, player := range players {
-		var team models.Team
-		var stat models.Stat
-		db.First(&team, "id = ?", player.Teamid)
-		db.First(&stat, "pid = ?", player.ID)
-		players[slug].Team = team
-		players[slug].Stats = stat
-	}
+	//db.Find(&players)
+	db.Preload("Team").Find(&players)
+	db.Preload("Stats").Find(&players)
 
 	sort.Sort(ByStats(players))
 

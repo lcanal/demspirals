@@ -21,8 +21,7 @@ func main() {
 
 	muxie := http.NewServeMux()
 	muxie.HandleFunc("/api/hello", hello)
-	//muxie.HandleFunc("/api/topten", routes.TopTen)
-	muxie.HandleFunc("/api/topten", routes.TopTen2)
+	muxie.HandleFunc("/api/topten", routes.TopTen)
 	//muxie.HandleFunc("/api/playerstats", routes.PlayerStats)
 	muxie.Handle("/", http.FileServer(http.Dir(clientFiles)))
 
@@ -44,6 +43,7 @@ func main() {
 		db.CreateTable(&models.Stat{})
 		db.CreateTable(&models.Player{})
 		db.CreateTable(&models.Team{})
+
 		fmt.Println("Loading all players....")
 		go jobs.LoadAllPlayers(10)
 		fmt.Println("Loading all teams... ")
