@@ -24,7 +24,7 @@ func LoadAllPlayers(MAXPAGECOUNT int) {
 		data, _ := ioutil.ReadAll(routes.CallAPI(apiPagedURL))
 		_, _, _, err := jsonparser.Get(data, "players")
 		if err != nil {
-			fmt.Printf("Ended load at page %d", currentPage)
+			fmt.Printf("Ended player load at page %d\n", currentPage)
 			break
 		}
 
@@ -116,7 +116,7 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 		data, _ := ioutil.ReadAll(routes.CallAPI(apiPagedURL))
 		_, _, _, err := jsonparser.Get(data, "player_season_stats")
 		if err != nil {
-			fmt.Printf("Ended load at page %d", currentPage)
+			fmt.Printf("Ended  stats load at page %d\n", currentPage)
 			break
 		}
 
