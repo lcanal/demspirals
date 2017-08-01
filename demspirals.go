@@ -21,7 +21,8 @@ func main() {
 
 	muxie := http.NewServeMux()
 	muxie.HandleFunc("/api/hello", hello)
-	muxie.HandleFunc("/api/topten", routes.TopTen)
+	//muxie.HandleFunc("/api/topten", routes.TopTen)
+	muxie.HandleFunc("/api/topten", routes.TopTen2)
 	//muxie.HandleFunc("/api/playerstats", routes.PlayerStats)
 	muxie.Handle("/", http.FileServer(http.Dir(clientFiles)))
 
