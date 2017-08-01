@@ -6,5 +6,8 @@ type Player struct {
 	Slug     string `json:"slug"`
 	Name     string `json:"name"`
 	Position string `json:"position"`
-	Teamid   string `json:"team"`
+	Pos      string `json:"pos"`
+	Teamid   string `json:"teamid"`
+	Team     Team   `json:"team" gorm:"ForeignKey:ID"`
+	Stats    Stat   `json:"stats"`
 }

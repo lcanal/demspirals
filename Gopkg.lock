@@ -29,7 +29,7 @@
   name = "github.com/jinzhu/gorm"
   packages = [".","dialects/mysql"]
   revision = "5174cc5c242a728b435ea2be8a2f7f998e15429b"
-  version = "v1.0"
+  version = "v1.9"
 
 [[projects]]
   branch = "master"

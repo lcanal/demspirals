@@ -33,7 +33,8 @@ func LoadAllPlayers(MAXPAGECOUNT int) {
 			data,
 			func(player []byte, dataType jsonparser.ValueType, offset int, err error) {
 				playername, _ := jsonparser.GetString(player, "name")
-				playerpos, _ := jsonparser.GetString(player, "position_name")
+				playerposition, _ := jsonparser.GetString(player, "position_name")
+				playerpos, _ := jsonparser.GetString(player, "position_abbreviation")
 				playerslug, _ := jsonparser.GetString(player, "slug")
 				playerid, _ := jsonparser.GetString(player, "id")
 				playertid, _ := jsonparser.GetString(player, "team_id")
@@ -42,7 +43,8 @@ func LoadAllPlayers(MAXPAGECOUNT int) {
 					ID:       playerid,
 					Slug:     playerslug,
 					Name:     playername,
-					Position: playerpos,
+					Position: playerposition,
+					Pos:      playerpos,
 					Teamid:   playertid,
 				}
 				players[playerslug] = newPlayer
@@ -53,8 +55,9 @@ func LoadAllPlayers(MAXPAGECOUNT int) {
 
 	db := loader.GormConnectDB()
 	for _, player := range players {
-		//log.Printf("Inserting player: %s\n", slug)
-		db.Create(player)
+		if db.Create(player).Error == nil {
+			db.Save(player)
+		}
 	}
 	log.Printf("Finished loading %d players", len(players))
 }
@@ -97,8 +100,9 @@ func LoadAllTeams() {
 
 	db := loader.GormConnectDB()
 	for _, team := range teams {
-		//log.Printf("Inserting team: %s\n", slug)
-		db.Create(team)
+		if db.Create(team).Error == nil {
+			db.Save(team)
+		}
 	}
 	log.Printf("Finished loading %d teams", len(teams))
 }
@@ -176,8 +180,9 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 
 	db := loader.GormConnectDB()
 	for _, stat := range stats {
-		//log.Printf("Inserting stat for playerid: %s\n", pid)
-		db.Create(stat)
+		if db.Create(stat).Error == nil {
+			db.Save(stat)
+		}
 	}
 	log.Printf("Finished loading %d stats", len(stats))
 }

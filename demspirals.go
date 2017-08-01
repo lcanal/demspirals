@@ -27,19 +27,31 @@ func main() {
 
 	//Check if we want to run loads at startup...
 	doLoads := flag.Bool("doloads", false, "Run initial loads for loading teams, players, stats.")
+	dropTables := flag.Bool("droptables", false, "Drop tables. Must be set along with doloads to run.")
 	flag.Parse()
 	if *doLoads {
-		fmt.Println("Creating tables ...")
 		db := loader.GormConnectDB()
+
+		if *dropTables {
+			fmt.Println("Droping old tables ...")
+			db.DropTableIfExists(&models.Stat{})
+			db.DropTableIfExists(&models.Player{})
+			db.DropTableIfExists(&models.Team{})
+		}
+
+		fmt.Println("Creating new tables...")
 		db.CreateTable(&models.Stat{})
 		db.CreateTable(&models.Player{})
 		db.CreateTable(&models.Team{})
 		fmt.Println("Loading all players....")
 		go jobs.LoadAllPlayers(10)
+		fmt.Println("Loading all teams... ")
 		go jobs.LoadAllTeams()
+		fmt.Println("Loading all stats... ")
 		go jobs.LoadAllPlayerStats(10)
 	}
 	log.Printf("Starting server on :%s", httpPort)
+	log.Printf("Using database %s:%s", viper.GetString("db.host"), viper.GetString("db.port"))
 	log.Fatal(http.ListenAndServe(":"+httpPort, muxie))
 }
 
