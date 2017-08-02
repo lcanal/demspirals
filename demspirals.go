@@ -94,6 +94,8 @@ func configRead(configName string) (string, string) {
 	if len(dbHost) <= 0 {
 		log.Fatal("Error: No db listed in settings file.")
 	}
+	//Do a init connection
+	loader.GormConnectDB()
 
 	return apiBaseURL, accessToken
 }
