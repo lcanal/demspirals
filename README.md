@@ -25,7 +25,11 @@ And install necessary depenencies for both Go and NodeJS. Make sure dep is in yo
 
     $ npm install
 
-Build the binary and JS bundles:
+To start a development instance with hotreloading on the frontend side:
+
+    $ npm start
+
+To et ready to package a build for distribution, you can build the binary and JS bundles:
 
     $ npm run build
 
