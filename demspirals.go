@@ -18,15 +18,15 @@ func main() {
 	//Read in and set all settings
 	configRead("settings")
 	httpPort := viper.GetString("httpPort")
-	//frontendFiles := viper.GetString("frontendFiles")
+	frontendFiles := viper.GetString("frontendFiles")
 
 	muxie := mux.NewRouter()
 
 	muxie.HandleFunc("/api/hello", hello)
 	muxie.HandleFunc("/api/topoverall", routes.TopOverall)
 	muxie.HandleFunc("/api/topoverall/{num}", routes.TopOverall)
-	//muxie.PathPrefix("/").Handler(http.FileServer(http.Dir("./" + frontendFiles)))
-	//http.Handle("/", muxie)
+	muxie.PathPrefix("/").Handler(http.FileServer(http.Dir("./" + frontendFiles)))
+	http.Handle("/", muxie)
 
 	//Check if we want to run loads at startup...
 	doLoads := flag.Bool("doloads", false, "Run initial loads for loading teams, players, stats.")
@@ -57,7 +57,7 @@ func main() {
 	}
 
 	log.Printf("Starting server on :%s", httpPort)
-
+	log.Printf("Loading frontend files from %s", frontendFiles)
 	log.Printf("Using database %s:%s", viper.GetString("db.host"), viper.GetString("db.port"))
 
 	log.Fatal(http.ListenAndServe(":"+httpPort, muxie))
