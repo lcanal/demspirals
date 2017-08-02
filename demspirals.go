@@ -57,11 +57,8 @@ func main() {
 	}
 
 	log.Printf("Starting server on :%s", httpPort)
-	if viper.Get("db.driver") == "mysql" {
-		log.Printf("Using database %s:%s", viper.GetString("db.host"), viper.GetString("db.port"))
-	} else {
-		log.Println("Using sqlite3 db: demspirals.go")
-	}
+
+	log.Printf("Using database %s:%s", viper.GetString("db.host"), viper.GetString("db.port"))
 
 	log.Fatal(http.ListenAndServe(":"+httpPort, muxie))
 }
@@ -91,6 +88,11 @@ func configRead(configName string) (string, string) {
 	accessToken := viper.GetString("creds.accessToken")
 	if len(accessToken) <= 0 {
 		log.Fatal("Error: No access token set (\"accessToken\")")
+	}
+
+	dbHost := viper.GetString("db.host")
+	if len(dbHost) <= 0 {
+		log.Fatal("Error: No db listed in settings file.")
 	}
 
 	return apiBaseURL, accessToken

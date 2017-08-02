@@ -4,6 +4,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -17,11 +18,21 @@ func CallAPI(url string) io.ReadCloser {
 	req.Header.Add("Accept", "application/vnd.stattleship.com; version=1")
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Printf("Error pulling team rosters auth : %s\n", err)
+		log.Printf("Error general error attempting REST call to (%s): %s\n", url, err)
 	}
 
 	if resp.StatusCode != 200 {
-		log.Printf("Error with request: %s (%d)\n", resp.Status, resp.StatusCode)
+		log.Printf("Error with request: %s\nURL: %s\n", resp.Status, url)
+		//Retry 5 times
+		for index := 0; index < 5; index++ {
+			log.Printf("Retrying %d time(s)", index+1)
+			time.Sleep(3 * time.Second)
+			resp, _ := client.Do(req)
+			if resp.StatusCode == 200 {
+				return resp.Body
+			}
+		}
+
 	}
 	return resp.Body
 }

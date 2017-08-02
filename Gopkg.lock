@@ -39,7 +39,7 @@
 
 [[projects]]
   name = "github.com/jinzhu/gorm"
-  packages = [".","dialects/mysql","dialects/sqlite"]
+  packages = [".","dialects/mysql"]
   revision = "5174cc5c242a728b435ea2be8a2f7f998e15429b"
   version = "v1.9"
 
@@ -54,12 +54,6 @@
   packages = ["."]
   revision = "be5ece7dd465ab0765a9682137865547526d1dfb"
   version = "v1.7.3"
-
-[[projects]]
-  name = "github.com/mattn/go-sqlite3"
-  packages = ["."]
-  revision = "ca5e3819723d8eeaf170ad510e7da1d6d2e94a08"
-  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
@@ -117,21 +111,15 @@
 
 [[projects]]
   branch = "master"
-  name = "golang.org/x/net"
-  packages = ["context"]
-  revision = "f5079bd7f6f74e23c4d65efa0f4ce14cbd6a3c0f"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "0f826bdd13b500be0f1d4004938ad978fcc6031e"
+  revision = "396c9fc8fb0ce27fc7a1ff136dc5af797bba258a"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/text"
   packages = ["internal/gen","internal/triegen","internal/ucd","transform","unicode/cldr","unicode/norm"]
-  revision = "836efe42bb4aa16aaa17b9c155d8813d336ed720"
+  revision = "3bd178b88a8180be2df394a1fbb81313916f0e7b"
 
 [[projects]]
   branch = "v2"
@@ -142,6 +130,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "81d20e66e63fc93aa73e8ecf90eece690172119214530b6bb7c04a5304a6d46f"
+  inputs-digest = "076a5b86785eea9636d6bb93238e6100d2d90f65797510eef5e861b70a938b7c"
   solver-name = "gps-cdcl"
   solver-version = 1

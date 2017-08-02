@@ -1,9 +1,10 @@
 {
     "httpPort" : "8080",
     "apiBaseURL" : "https://api.stattleship.com",
+    "frontendFiles": "frontend",
     "creds" : {
         "accessToken" : ""
-    },
+    },    
     "db": {
         "host" : "",
         "port" : "",

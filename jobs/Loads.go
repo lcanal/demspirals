@@ -28,7 +28,6 @@ func LoadAllPlayers(MAXPAGECOUNT int) {
 			break
 		}
 
-		//fmt.Printf("Loading players page %d", currentPage)
 		jsonparser.ArrayEach(
 			data,
 			func(player []byte, dataType jsonparser.ValueType, offset int, err error) {
@@ -53,6 +52,7 @@ func LoadAllPlayers(MAXPAGECOUNT int) {
 		)
 	}
 
+	//Save all records to DB once players have been obtained.
 	db := loader.GormConnectDB()
 	for _, player := range players {
 		if db.Create(player).Error != nil {
@@ -96,6 +96,7 @@ func LoadAllTeams() {
 		"teams",
 	)
 
+	//Save all records to DB once teams have been obtained.
 	db := loader.GormConnectDB()
 	for _, team := range teams {
 		if db.Create(team).Error != nil {
@@ -148,7 +149,7 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 				fumbles, _ := jsonparser.GetInt(player, "fumbles")
 
 				newStat := models.Stat{
-					Pid:               pid,
+					PID:               pid,
 					Receptions:        receptions,
 					Receptionyards:    receptionyards,
 					Receptiontargets:  receptiontargets,
@@ -176,6 +177,7 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 
 	}
 
+	//Save all records to DB once stats have been obtained.
 	db := loader.GormConnectDB()
 	for _, stat := range stats {
 		if db.Create(stat).Error != nil {

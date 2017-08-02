@@ -9,5 +9,5 @@ type Player struct {
 	Pos      string `json:"pos"`
 	TeamID   string `json:"teamid"`
 	Team     Team   `json:"team" gorm:"ForeignKey:TeamID;AssociationForeignKey:ID"`
-	Stats    Stat   `json:"stats" gorm:"ForeignKey:ID;AssociationForeignKey:Pid"`
+	Stats    Stat   `json:"stats" gorm:"ForeignKey:ID;AssociationForeignKey:PID"`
 }

@@ -34,8 +34,7 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 	var sortedPlayers []models.Player
 
 	//db.Find(&players)
-	db.Preload("Team").Find(&players)
-	db.Preload("Stats").Find(&players) //Slowness culprit
+	db.Preload("Team").Preload("Stats").Find(&players)
 	sort.Sort(ByStats(players))
 
 	for index := start; index < num; index++ {
