@@ -16,6 +16,6 @@
     "install": "(cd frontend && npm install) && (cd ../) && (cd backend && dep ensure)",
     "start": "concurrently \"cd frontend && cross-env PORT=3000 npm start\" \"cd backend && go run demspirals.go\"",
     "build": "concurrently \"cd frontend && npm run build\" \"cd backend && go build \"",
-    "package": "mkdir package && copy frontend/build backend/cache backend/config backend/demspirals* backend/ && move package/build package/frontend"
+    "package": "mkdir package && copy frontend/build backend/cache backend/config backend/demspirals* package/ && move package/build package/frontend"
   }
 }
