@@ -57,7 +57,12 @@ func main() {
 	}
 
 	log.Printf("Starting server on :%s", httpPort)
-	log.Printf("Using database %s:%s", viper.GetString("db.host"), viper.GetString("db.port"))
+	if viper.Get("db.driver") == "mysql" {
+		log.Printf("Using database %s:%s", viper.GetString("db.host"), viper.GetString("db.port"))
+	}else{
+		log.Println("Using sqlite3 db: demspirals.go")
+	}
+	
 	log.Fatal(http.ListenAndServe(":"+httpPort, muxie))
 }
 

@@ -33,6 +33,14 @@ Build the binary and JS bundles:
     $ cd client
     $ npm run build
 
+Note: If you're building on windows, you will get errors about gcc not being in your path. For answers, look [here](https://github.com/mattn/go-sqlite3/issues/212#issuecomment-273531789)
+but essentially:
+
+    1. Download and install "tdm64-gcc-5.1.0-2.exe" from http://tdm-gcc.tdragon.net/download.
+    2. Go to Program Files and click on "MinGW Command Prompt". This will start a DOS prompt with the correct environment for using MinGW with GCC.
+    3. Within this DOS prompt window, navigate to your GOPATH. For example, I went to C:\go-apps.
+    4. Enter the following commands: go get -u github.com/mattn/go-sqlite3. Then enter go install github.com/mattn/go-sqlite3
+    5. You are done! go-sqlite3 is now installed and ready for use.
 #### Build Options
 
 You can enable cross compilation via the GOOS environment varibable:

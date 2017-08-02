@@ -9,7 +9,8 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql" // MySQL Driver for GORM
+	//_ "github.com/jinzhu/gorm/dialects/mysql" // MySQL Driver for GORM
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	cache "github.com/patrickmn/go-cache"
 	"github.com/spf13/viper"
 )
@@ -30,16 +31,27 @@ func ConnectDB() *sql.DB {
 
 //GormConnectDB initializes a GORM DB ORM connection
 func GormConnectDB() *gorm.DB {
-	host := viper.GetString("db.host")
-	port := viper.GetString("db.port")
-	user := viper.GetString("db.user")
-	pass := viper.GetString("db.pass")
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True", user, pass, host, port, user)
-	db, err := gorm.Open("mysql", dsn)
+	dbDriver := viper.GetString("db.driver")
+	if dbDriver == "mysql" {
+		host := viper.GetString("db.host")
+		port := viper.GetString("db.port")
+		user := viper.GetString("db.user")
+		pass := viper.GetString("db.pass")
+		dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True", user, pass, host, port, user)
+		db, err := gorm.Open("mysql", dsn)
+		if err != nil {
+			log.Fatalf("Error connecting gorm to db: %s\n", err.Error())
+		}
+		return db
+	}
+
+	//Using local sqlite.
+	db, err := gorm.Open("sqlite3", "demspirals.db")
 	if err != nil {
-		log.Fatalf("Error connecting gorm to db: %s\n", err.Error())
+		log.Fatalf("Error creating demspirals.db: %s\n", err.Error())
 	}
 	return db
+
 }
 
 //ReadFromCache reads from cachestore using the key
