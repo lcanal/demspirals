@@ -21,10 +21,12 @@ func main() {
 	clientFiles := viper.GetString("clientFiles")
 
 	muxie := mux.NewRouter()
+
 	muxie.HandleFunc("/api/hello", hello)
 	muxie.HandleFunc("/api/topoverall", routes.TopOverall)
 	muxie.HandleFunc("/api/topoverall/{num}", routes.TopOverall)
-	muxie.Handle("/", http.FileServer(http.Dir(clientFiles)))
+	muxie.PathPrefix("/").Handler(http.FileServer(http.Dir("./" + clientFiles)))
+	http.Handle("/", muxie)
 
 	//Check if we want to run loads at startup...
 	doLoads := flag.Bool("doloads", false, "Run initial loads for loading teams, players, stats.")
