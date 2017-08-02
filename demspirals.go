@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/lcanal/demspirals/jobs"
 	"github.com/lcanal/demspirals/loader"
 	"github.com/lcanal/demspirals/models"
@@ -19,10 +20,10 @@ func main() {
 	httpPort := viper.GetString("httpPort")
 	clientFiles := viper.GetString("clientFiles")
 
-	muxie := http.NewServeMux()
+	muxie := mux.NewRouter()
 	muxie.HandleFunc("/api/hello", hello)
-	muxie.HandleFunc("/api/topten", routes.TopTen)
-	//muxie.HandleFunc("/api/playerstats", routes.PlayerStats)
+	muxie.HandleFunc("/api/topoverall", routes.TopOverall)
+	muxie.HandleFunc("/api/topoverall/{num}", routes.TopOverall)
 	muxie.Handle("/", http.FileServer(http.Dir(clientFiles)))
 
 	//Check if we want to run loads at startup...

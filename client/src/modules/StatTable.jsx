@@ -7,7 +7,7 @@ class StatTable extends Component {
     }
 
     async componentDidMount(){
-        const response  = await fetch("/api/topten")
+        const response  = await fetch("/api/topoverall")
         const json      = await response.json()
         
         this.setState({

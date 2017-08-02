@@ -6,15 +6,24 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/lcanal/demspirals/loader"
 	"github.com/lcanal/demspirals/models"
 )
 
-//TopTen returnes a cached sorted or does a live sort of the top 10 players
-func TopTen(w http.ResponseWriter, r *http.Request) {
+//TopOverall returnes a cached sorted or does a live sort of the top 10 players
+func TopOverall(w http.ResponseWriter, r *http.Request) {
+	var start int
 
-	jsonPlayers, found := loader.ReadFromCache("toptenplayers")
+	vars := mux.Vars(r)
+	num, err := strconv.Atoi(vars["num"])
+	if err != nil {
+		num = 15 //Default return 15
+	}
+
+	jsonPlayers, found := loader.ReadFromCache("topoverall")
 	if found {
 		fmt.Fprintf(w, string(jsonPlayers.([]byte)))
 		return
@@ -29,20 +38,21 @@ func TopTen(w http.ResponseWriter, r *http.Request) {
 	db.Preload("Stats").Find(&players) //Slowness culprit
 	sort.Sort(ByStats(players))
 
-	for index := 0; index < 20; index++ {
+	for index := start; index < num; index++ {
 		sortedPlayers = append(sortedPlayers, players[index])
 	}
 
 	b, err := json.Marshal(sortedPlayers)
 	if err != nil {
-		log.Printf("Error marshalling top ten players: %s", err.Error())
+		log.Printf("Error marshalling top players: %s", err.Error())
 	}
 
 	fmt.Fprintf(w, string(b))
 
-	loader.WriteToCache("toptenplayers", b)
+	loader.WriteToCache("topoverall", b)
 }
 
+//ByStats is meant to be an interface to golang's sort function.
 type ByStats []models.Player
 
 func (a ByStats) Len() int { return len(a) }

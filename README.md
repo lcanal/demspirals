@@ -51,9 +51,10 @@ Full options:
 
 ### Run-time Dependencies
 In order to run this app you'll need:
- * MySQL Backend
- * [Stattleship API Key](https://api.stattleship.com/)
+ * A MySQL Backend
+ * A [Stattleship API Key](https://api.stattleship.com/)
  
+ MySQL will just need a database location. It takes care of creating its own schemas and table definitions.
 ### Settings
 
 By default demspirals tries to look in its current directory and then in the config/ directory for a setting file named **settings**. Settings can be in YAML,TOML or JSON format. A sample json formatted file is provided in **config/settings.json**

@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Panel } from 'react-bootstrap';
 import TopContainer from '../containers/TopContainer';
-class Top10 extends Component {
+class TopOverall extends Component {
     render(){
         return (
         <Panel>
-        <TopContainer dataFrom="/api/top10s" />  
+        <TopContainer dataFrom="/api/topoverall" />  
         </Panel>
         );
     }
 }
 
-export default Top10;
+export default TopOverall;

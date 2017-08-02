@@ -3,7 +3,7 @@ import { Navbar,Nav,NavItem } from 'react-bootstrap';
 import { Link,Route,BrowserRouter as Router } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import Home from './components/Home';
-import Top10 from './components/Top10';
+import TopOverall from './components/TopOverall';
 import './App.css';
 
 class App extends Component {
@@ -33,8 +33,8 @@ class App extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-            <LinkContainer to="/top10">
-              <NavItem eventKey={1} href="/top10">Top 10 Overall</NavItem>
+            <LinkContainer to="/topOverall">
+              <NavItem eventKey={1} href="/topOverall">Top Overall</NavItem>
             </LinkContainer>
             <LinkContainer to="/topQB">
               <NavItem eventKey={2} href="/topQB">Top QBs</NavItem>
@@ -43,7 +43,7 @@ class App extends Component {
           </Navbar.Collapse>
         </Navbar>
         <Route exact path="/" component={Home} />
-        <Route path="/top10" component={Top10} />
+        <Route path="/topOverall" component={TopOverall} />
       </div>
     </Router>
     );
