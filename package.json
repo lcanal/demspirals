@@ -1,0 +1,21 @@
+{
+  "name": "demspirals",
+  "version": "0.0.1",
+  "description": "Fantasy Football Stat Viewer",
+  "license": "Apache-2.0",
+  "author": "Luis Canales",
+  "dependencies": {
+    "concurrently": "^3.4.0",
+    "cross-env": "^5.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lcanal/demspirals.git"
+  },
+  "scripts": {
+    "install": "(cd frontend && npm install) && (cd ../) && (cd backend && dep ensure)",
+    "start": "concurrently \"cd frontend && cross-env PORT=3000 npm start\" \"cd backend && go run demspirals.go\"",
+    "build": "concurrently \"cd frontend && npm run build\" \"cd backend && go build \"",
+    "package": "mkdir package && copy frontend/build backend/cache backend/config backend/demspirals* backend/ && move package/build package/frontend"
+  }
+}

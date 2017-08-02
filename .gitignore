@@ -1,8 +1,3 @@
-settings.json
 node_modules/
-build/
 npm-debug.log
-demspirals
-demspirals.exe
-demspirals.db
-vendor/
+.DS_Store
