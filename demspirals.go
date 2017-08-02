@@ -18,14 +18,14 @@ func main() {
 	//Read in and set all settings
 	configRead("settings")
 	httpPort := viper.GetString("httpPort")
-	clientFiles := viper.GetString("clientFiles")
+	frontendFiles := viper.GetString("frontendFiles")
 
 	muxie := mux.NewRouter()
 
 	muxie.HandleFunc("/api/hello", hello)
 	muxie.HandleFunc("/api/topoverall", routes.TopOverall)
 	muxie.HandleFunc("/api/topoverall/{num}", routes.TopOverall)
-	muxie.PathPrefix("/").Handler(http.FileServer(http.Dir("./" + clientFiles)))
+	muxie.PathPrefix("/").Handler(http.FileServer(http.Dir("./" + frontendFiles)))
 	http.Handle("/", muxie)
 
 	//Check if we want to run loads at startup...
@@ -75,7 +75,7 @@ func configRead(configName string) (string, string) {
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("config")
 
-	viper.SetDefault("clientFiles", "client/build")
+	viper.SetDefault("frontendFiles", "client/build")
 	viper.SetDefault("httpPort", "8080")
 
 	err := viper.ReadInConfig()
