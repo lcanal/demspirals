@@ -50,6 +50,12 @@
   revision = "d0303fe809921458f417bcf828397a65db30a7e4"
 
 [[projects]]
+  name = "github.com/patrickmn/go-cache"
+  packages = ["."]
+  revision = "1881a9bccb818787f68c52bfba648c6cf34c34fa"
+  version = "v2.0.0"
+
+[[projects]]
   name = "github.com/pelletier/go-buffruneio"
   packages = ["."]
   revision = "c37440a7cf42ac63b919c752ca73a85067e05992"
@@ -112,6 +118,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d672acdbd3eb725b0493a4212ba24af2f2e3b6137e0baf3a61cb597887e8e29a"
+  inputs-digest = "e796a87513223a2998a3b89f1baf52831e5f2fe00529e6f07715a98003c91a07"
   solver-name = "gps-cdcl"
   solver-version = 1
