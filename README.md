@@ -23,15 +23,17 @@ Install Go's dep manager:
     
 And install necessary depenencies for both Go and NodeJS. Make sure dep is in your path:
 
-    $ dep ensure
-    $ cd client
     $ npm install
 
 Build the binary and JS bundles:
 
-    $ go build
-    $ cd client
     $ npm run build
+
+Package the build:
+    
+    $ npm run package
+
+You should now have a fully usable application in the 'package' directory.
 #### Build Options
 
 You can enable cross compilation via the GOOS environment varibable:
@@ -44,8 +46,8 @@ Full options:
 | GOOS Value         | Notes                                                                                            |
 |:----------------------|:-------------------------------------------------------------------------------------------------------|
 | `windows`             | Name of the application, will be used to construct the node service context name.    
-| `darwin`         | Instance of the application (dev/tst/stg). This will be used to construct the node service context name. |
-| `linux`           | Absolute path on build server where the built artifact files are stored |
+| `darwin`              | Instance of the application (dev/tst/stg). This will be used to construct the node service context name. |
+| `linux`               | Absolute path on build server where the built artifact files are stored |
     
 
 ### Run-time Dependencies
@@ -53,7 +55,7 @@ In order to run this app you'll need:
  * A MySQL Backend
  * A [Stattleship API Key](https://api.stattleship.com/)
  
- MySQL will just need a database location. It takes care of creating its own schemas and table definitions.
+ Database portion will just need a database location. It takes care of creating its own schemas and table definitions.
 ### Settings
 
 By default demspirals tries to look in its current directory and then in the config/ directory for a setting file named **settings**. Settings can be in YAML,TOML or JSON format. A sample json formatted file is provided in **config/settings.json**
