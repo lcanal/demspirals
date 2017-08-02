@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/jinzhu/gorm"
-	//_ "github.com/jinzhu/gorm/dialects/mysql" // MySQL Driver for GORM
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/jinzhu/gorm/dialects/mysql"  //To Support MySQL Driver
+	_ "github.com/jinzhu/gorm/dialects/sqlite" //To support sqllite3 driver
 	cache "github.com/patrickmn/go-cache"
 	"github.com/spf13/viper"
 )

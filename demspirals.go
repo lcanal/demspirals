@@ -18,15 +18,15 @@ func main() {
 	//Read in and set all settings
 	configRead("settings")
 	httpPort := viper.GetString("httpPort")
-	frontendFiles := viper.GetString("frontendFiles")
+	//frontendFiles := viper.GetString("frontendFiles")
 
 	muxie := mux.NewRouter()
 
 	muxie.HandleFunc("/api/hello", hello)
 	muxie.HandleFunc("/api/topoverall", routes.TopOverall)
 	muxie.HandleFunc("/api/topoverall/{num}", routes.TopOverall)
-	muxie.PathPrefix("/").Handler(http.FileServer(http.Dir("./" + frontendFiles)))
-	http.Handle("/", muxie)
+	//muxie.PathPrefix("/").Handler(http.FileServer(http.Dir("./" + frontendFiles)))
+	//http.Handle("/", muxie)
 
 	//Check if we want to run loads at startup...
 	doLoads := flag.Bool("doloads", false, "Run initial loads for loading teams, players, stats.")
@@ -49,20 +49,20 @@ func main() {
 		db.CreateTable(&models.Team{})
 
 		fmt.Println("Loading all players....")
-		go jobs.LoadAllPlayers(10)
+		go jobs.LoadAllPlayers(100)
 		fmt.Println("Loading all teams... ")
 		go jobs.LoadAllTeams()
 		fmt.Println("Loading all stats... ")
-		go jobs.LoadAllPlayerStats(10)
+		go jobs.LoadAllPlayerStats(100)
 	}
 
 	log.Printf("Starting server on :%s", httpPort)
 	if viper.Get("db.driver") == "mysql" {
 		log.Printf("Using database %s:%s", viper.GetString("db.host"), viper.GetString("db.port"))
-	}else{
+	} else {
 		log.Println("Using sqlite3 db: demspirals.go")
 	}
-	
+
 	log.Fatal(http.ListenAndServe(":"+httpPort, muxie))
 }
 
