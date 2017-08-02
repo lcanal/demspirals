@@ -7,9 +7,9 @@ import (
 	"strconv"
 
 	"github.com/buger/jsonparser"
-	"github.com/lcanal/demspirals/loader"
-	"github.com/lcanal/demspirals/models"
-	"github.com/lcanal/demspirals/routes"
+	"github.com/lcanal/demspirals/backend/loader"
+	"github.com/lcanal/demspirals/backend/models"
+	"github.com/lcanal/demspirals/backend/routes"
 	"github.com/spf13/viper"
 )
 
@@ -127,8 +127,10 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 			data,
 			func(player []byte, dataType jsonparser.ValueType, offset int, err error) {
 				pid, _ := jsonparser.GetString(player, "player_id")
-				receptions, _ := jsonparser.GetInt(player, "receptions")
+				gamesplayed, _ := jsonparser.GetInt(player, "games_played")
 
+				//Receptions
+				receptions, _ := jsonparser.GetInt(player, "receptions")
 				receptionyards, _ := jsonparser.GetInt(player, "reception_yards")
 				receptiontargets, _ := jsonparser.GetInt(player, "reception_targets")
 				receptionyards10p, _ := jsonparser.GetInt(player, "reception_yards_10_plus")
@@ -136,6 +138,8 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 				receptionyards30p, _ := jsonparser.GetInt(player, "reception_yards_30_plus")
 				receptionyards40p, _ := jsonparser.GetInt(player, "reception_yards_40_plus")
 				receptionyards50p, _ := jsonparser.GetInt(player, "reception_yards_50_plus")
+
+				//Rush
 				rushyards, _ := jsonparser.GetInt(player, "rush_yards")
 				rushattempts, _ := jsonparser.GetInt(player, "rush_attempts")
 				rushyards10p, _ := jsonparser.GetInt(player, "rush_yards_10_plus")
@@ -143,13 +147,26 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 				rushyards30p, _ := jsonparser.GetInt(player, "rush_yards_30_plus")
 				rushyards40p, _ := jsonparser.GetInt(player, "rush_yards_40_plus")
 				rushyards50p, _ := jsonparser.GetInt(player, "rush_yards_50_plus")
+
+				//Pass
+				passyards, _ := jsonparser.GetInt(player, "pass_yards")
+				passattempts, _ := jsonparser.GetInt(player, "pass_attempts")
+				passyards10p, _ := jsonparser.GetInt(player, "pass_yards_10_plus")
+				passyards20p, _ := jsonparser.GetInt(player, "pass_yards_20_plus")
+				passyards30p, _ := jsonparser.GetInt(player, "pass_yards_30_plus")
+				passyards40p, _ := jsonparser.GetInt(player, "pass_yards_40_plus")
+				passyards50p, _ := jsonparser.GetInt(player, "pass_yards_50_plus")
+
+				//TDs
 				touchdownpasses, _ := jsonparser.GetInt(player, "touchdown_passes")
 				touchdownrushes, _ := jsonparser.GetInt(player, "touchdown_rushes")
 
+				//Fumbles
 				fumbles, _ := jsonparser.GetInt(player, "fumbles")
 
 				newStat := models.Stat{
 					PID:               pid,
+					Gamesplayed:       gamesplayed,
 					Receptions:        receptions,
 					Receptionyards:    receptionyards,
 					Receptiontargets:  receptiontargets,
@@ -165,6 +182,13 @@ func LoadAllPlayerStats(MAXPAGECOUNT int) {
 					Rushyards30p:      rushyards30p,
 					Rushyards40p:      rushyards40p,
 					Rushyards50p:      rushyards50p,
+					Passyards:         passyards,
+					Passattempts:      passattempts,
+					Passyards10p:      passyards10p,
+					Passyards20p:      passyards20p,
+					Passyards30p:      passyards30p,
+					Passyards40p:      passyards40p,
+					Passyards50p:      passyards50p,
 					Touchdownpasses:   touchdownpasses,
 					Touchdownrushes:   touchdownrushes,
 					Fumbles:           fumbles,

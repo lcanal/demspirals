@@ -50,12 +50,6 @@
   revision = "1c35d901db3da928c72a72d8458480cc9ade058f"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/lcanal/demspirals"
-  packages = ["jobs","loader","models","routes"]
-  revision = "c561c8bdba616d0828d7bfb1f48b0135a653fbd5"
-
-[[projects]]
   name = "github.com/magiconair/properties"
   packages = ["."]
   revision = "be5ece7dd465ab0765a9682137865547526d1dfb"
@@ -136,6 +130,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ed61eaa9d8631b603d38b10fdd44f870f7483c62748e07153c9d8eed4d35fb6f"
+  inputs-digest = "076a5b86785eea9636d6bb93238e6100d2d90f65797510eef5e861b70a938b7c"
   solver-name = "gps-cdcl"
   solver-version = 1

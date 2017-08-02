@@ -9,8 +9,8 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/lcanal/demspirals/loader"
-	"github.com/lcanal/demspirals/models"
+	"github.com/lcanal/demspirals/backend/loader"
+	"github.com/lcanal/demspirals/backend/models"
 )
 
 //TopOverall returnes a cached sorted or does a live sort of the top 10 players

@@ -25,7 +25,7 @@ And install necessary depenencies for both Go and NodeJS. Make sure dep is in yo
 
     $ npm install
 
-To start a development instance with hotreloading on the frontend side:
+To start a development instance with live reloading on the frontend side:
 
     $ npm start
 
@@ -63,3 +63,15 @@ In order to run this app you'll need:
 ### Settings
 
 By default demspirals tries to look in its current directory and then in the config/ directory for a setting file named **settings**. Settings can be in YAML,TOML or JSON format. A sample json formatted file is provided in **config/settings.json**
+
+
+## Running
+### Load Options
+
+Loads are *currently* done in a "load once, load manually" fashion. Only available as startup flags. Add in a -h to see what the most up to date flag options are:
+
+	Usage of ./backend:
+	  -doloads
+        Run initial loads for loading teams, players, stats.
+	  -droptables
+        Drop tables. Must be set along with doloads to run.`

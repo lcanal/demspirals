@@ -7,10 +7,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/lcanal/demspirals/jobs"
-	"github.com/lcanal/demspirals/loader"
-	"github.com/lcanal/demspirals/models"
-	"github.com/lcanal/demspirals/routes"
+	"github.com/lcanal/demspirals/backend/jobs"
+	"github.com/lcanal/demspirals/backend/loader"
+	"github.com/lcanal/demspirals/backend/models"
+	"github.com/lcanal/demspirals/backend/routes"
 	"github.com/spf13/viper"
 )
 
