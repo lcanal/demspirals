@@ -72,7 +72,7 @@ func configRead(configName string) (string, string) {
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("config")
 
-	viper.SetDefault("frontendFiles", "client/build")
+	viper.SetDefault("frontendFiles", "frontend")
 	viper.SetDefault("httpPort", "8080")
 
 	err := viper.ReadInConfig()
