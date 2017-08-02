@@ -2,11 +2,15 @@ package loader
 
 import (
 	"database/sql"
+	"encoding/gob"
 	"fmt"
 	"log"
+	"os"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql" // MySQL Driver for GORM
+	cache "github.com/patrickmn/go-cache"
 	"github.com/spf13/viper"
 )
 
@@ -36,4 +40,46 @@ func GormConnectDB() *gorm.DB {
 		log.Fatalf("Error connecting gorm to db: %s\n", err.Error())
 	}
 	return db
+}
+
+//ReadFromCache reads from cachestore using the key
+func ReadFromCache(key string) (interface{}, bool) {
+	var cachedobjs map[string]cache.Item
+
+	f, err := os.Open("cache/playerstats")
+	if err != nil {
+		log.Printf("Error opening cache file %s:%v\n", "/tmp/cache", err)
+		return nil, false
+	}
+	gob.Register(cachedobjs)
+	dec := gob.NewDecoder(f)
+	err = dec.Decode(&cachedobjs)
+	if err != nil {
+		log.Printf("Error decoding file:%s\n", err.Error())
+		return nil, false
+	}
+	c := cache.NewFrom(5*time.Minute, 10*time.Minute, cachedobjs)
+
+	return c.Get(key)
+}
+
+//WriteToCache writes to cachestore (file) based on key.
+func WriteToCache(key string, obj interface{}) {
+	c := cache.New(5*time.Minute, 10*time.Minute)
+	c.Set(key, obj, cache.DefaultExpiration)
+
+	f, err := os.Create("cache/playerstats")
+	if err != nil {
+		log.Printf("Error making cache file %s:%s", "/tmp/cache", err.Error())
+		return
+	}
+
+	//gob.Register(obj)
+	enc := gob.NewEncoder(f)
+	err = enc.Encode(c.Items())
+	if err != nil {
+		log.Printf("Error encoding var: %s", err.Error())
+		return
+	}
+	f.Close()
 }

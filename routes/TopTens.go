@@ -11,20 +11,25 @@ import (
 	"github.com/lcanal/demspirals/models"
 )
 
-//TopTen test function
+//TopTen returnes a cached sorted or does a live sort of the top 10 players
 func TopTen(w http.ResponseWriter, r *http.Request) {
+
+	jsonPlayers, found := loader.ReadFromCache("toptenplayers")
+	if found {
+		fmt.Fprintf(w, string(jsonPlayers.([]byte)))
+		return
+	}
+
 	db := loader.GormConnectDB()
-	//Just grab any ten for now
 	var players []models.Player
 	var sortedPlayers []models.Player
 
 	//db.Find(&players)
 	db.Preload("Team").Find(&players)
-	db.Preload("Stats").Find(&players)
-
+	db.Preload("Stats").Find(&players) //Slowness culprit
 	sort.Sort(ByStats(players))
 
-	for index := 0; index < 10; index++ {
+	for index := 0; index < 20; index++ {
 		sortedPlayers = append(sortedPlayers, players[index])
 	}
 
@@ -34,6 +39,8 @@ func TopTen(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintf(w, string(b))
+
+	loader.WriteToCache("toptenplayers", b)
 }
 
 type ByStats []models.Player
