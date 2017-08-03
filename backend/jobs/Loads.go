@@ -109,96 +109,20 @@ func LoadAllTeams() {
 //LoadAllPlayerStats print player stas
 func LoadAllPlayerStats(MAXPAGECOUNT int) {
 	stats := make(map[string]models.Stat)
+	//fstats := make(map[string]models.FantasyStat)
 
 	for currentPage := 1; currentPage < MAXPAGECOUNT; currentPage++ {
-		apiBase := viper.GetString("apiBaseURL") + "/football/nfl/player_season_stats?interval_type=regularseason&season_id=nfl-2016-2017" + "&per_page=40&page="
-		apiPagedURL := apiBase + strconv.Itoa(currentPage)
+		//apiBase := viper.GetString("apiBaseURL") + "/football/nfl/player_season_stats?interval_type=regularseason&season_id=nfl-2016-2017" + "&per_page=40&page="
+		//apiPagedURL := apiBase + strconv.Itoa(currentPage)
 
-		data, _ := ioutil.ReadAll(routes.CallAPI(apiPagedURL))
+		/*data, _ := ioutil.ReadAll(routes.CallAPI(apiPagedURL))
 		_, _, _, err := jsonparser.Get(data, "player_season_stats")
 		if err != nil {
 			fmt.Printf("Ended  stats load at page %d\n", currentPage)
 			break
-		}
+		}*/
 
-		//fmt.Printf("Loading player stats page %d\n", currentPage)
-
-		jsonparser.ArrayEach(
-			data,
-			func(player []byte, dataType jsonparser.ValueType, offset int, err error) {
-				pid, _ := jsonparser.GetString(player, "player_id")
-				gamesplayed, _ := jsonparser.GetInt(player, "games_played")
-
-				//Receptions
-				receptions, _ := jsonparser.GetInt(player, "receptions")
-				receptionyards, _ := jsonparser.GetInt(player, "reception_yards")
-				receptiontargets, _ := jsonparser.GetInt(player, "reception_targets")
-				receptionyards10p, _ := jsonparser.GetInt(player, "reception_yards_10_plus")
-				receptionyards20p, _ := jsonparser.GetInt(player, "reception_yards_20_plus")
-				receptionyards30p, _ := jsonparser.GetInt(player, "reception_yards_30_plus")
-				receptionyards40p, _ := jsonparser.GetInt(player, "reception_yards_40_plus")
-				receptionyards50p, _ := jsonparser.GetInt(player, "reception_yards_50_plus")
-
-				//Rush
-				rushyards, _ := jsonparser.GetInt(player, "rush_yards")
-				rushattempts, _ := jsonparser.GetInt(player, "rush_attempts")
-				rushyards10p, _ := jsonparser.GetInt(player, "rush_yards_10_plus")
-				rushyards20p, _ := jsonparser.GetInt(player, "rush_yards_20_plus")
-				rushyards30p, _ := jsonparser.GetInt(player, "rush_yards_30_plus")
-				rushyards40p, _ := jsonparser.GetInt(player, "rush_yards_40_plus")
-				rushyards50p, _ := jsonparser.GetInt(player, "rush_yards_50_plus")
-
-				//Pass
-				passyards, _ := jsonparser.GetInt(player, "pass_yards")
-				passattempts, _ := jsonparser.GetInt(player, "pass_attempts")
-				passyards10p, _ := jsonparser.GetInt(player, "pass_yards_10_plus")
-				passyards20p, _ := jsonparser.GetInt(player, "pass_yards_20_plus")
-				passyards30p, _ := jsonparser.GetInt(player, "pass_yards_30_plus")
-				passyards40p, _ := jsonparser.GetInt(player, "pass_yards_40_plus")
-				passyards50p, _ := jsonparser.GetInt(player, "pass_yards_50_plus")
-
-				//TDs
-				touchdownpasses, _ := jsonparser.GetInt(player, "touchdown_passes")
-				touchdownrushes, _ := jsonparser.GetInt(player, "touchdown_rushes")
-
-				//Fumbles
-				fumbles, _ := jsonparser.GetInt(player, "fumbles")
-
-				newStat := models.Stat{
-					PID:               pid,
-					Gamesplayed:       gamesplayed,
-					Receptions:        receptions,
-					Receptionyards:    receptionyards,
-					Receptiontargets:  receptiontargets,
-					Receptionyards10p: receptionyards10p,
-					Receptionyards20p: receptionyards20p,
-					Receptionyards30p: receptionyards30p,
-					Receptionyards40p: receptionyards40p,
-					Receptionyards50p: receptionyards50p,
-					Rushyards:         rushyards,
-					Rushattempts:      rushattempts,
-					Rushyards10p:      rushyards10p,
-					Rushyards20p:      rushyards20p,
-					Rushyards30p:      rushyards30p,
-					Rushyards40p:      rushyards40p,
-					Rushyards50p:      rushyards50p,
-					Passyards:         passyards,
-					Passattempts:      passattempts,
-					Passyards10p:      passyards10p,
-					Passyards20p:      passyards20p,
-					Passyards30p:      passyards30p,
-					Passyards40p:      passyards40p,
-					Passyards50p:      passyards50p,
-					Touchdownpasses:   touchdownpasses,
-					Touchdownrushes:   touchdownrushes,
-					Fumbles:           fumbles,
-				}
-
-				stats[pid] = newStat
-			},
-			"player_season_stats",
-		)
-
+		//NEW API SOURCE
 	}
 
 	//Save all records to DB once stats have been obtained.

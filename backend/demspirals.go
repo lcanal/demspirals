@@ -49,11 +49,11 @@ func main() {
 		db.CreateTable(&models.Team{})
 
 		fmt.Println("Loading all players....")
-		go jobs.LoadAllPlayers(100)
+		go jobs.LoadAllPlayers(10)
 		fmt.Println("Loading all teams... ")
 		go jobs.LoadAllTeams()
 		fmt.Println("Loading all stats... ")
-		go jobs.LoadAllPlayerStats(100)
+		go jobs.LoadAllPlayerStats(10)
 	}
 
 	log.Printf("Starting server on :%s", httpPort)
