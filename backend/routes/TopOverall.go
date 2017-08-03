@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"sort"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -35,7 +34,7 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 
 	//db.Find(&players)
 	db.Preload("Team").Preload("Stats").Find(&players)
-	sort.Sort(ByStats(players))
+	//sort.Sort(ByStats(players))
 
 	for index := start; index < num; index++ {
 		sortedPlayers = append(sortedPlayers, players[index])
@@ -52,7 +51,7 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 }
 
 //ByStats is meant to be an interface to golang's sort function.
-type ByStats []models.Player
+/*type ByStats []models.Player
 
 func (a ByStats) Len() int { return len(a) }
 
@@ -62,4 +61,4 @@ func (a ByStats) Less(i, j int) bool {
 	sumI := a[i].Stats.Receptions + a[i].Stats.Rushattempts
 	sumJ := a[j].Stats.Receptions + a[j].Stats.Rushattempts
 	return sumI > sumJ
-}
+}*/

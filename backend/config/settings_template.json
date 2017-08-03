@@ -1,9 +1,10 @@
 {
     "httpPort" : "8080",
-    "apiBaseURL" : "https://api.stattleship.com",
+    "apiBaseURL" : "https://api.mysportsfeeds.com",
     "frontendFiles": "frontend",
     "creds" : {
-        "accessToken" : ""
+        "user" : "",
+        "pass" : ""
     },    
     "db": {
         "host" : "",

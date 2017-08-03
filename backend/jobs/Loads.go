@@ -1,10 +1,9 @@
 package jobs
 
 import (
-	"fmt"
+	"encoding/json"
 	"io/ioutil"
 	"log"
-	"strconv"
 
 	"github.com/buger/jsonparser"
 	"github.com/lcanal/demspirals/backend/loader"
@@ -14,43 +13,45 @@ import (
 )
 
 //LoadAllPlayers grabs full team roster
-func LoadAllPlayers(MAXPAGECOUNT int) {
+func LoadAllPlayers() {
+	seasonKey := "2017-regular"
 	players := make(map[string]models.Player)
+	activePlayersEndPoint := viper.GetString("apiBaseURL") + "/v1.1/pull/nfl/" + seasonKey + "/active_players.json"
 
-	for currentPage := 1; currentPage < MAXPAGECOUNT; currentPage++ {
-		apiBase := viper.GetString("apiBaseURL") + "/football/nfl/rosters" + "?per_page=40&page="
-		apiPagedURL := apiBase + strconv.Itoa(currentPage)
-
-		data, _ := ioutil.ReadAll(routes.CallAPI(apiPagedURL))
-		_, _, _, err := jsonparser.Get(data, "players")
-		if err != nil {
-			fmt.Printf("Ended player load at page %d\n", currentPage)
-			break
-		}
-
-		jsonparser.ArrayEach(
-			data,
-			func(player []byte, dataType jsonparser.ValueType, offset int, err error) {
-				playername, _ := jsonparser.GetString(player, "name")
-				playerposition, _ := jsonparser.GetString(player, "position_name")
-				playerpos, _ := jsonparser.GetString(player, "position_abbreviation")
-				playerslug, _ := jsonparser.GetString(player, "slug")
-				playerid, _ := jsonparser.GetString(player, "id")
-				playertid, _ := jsonparser.GetString(player, "team_id")
-
-				newPlayer := models.Player{
-					ID:       playerid,
-					Slug:     playerslug,
-					Name:     playername,
-					Position: playerposition,
-					Pos:      playerpos,
-					TeamID:   playertid,
-				}
-				players[playerslug] = newPlayer
-			},
-			"players",
-		)
+	data, err := ioutil.ReadAll(routes.CallAPI(activePlayersEndPoint))
+	if err != nil {
+		log.Printf("Error loading url '%s': %s", activePlayersEndPoint, err.Error())
+		return
 	}
+
+	activePlayers, _, _, _ := jsonparser.Get(data, "activeplayers")
+
+	jsonparser.ArrayEach(
+		activePlayers,
+		func(playerTeamTuple []byte, dataType jsonparser.ValueType, offset int, err error) {
+			var newPlayer models.Player
+			var newTeam models.Team
+			player, _, _, _ := jsonparser.Get(playerTeamTuple, "player")
+			team, _, _, _ := jsonparser.Get(playerTeamTuple, "team")
+
+			errUn := json.Unmarshal(player, &newPlayer)
+			if errUn != nil {
+				log.Printf("Error converting json to player object: %s\n", errUn.Error())
+				return
+			}
+			errUn = json.Unmarshal(team, &newTeam)
+			if errUn != nil {
+				log.Printf("Error converting json to team object: %s\n", errUn.Error())
+				return
+			}
+
+			newPlayer.Team = newTeam
+
+			log.Fatalf("Player: %v", newPlayer)
+			log.Fatalf("Team : %v\n", newTeam)
+		},
+		"playerentry",
+	)
 
 	//Save all records to DB once players have been obtained.
 	db := loader.GormConnectDB()
@@ -63,7 +64,7 @@ func LoadAllPlayers(MAXPAGECOUNT int) {
 }
 
 //LoadAllTeams Loads team stats. Assumes a single page call.
-func LoadAllTeams() {
+/*func LoadAllTeams() {
 	teams := make(map[string]models.Team)
 	apiPagedURL := viper.GetString("apiBaseURL") + "/football/nfl/teams?per_page=40"
 	data, _ := ioutil.ReadAll(routes.CallAPI(apiPagedURL))
@@ -104,7 +105,7 @@ func LoadAllTeams() {
 		}
 	}
 	log.Printf("Finished loading %d teams", len(teams))
-}
+}*/
 
 //LoadAllPlayerStats print player stas
 func LoadAllPlayerStats(MAXPAGECOUNT int) {

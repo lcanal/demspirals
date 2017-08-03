@@ -44,16 +44,16 @@ func main() {
 		}
 
 		fmt.Println("Creating new tables...")
-		db.CreateTable(&models.Stat{})
+		//db.CreateTable(&models.Stat{})
 		db.CreateTable(&models.Player{})
-		db.CreateTable(&models.Team{})
+		//db.CreateTable(&models.Team{})
 
 		fmt.Println("Loading all players....")
-		go jobs.LoadAllPlayers(10)
-		fmt.Println("Loading all teams... ")
-		go jobs.LoadAllTeams()
-		fmt.Println("Loading all stats... ")
-		go jobs.LoadAllPlayerStats(10)
+		go jobs.LoadAllPlayers()
+		//fmt.Println("Loading all teams... ")
+		//go jobs.LoadAllTeams()
+		//fmt.Println("Loading all stats... ")
+		//go jobs.LoadAllPlayerStats()
 	}
 
 	log.Printf("Starting server on :%s", httpPort)
@@ -85,9 +85,9 @@ func configRead(configName string) (string, string) {
 		log.Fatal("Error: No api base url set (\"apiBaseURL\")")
 	}
 
-	accessToken := viper.GetString("creds.accessToken")
+	accessToken := viper.GetString("creds.user")
 	if len(accessToken) <= 0 {
-		log.Fatal("Error: No access token set (\"accessToken\")")
+		log.Fatal("Error: No access token set (\"creds.user\")")
 	}
 
 	dbHost := viper.GetString("db.host")

@@ -2,12 +2,18 @@ package models
 
 //Player is the type that holds all player information
 type Player struct {
-	ID       string `json:"id"`
-	Slug     string `json:"slug"`
-	Name     string `json:"name"`
-	Position string `json:"position"`
-	Pos      string `json:"pos"`
-	TeamID   string `json:"teamid"`
-	Team     Team   `json:"team" gorm:"ForeignKey:TeamID;AssociationForeignKey:ID"`
-	Stats    Stat   `json:"stats" gorm:"ForeignKey:ID;AssociationForeignKey:PID"`
+	ID               string
+	LastName         string
+	FirstName        string
+	JerseyNumber     string
+	Position         string
+	Height           string
+	Weight           string
+	BirthDate        string
+	Age              string
+	BirthCity        string
+	BirthCountry     string
+	IsRookie         string
+	officialImageSrc string
+	Team             Team
 }
