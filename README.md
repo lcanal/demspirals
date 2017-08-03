@@ -74,4 +74,4 @@ Loads are *currently* done in a "load once, load manually" fashion. Only availab
 	  -doloads
         Run initial loads for loading teams, players, stats.
 	  -droptables
-        Drop tables. Must be set along with doloads to run.`
+        Drop tables. Must be set along with doloads to run.
