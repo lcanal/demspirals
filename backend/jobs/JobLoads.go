@@ -21,7 +21,7 @@ func LoadAllPlayerData() {
 
 	seasonKey := "2016-regular"
 	apiBase := viper.GetString("apiBaseURL") + "/v1.1/pull/nfl/"
-	activePlayersEndPoint := apiBase + seasonKey + "/cumulative_player_stats.json?player=Tom-Brady-7549"
+	activePlayersEndPoint := apiBase + seasonKey + "/cumulative_player_stats.json?limit=25"
 
 	//log.Printf("Endpoint URL: %s", activePlayersEndPoint)
 
@@ -88,7 +88,7 @@ func CalculatePoints() {
 	pointValueFile.SetConfigName("pointvalues")
 	pointValueFile.AddConfigPath(".")
 	pointValueFile.AddConfigPath("config")
-	pointModel := "espn"
+	pointModel := "espn."
 
 	err := pointValueFile.ReadInConfig()
 	if err != nil {
@@ -97,12 +97,15 @@ func CalculatePoints() {
 
 	db := loader.GormConnectDB()
 
-	//db.LogMode(true)
+	db.LogMode(true)
 	var players []models.Player
 	var points []models.Point
 
 	log.Println("Reading stats from database...")
 	db.Preload("Team").Preload("Stats").Find(&players)
+	log.Printf("Saving stats to database...\n")
+	db.DropTableIfExists(&models.Point{})
+	db.CreateTable(&models.Point{})
 
 	for _, player := range players {
 		for _, stat := range player.Stats {
@@ -119,22 +122,16 @@ func CalculatePoints() {
 			switch stat.Name {
 			case "RushYards":
 				newStatFantasyPoints.Value = newStatFantasyPoints.StatNum * pointValueFile.GetFloat64(pointModel+"RY10")
-
 			default:
 				newStatFantasyPoints.Value = 0
 			}
-			points = append(points, newStatFantasyPoints)
+
+			if db.Create(&newStatFantasyPoints).Error != nil {
+				db.Save(&newStatFantasyPoints)
+			}
 		}
 	}
 
-	log.Printf("Saving stats to database...\n")
-	db.DropTableIfExists(&models.Point{})
-	db.CreateTable(&models.Point{})
-	for _, point := range points {
-		if db.Create(&point).Error != nil {
-			db.Save(&point)
-		}
-	}
 	log.Printf("Finished writing %d fantasy point rows\n", len(points))
 
 }
