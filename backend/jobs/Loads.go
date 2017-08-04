@@ -37,7 +37,6 @@ func LoadAllPlayersAndTeams() {
 			var newPlayer models.Player
 			var newTeam models.Team
 
-			log.Printf("Dragons be here2")
 			//Individual Player
 			player, _, _, _ := jsonparser.Get(playerTeamTuple, "player")
 			errUn := json.Unmarshal(player, &newPlayer)
@@ -64,14 +63,6 @@ func LoadAllPlayersAndTeams() {
 				}
 			}
 
-			//Stats for said player
-			/*stats, _, _, errGetS := jsonparser.Get(playerTeamTuple, "stats")
-			if errGetS != nil {
-
-				log.Printf("Error converting json to team object: %s\nObject: %s", errUn.Error(), string(team))
-
-			}*/
-
 			newPlayer.Team = newTeam
 			newPlayer.TeamID = newTeam.ID
 			newPlayer.MapStats(playerTeamTuple)
@@ -90,7 +81,7 @@ func LoadAllPlayersAndTeams() {
 	//Load all teams and players at once, then save them one by one to the DB.
 	//Note, one by one saving is due to ORM limitation.
 	db := loader.GormConnectDB()
-	db.LogMode(true)
+	//db.LogMode(true)
 	for _, team := range teams {
 		if db.Create(&team).Error != nil {
 			db.Save(&team)
@@ -103,6 +94,14 @@ func LoadAllPlayersAndTeams() {
 		if db.Create(&player).Error != nil {
 			db.Save(&player)
 		}
+
+		//		var blankStat []models.Stat
+
+		for _, stat := range player.Stats {
+			db.Create(stat)
+		}
+
 	}
 	log.Printf("Finished loading %d players", len(players))
+
 }

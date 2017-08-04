@@ -1,7 +1,7 @@
 package models
 
 import (
-	"fmt"
+	"encoding/json"
 	"log"
 
 	"github.com/buger/jsonparser"
@@ -23,18 +23,26 @@ type Player struct {
 	IsRookie         string
 	officialImageSrc string
 	TeamID           string
-	Team             Team `gorm:"ForeignKey:ID"`
-	//Stats    Stat   `json:"stats" gorm:"ForeignKey:ID;AssociationForeignKey:PID"`
+	Team             Team   `gorm:"ForeignKey:ID"`
+	Stats            []Stat `json:"stats" gorm:"ForeignKey:ID;AssociationForeignKey:PID"`
 }
 
-//MapStats takes in set of objects, maps each to player's Stats property
+//MapStats takes in set of objects, maps each to player's Stats property. Flatten stats object from api source.
 func (p *Player) MapStats(stats []byte) {
-	fmt.Printf("Object: %s", string(stats))
 	err := jsonparser.ObjectEach(
 		stats,
 		func(key []byte, value []byte, dataType jsonparser.ValueType, offset int) error {
-			fmt.Printf("Key Is: %s  --- Value is %s\n", string(key), string(value))
-			return nil
+			//var statsset map[string]string
+			var newStat Stat
+			err := json.Unmarshal(value, &newStat)
+			if err != nil {
+				return err
+			}
+
+			newStat.Name = string(key)
+			newStat.PID = p.ID
+			p.Stats = append(p.Stats, newStat)
+			return err
 		},
 		"stats",
 	)

@@ -44,7 +44,7 @@ func main() {
 		}
 
 		fmt.Println("Creating new tables...")
-		//db.CreateTable(&models.Stat{})
+		db.CreateTable(&models.Stat{})
 		db.CreateTable(&models.Player{})
 		db.CreateTable(&models.Team{})
 
