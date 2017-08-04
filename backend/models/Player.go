@@ -15,5 +15,7 @@ type Player struct {
 	BirthCountry     string
 	IsRookie         string
 	officialImageSrc string
-	Team             Team
+	TeamID           string
+	Team             Team `gorm:"ForeignKey:ID"`
+	//Stats    Stat   `json:"stats" gorm:"ForeignKey:ID;AssociationForeignKey:PID"`
 }

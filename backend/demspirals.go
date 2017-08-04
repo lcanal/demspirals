@@ -46,12 +46,10 @@ func main() {
 		fmt.Println("Creating new tables...")
 		//db.CreateTable(&models.Stat{})
 		db.CreateTable(&models.Player{})
-		//db.CreateTable(&models.Team{})
+		db.CreateTable(&models.Team{})
 
-		fmt.Println("Loading all players....")
-		go jobs.LoadAllPlayers()
-		//fmt.Println("Loading all teams... ")
-		//go jobs.LoadAllTeams()
+		fmt.Println("Loading all players and teams....")
+		go jobs.LoadAllPlayersAndTeams()
 		//fmt.Println("Loading all stats... ")
 		//go jobs.LoadAllPlayerStats()
 	}

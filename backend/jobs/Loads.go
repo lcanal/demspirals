@@ -12,10 +12,12 @@ import (
 	"github.com/spf13/viper"
 )
 
-//LoadAllPlayers grabs full team roster
-func LoadAllPlayers() {
-	seasonKey := "2017-regular"
+//LoadAllPlayersAndTeams grabs full team roster
+func LoadAllPlayersAndTeams() {
 	players := make(map[string]models.Player)
+	teams := make(map[string]models.Team)
+
+	seasonKey := "2017-regular"
 	activePlayersEndPoint := viper.GetString("apiBaseURL") + "/v1.1/pull/nfl/" + seasonKey + "/active_players.json"
 
 	data, err := ioutil.ReadAll(routes.CallAPI(activePlayersEndPoint))
@@ -32,80 +34,59 @@ func LoadAllPlayers() {
 			var newPlayer models.Player
 			var newTeam models.Team
 			player, _, _, _ := jsonparser.Get(playerTeamTuple, "player")
-			team, _, _, _ := jsonparser.Get(playerTeamTuple, "team")
-
 			errUn := json.Unmarshal(player, &newPlayer)
 			if errUn != nil {
 				log.Printf("Error converting json to player object: %s\n", errUn.Error())
 				return
 			}
-			errUn = json.Unmarshal(team, &newTeam)
-			if errUn != nil {
-				log.Printf("Error converting json to team object: %s\n", errUn.Error())
-				return
+
+			team, _, _, errGet := jsonparser.Get(playerTeamTuple, "team")
+			if errGet == nil {
+				errUn = json.Unmarshal(team, &newTeam)
+				if errUn != nil {
+					log.Printf("Error converting json to team object: %s\nObject: %s", errUn.Error(), string(team))
+					return
+				}
+			} else {
+				//No team, make empty
+				newTeam = models.Team{
+					ID:           "FA",
+					Name:         "Free Agent",
+					City:         "N/A",
+					Abbreviation: "N/A",
+				}
 			}
 
 			newPlayer.Team = newTeam
+			newPlayer.TeamID = newTeam.ID
 
-			log.Fatalf("Player: %v", newPlayer)
-			log.Fatalf("Team : %v\n", newTeam)
+			players[newPlayer.ID] = newPlayer
+			teams[newTeam.ID] = newTeam
+
+			//I realize the above line will overwrite a team again with the same team. I'm cool with this.
 		},
 		"playerentry",
 	)
 
-	//Save all records to DB once players have been obtained.
+	//Load all teams and players at once, then save them one by one to the DB.
+	//Note, one by one saving is due to ORM limitation.
 	db := loader.GormConnectDB()
+	db.LogMode(true)
+	for _, team := range teams {
+		if db.Create(&team).Error != nil {
+			db.Save(&team)
+		}
+	}
+	log.Printf("Finished loading %d teams", len(teams))
+
+	//This query both runs insert on player AND update team.
 	for _, player := range players {
-		if db.Create(player).Error != nil {
-			db.Save(player)
+		if db.Create(&player).Error != nil {
+			db.Save(&player)
 		}
 	}
 	log.Printf("Finished loading %d players", len(players))
 }
-
-//LoadAllTeams Loads team stats. Assumes a single page call.
-/*func LoadAllTeams() {
-	teams := make(map[string]models.Team)
-	apiPagedURL := viper.GetString("apiBaseURL") + "/football/nfl/teams?per_page=40"
-	data, _ := ioutil.ReadAll(routes.CallAPI(apiPagedURL))
-	_, _, _, err := jsonparser.Get(data, "teams")
-	if err != nil {
-		fmt.Printf("Error... no teams loaded!\n")
-		return
-	}
-
-	jsonparser.ArrayEach(
-		data,
-		func(team []byte, dataType jsonparser.ValueType, offset int, err error) {
-			id, _ := jsonparser.GetString(team, "id")
-			name, _ := jsonparser.GetString(team, "name")
-			nickname, _ := jsonparser.GetString(team, "nickname")
-			color, _ := jsonparser.GetString(team, "color")
-			hashtag, _ := jsonparser.GetString(team, "hashtag")
-			slug, _ := jsonparser.GetString(team, "slug")
-
-			newTeam := models.Team{
-				ID:       id,
-				Slug:     slug,
-				Name:     name,
-				Nickname: nickname,
-				Color:    color,
-				Hashtag:  hashtag,
-			}
-			teams[slug] = newTeam
-		},
-		"teams",
-	)
-
-	//Save all records to DB once teams have been obtained.
-	db := loader.GormConnectDB()
-	for _, team := range teams {
-		if db.Create(team).Error != nil {
-			db.Save(team)
-		}
-	}
-	log.Printf("Finished loading %d teams", len(teams))
-}*/
 
 //LoadAllPlayerStats print player stas
 func LoadAllPlayerStats(MAXPAGECOUNT int) {
