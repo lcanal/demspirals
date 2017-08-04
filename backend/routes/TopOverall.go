@@ -29,26 +29,26 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 
 	db := loader.GormConnectDB()
 	db.LogMode(true)
-	var players []models.Player
-	var sortedPlayers []models.Player
-	//var stats []models.Stat
 
-	//db.Find(&stats)
-	db.Preload("Team").Preload("Stats").Find(&players)
+	//var players []models.Player
+	var points []models.Point
+
+	db.Order("value desc", true).Find(&points)
+
 	//sort.Sort(ByStats(players))
 
 	/*for index := start; index < num; index++ {
 		sortedPlayers = append(sortedPlayers, players[index])
 	}*/
-	for _, player := range players {
+	/*or _, player := range players {
 		//db.Model(&player).Related(&stats)
 		//log.Fatalf("waaaa\n")
 		if player.ID == "7549" {
 			fmt.Printf("Here B Brady Bunch \n%v", player)
 		}
-	}
+	}*/
 
-	b, err := json.Marshal(sortedPlayers)
+	b, err := json.Marshal(points[:15])
 	if err != nil {
 		log.Printf("Error marshalling top players: %s", err.Error())
 	}
