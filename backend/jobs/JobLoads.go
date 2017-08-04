@@ -126,10 +126,21 @@ func CalculatePoints() {
 				newStatFantasyPoints.Value = 0
 			}
 
-			if db.Create(&newStatFantasyPoints).Error != nil {
-				db.Save(&newStatFantasyPoints)
-			}
+			points = append(points, newStatFantasyPoints)
 		}
+	}
+
+	//Create raw load strings
+	stmt := "INSERT INTO points id,created_at,updated_at,deleted_at,player_id,category,abbreviation,name,stat_num,value VALUES (?,?,?,?,?,?,?,?,?,?)"
+	rawdb := loader.ConnectDB()
+	st, _ := rawdb.Prepare(stmt)
+	for _, point := range points {
+		_, err := st.Query(point)
+		if err != nil {
+			log.Fatalf("ERR: %s", err.Error())
+			return
+		}
+		st.Exec()
 	}
 
 	log.Printf("Finished writing %d fantasy point rows\n", len(points))
