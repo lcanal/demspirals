@@ -31,6 +31,7 @@ func main() {
 	//Check if we want to run loads at startup...
 	doLoads := flag.Bool("doloads", false, "Run initial loads for loading teams, players, stats.")
 	dropTables := flag.Bool("droptables", false, "Drop tables. Must be set along with doloads to run.")
+	doStats := flag.Bool("dostats", false, "Calculate fantasy points for all players.")
 
 	flag.Parse()
 	if *doLoads {
@@ -50,6 +51,10 @@ func main() {
 
 		fmt.Println("Loading all players and teams....")
 		go jobs.LoadAllPlayerData()
+	}
+
+	if *doStats {
+		go jobs.CalculatePoints()
 	}
 
 	log.Printf("Starting server on :%s", httpPort)
