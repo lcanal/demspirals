@@ -49,9 +49,7 @@ func main() {
 		db.CreateTable(&models.Team{})
 
 		fmt.Println("Loading all players and teams....")
-		go jobs.LoadAllPlayersAndTeams()
-		//fmt.Println("Loading all stats... ")
-		//go jobs.LoadAllPlayerStats()
+		go jobs.LoadAllPlayerData()
 	}
 
 	log.Printf("Starting server on :%s", httpPort)

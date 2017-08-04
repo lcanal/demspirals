@@ -31,17 +31,17 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 	db.LogMode(true)
 	var players []models.Player
 	var sortedPlayers []models.Player
-	var stats []models.Stat
+	//var stats []models.Stat
 
-	db.Find(&stats)
-	db.Preload("Team").Find(&players)
+	//db.Find(&stats)
+	db.Preload("Team").Preload("Stats").Find(&players)
 	//sort.Sort(ByStats(players))
 
 	/*for index := start; index < num; index++ {
 		sortedPlayers = append(sortedPlayers, players[index])
 	}*/
 	for _, player := range players {
-		db.Model(&player).Related(&stats)
+		//db.Model(&player).Related(&stats)
 		//log.Fatalf("waaaa\n")
 		if player.ID == "7549" {
 			fmt.Printf("Here B Brady Bunch \n%v", player)
