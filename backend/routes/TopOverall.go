@@ -5,39 +5,47 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
-	"github.com/gorilla/mux"
 	"github.com/lcanal/demspirals/backend/loader"
 	"github.com/lcanal/demspirals/backend/models"
 )
 
 //TopOverall returnes a cached sorted or does a live sort of the top 10 players
 func TopOverall(w http.ResponseWriter, r *http.Request) {
-	var start int
+	//var start int
 
-	vars := mux.Vars(r)
+	/*vars := mux.Vars(r)
 	num, err := strconv.Atoi(vars["num"])
 	if err != nil {
 		num = 15 //Default return 15
 	}
 
-	jsonPlayers, found := loader.ReadFromCache("topoverall")
+	//Elim caching for now
+	/*jsonPlayers, found := loader.ReadFromCache("topoverall")
 	if found {
 		fmt.Fprintf(w, string(jsonPlayers.([]byte)))
 		return
-	}
+	}*/
 
 	db := loader.GormConnectDB()
+	db.LogMode(true)
 	var players []models.Player
 	var sortedPlayers []models.Player
+	var stats []models.Stat
 
-	//db.Find(&players)
-	db.Preload("Team").Preload("Stats").Find(&players)
+	db.Find(&stats)
+	db.Preload("Team").Find(&players)
 	//sort.Sort(ByStats(players))
 
-	for index := start; index < num; index++ {
+	/*for index := start; index < num; index++ {
 		sortedPlayers = append(sortedPlayers, players[index])
+	}*/
+	for _, player := range players {
+		db.Model(&player).Related(&stats)
+		//log.Fatalf("waaaa\n")
+		if player.ID == "7549" {
+			fmt.Printf("Here B Brady Bunch \n%v", player)
+		}
 	}
 
 	b, err := json.Marshal(sortedPlayers)

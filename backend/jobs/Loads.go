@@ -20,7 +20,7 @@ func LoadAllPlayersAndTeams() {
 
 	seasonKey := "2016-regular"
 	apiBase := viper.GetString("apiBaseURL") + "/v1.1/pull/nfl/"
-	activePlayersEndPoint := apiBase + seasonKey + "/cumulative_player_stats.json?player=Tom-Brady-7549"
+	activePlayersEndPoint := apiBase + seasonKey + "/cumulative_player_stats.json"
 
 	//log.Printf("Endpoint URL: %s", activePlayersEndPoint)
 
@@ -56,7 +56,7 @@ func LoadAllPlayersAndTeams() {
 			} else {
 				//No team, make empty
 				newTeam = models.Team{
-					ID:           "FA",
+					//ID:           "FA",
 					Name:         "Free Agent",
 					City:         "N/A",
 					Abbreviation: "N/A",
@@ -64,11 +64,11 @@ func LoadAllPlayersAndTeams() {
 			}
 
 			newPlayer.Team = newTeam
-			newPlayer.TeamID = newTeam.ID
+			//newPlayer.TeamID = newTeam.ID
 			newPlayer.MapStats(playerTeamTuple)
 
 			players[newPlayer.ID] = newPlayer
-			teams[newTeam.ID] = newTeam
+			//teams[newTeam.ID] = newTeam
 
 			//I realize the above line will overwrite a team again with the same team. I'm cool with this.
 		},
@@ -81,13 +81,13 @@ func LoadAllPlayersAndTeams() {
 	//Load all teams and players at once, then save them one by one to the DB.
 	//Note, one by one saving is due to ORM limitation.
 	db := loader.GormConnectDB()
-	//db.LogMode(true)
+	db.LogMode(true)
 	for _, team := range teams {
 		if db.Create(&team).Error != nil {
 			db.Save(&team)
 		}
 	}
-	log.Printf("Finished loading %d teams", len(teams))
+	log.Printf("Finished loading %d teams\n", len(teams))
 
 	//This query both runs insert on player AND update team.
 	for _, player := range players {
@@ -102,6 +102,8 @@ func LoadAllPlayersAndTeams() {
 		}
 
 	}
-	log.Printf("Finished loading %d players", len(players))
+	log.Printf("Finished loading %d players\n", len(players))
+
+	log.Printf("Done with loads.\n")
 
 }

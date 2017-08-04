@@ -23,8 +23,8 @@ type Player struct {
 	IsRookie         string
 	officialImageSrc string
 	TeamID           string
-	Team             Team   `gorm:"ForeignKey:ID"`
-	Stats            []Stat `json:"stats" gorm:"ForeignKey:ID;AssociationForeignKey:PID"`
+	Team             Team   `gorm:"ForeignKey:TeamID;AssociationForeignKey:ID"`
+	Stats            []Stat `json:"stats"`
 }
 
 //MapStats takes in set of objects, maps each to player's Stats property. Flatten stats object from api source.
@@ -40,7 +40,7 @@ func (p *Player) MapStats(stats []byte) {
 			}
 
 			newStat.Name = string(key)
-			newStat.PID = p.ID
+			newStat.PlayerID = p.ID
 			p.Stats = append(p.Stats, newStat)
 			return err
 		},
