@@ -97,7 +97,7 @@ func CalculatePoints() {
 
 	db := loader.GormConnectDB()
 
-	db.LogMode(true)
+	//db.LogMode(true)
 	var players []models.Player
 	var points []models.Point
 
@@ -127,21 +127,28 @@ func CalculatePoints() {
 			}
 
 			points = append(points, newStatFantasyPoints)
+
 		}
 	}
 
 	//Create raw load strings
-	stmt := "INSERT INTO points id,created_at,updated_at,deleted_at,player_id,category,abbreviation,name,stat_num,value VALUES (?,?,?,?,?,?,?,?,?,?)"
+	stmt := "INSERT INTO points (id,created_at,updated_at,deleted_at,player_id,category,abbreviation,name,stat_num,value) VALUES (?,?,?,?,?,?,?,?,?,?)"
 	rawdb := loader.ConnectDB()
-	st, _ := rawdb.Prepare(stmt)
-	for _, point := range points {
-		_, err := st.Query(point)
-		if err != nil {
-			log.Fatalf("ERR: %s", err.Error())
-			return
-		}
-		st.Exec()
+	st, err := rawdb.Prepare(stmt)
+	if err != nil {
+		log.Printf("Error in preparing statement: %s\n", err.Error())
+		return
 	}
+	for _, point := range points {
+		func(point models.Point) {
+			_, err := st.Exec(nil, nil, nil, nil, point.PlayerID, point.Category, point.Abbreviation, point.Name, point.StatNum, point.Value)
+			if err != nil {
+				log.Fatalf("Error executing statement %s:\n %s", stmt, err.Error())
+				return
+			}
+		}(point)
+	}
+	st.Close()
 
 	log.Printf("Finished writing %d fantasy point rows\n", len(points))
 
