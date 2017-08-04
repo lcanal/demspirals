@@ -65,27 +65,16 @@ func LoadAllPlayersAndTeams() {
 			}
 
 			//Stats for said player
-			/*stats, _, _, errGet := jsonparser.Get(playerTeamTuple, "stats")
-			if errGet == nil {
-				errUn = json.Unmarshal(team, &newTeam)
-				if errUn != nil {
-					log.Printf("Error converting json to team object: %s\nObject: %s", errUn.Error(), string(team))
-					return
-				}
-			} else {
-				//No team, make empty
-				newTeam = models.Team{
-					ID:           "FA",
-					Name:         "Free Agent",
-					City:         "N/A",
-					Abbreviation: "N/A",
-				}
-			}*/
+			/*stats, _, _, errGetS := jsonparser.Get(playerTeamTuple, "stats")
+			if errGetS != nil {
 
-			mapPlayerStats(playerTeamTuple, &players)
+				log.Printf("Error converting json to team object: %s\nObject: %s", errUn.Error(), string(team))
+
+			}*/
 
 			newPlayer.Team = newTeam
 			newPlayer.TeamID = newTeam.ID
+			newPlayer.MapStats(playerTeamTuple)
 
 			players[newPlayer.ID] = newPlayer
 			teams[newTeam.ID] = newTeam
@@ -116,11 +105,4 @@ func LoadAllPlayersAndTeams() {
 		}
 	}
 	log.Printf("Finished loading %d players", len(players))
-}
-
-//mapPlayerStats print player stas
-func mapPlayerStats(playerStats []byte, listOfPlayers *map[string]models.Player) {
-	//stats := make(map[string][]models.Stat)
-
-	log.Fatalf("Stats I got: %s", string(playerStats))
 }
