@@ -92,7 +92,6 @@ func LoadAllPlayerData(wg *sync.WaitGroup) {
 func CalculatePoints(wg *sync.WaitGroup) {
 	//Wait for relevant functions to finish
 	wg.Wait()
-	log.Println("Calculate points started!!")
 
 	pointValueFile := viper.New()
 	pointValueFile.SetConfigName("pointvalues")
@@ -111,7 +110,7 @@ func CalculatePoints(wg *sync.WaitGroup) {
 	var players []models.Player
 	var points []models.Point
 
-	log.Println("Reading stats from database...")
+	log.Println("Calculating fantasy points..")
 	db.Preload("Team").Preload("Stats").Find(&players)
 	log.Printf("Saving stats to database...\n")
 	db.DropTableIfExists(&models.Point{})
