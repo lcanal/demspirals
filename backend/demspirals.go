@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sync"
 
 	"github.com/gorilla/mux"
 	"github.com/lcanal/demspirals/backend/jobs"
@@ -28,12 +29,19 @@ func main() {
 	muxie.PathPrefix("/").Handler(http.FileServer(http.Dir("./" + frontendFiles)))
 	http.Handle("/", muxie)
 
-	//Check if we want to run loads at startup...
+	//Flags //////////////////////////////////////////////
 	doLoads := flag.Bool("doloads", false, "Run initial loads for loading teams, players, stats.")
 	dropTables := flag.Bool("droptables", false, "Drop tables. Must be set along with doloads to run.")
-	doStats := flag.Bool("dostats", false, "Calculate fantasy points for all players.")
+	calcPoints := flag.Bool("calcpoints", false, "Calculate fantasy points for all players.")
+	//initData := flag.Bool("initdata", false, "Initialize all of your data. Should be run when you want to completely redo and recalculate all of your data.")
+	//////////////////////////////////////////////////////
+
+	//Global waiting group to coordinate functions. Makes sure to only calc points when all
+	//Relevant functions have finished.
+	wg := new(sync.WaitGroup)
 
 	flag.Parse()
+
 	if *doLoads {
 		db := loader.GormConnectDB()
 
@@ -50,11 +58,12 @@ func main() {
 		db.CreateTable(&models.Team{})
 
 		fmt.Println("Loading all players and teams....")
-		go jobs.LoadAllPlayerData()
+		wg.Add(1) //Tell other groups waiting on functions that this one counts as a wait for
+		go jobs.LoadAllPlayerData(wg)
 	}
 
-	if *doStats {
-		go jobs.CalculatePoints()
+	if *calcPoints {
+		go jobs.CalculatePoints(wg)
 	}
 
 	log.Printf("Starting server on :%s", httpPort)

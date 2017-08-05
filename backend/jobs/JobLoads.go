@@ -2,9 +2,12 @@ package jobs
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"strconv"
+	"strings"
+	"sync"
 
 	"github.com/buger/jsonparser"
 	"github.com/lcanal/demspirals/backend/loader"
@@ -14,14 +17,14 @@ import (
 )
 
 //LoadAllPlayerData grabs full team roster
-func LoadAllPlayerData() {
+func LoadAllPlayerData(wg *sync.WaitGroup) {
 	players := make(map[string]models.Player)
 	teams := make(map[string]models.Team)
 	//stats := make(map[string][]models.Stat)
 
 	seasonKey := "2016-regular"
 	apiBase := viper.GetString("apiBaseURL") + "/v1.1/pull/nfl/"
-	activePlayersEndPoint := apiBase + seasonKey + "/cumulative_player_stats.json?limit=25"
+	activePlayersEndPoint := apiBase + seasonKey + "/cumulative_player_stats.json"
 
 	//log.Printf("Endpoint URL: %s", activePlayersEndPoint)
 
@@ -69,21 +72,28 @@ func LoadAllPlayerData() {
 	}
 	log.Printf("Finished loading %d teams\n", len(teams))
 
-	//This query both runs insert on player AND update team.
+	/*//This query both runs insert on player AND update team.
 	for _, player := range players {
 		if db.Create(&player).Error != nil {
 			db.Save(&player)
 		}
 	}
-	log.Printf("Finished loading %d players\n", len(players))
+	log.Printf("Finished loading %d players\n", len(players))*/
 
-	log.Printf("Done with loads.\n")
+	//Load into DB, add 2 more functions to wait for
+	wg.Add(2)
+	go loadPlayers(players, wg)
+	go loadStats(players, wg)
 
+	defer wg.Done()
 }
 
 //CalculatePoints points for players
-func CalculatePoints() {
-	//All players
+func CalculatePoints(wg *sync.WaitGroup) {
+	//Wait for relevant functions to finish
+	wg.Wait()
+	log.Println("Calculate points started!!")
+
 	pointValueFile := viper.New()
 	pointValueFile.SetConfigName("pointvalues")
 	pointValueFile.AddConfigPath(".")
@@ -131,25 +141,116 @@ func CalculatePoints() {
 		}
 	}
 
+	go loadPoints(points)
+
+}
+
+func loadPlayers(players map[string]models.Player, wg *sync.WaitGroup) {
 	//Create raw load strings
-	stmt := "INSERT INTO points (id,created_at,updated_at,deleted_at,player_id,category,abbreviation,name,stat_num,value) VALUES (?,?,?,?,?,?,?,?,?,?)"
+	stmt := "INSERT INTO players (id,last_name,first_name,jersey_number,position,team_id) VALUES (?,?,?,?,?,?)"
 	rawdb := loader.ConnectDB()
 	st, err := rawdb.Prepare(stmt)
 	if err != nil {
-		log.Printf("Error in preparing statement: %s\n", err.Error())
+		fmt.Printf("Error in preparing statement for saving players: %s\n", err.Error())
 		return
 	}
+	count := 0
+	for _, player := range players {
+		_, err := st.Exec(player.ID, player.LastName, player.FirstName, player.JerseyNumber, player.Position, player.TeamID)
+		if err != nil {
+			log.Fatalf("Error executing statement for saving players %s:\n %s", stmt, err.Error())
+			return
+		}
+
+		count = count + 1
+	}
+
+	log.Printf("Finished loading %d players into database.\n", len(players))
+	st.Close()
+	defer wg.Done()
+}
+
+func loadStats(players map[string]models.Player, wg *sync.WaitGroup) {
+	valueStrings := make([]string, 0)
+	valueArgs := make([]interface{}, 0)
+	rawdb := loader.ConnectDB()
+	var totalStatCount int
+
+	for _, player := range players {
+		for _, stat := range player.Stats {
+			valueStrings = append(valueStrings, "(?,?,?,?,?,?)")
+			valueArgs = append(valueArgs, nil)
+			valueArgs = append(valueArgs, stat.PlayerID)
+			valueArgs = append(valueArgs, stat.Name)
+			valueArgs = append(valueArgs, stat.Category)
+			valueArgs = append(valueArgs, stat.Abbreviation)
+			valueArgs = append(valueArgs, stat.Value)
+			totalStatCount = totalStatCount + 1
+		}
+
+		query := fmt.Sprintf("INSERT INTO stats (id,player_id,name,category,abbreviation,value) VALUES %s", strings.Join(valueStrings, ","))
+		_, err := rawdb.Exec(query, valueArgs...)
+		if err != nil {
+			log.Fatalf("Error executing statement for loading stats: %s:\n %s", query, err.Error())
+			return
+		}
+		valueStrings = make([]string, 0)
+		valueArgs = make([]interface{}, 0)
+	}
+	log.Printf("Finished loading %d stats into database.\n", totalStatCount)
+	defer wg.Done()
+}
+
+func loadPoints(points []models.Point) {
+	valueStrings := make([]string, 0)
+	valueArgs := make([]interface{}, 0)
+	rawdb := loader.ConnectDB()
+	var totalPointCount int
+
 	for _, point := range points {
-		func(point models.Point) {
-			_, err := st.Exec(nil, nil, nil, nil, point.PlayerID, point.Category, point.Abbreviation, point.Name, point.StatNum, point.Value)
+		//Chunk them 25 at a time.
+		if totalPointCount%24 == 0 && totalPointCount != 0 {
+			valueStrings = append(valueStrings, "(?,?,?,?,?,?,?,?,?,?)")
+			valueArgs = append(valueArgs, nil)
+			valueArgs = append(valueArgs, nil)
+			valueArgs = append(valueArgs, nil)
+			valueArgs = append(valueArgs, nil)
+			valueArgs = append(valueArgs, point.PlayerID)
+			valueArgs = append(valueArgs, point.Category)
+			valueArgs = append(valueArgs, point.Abbreviation)
+			valueArgs = append(valueArgs, point.Name)
+			valueArgs = append(valueArgs, point.StatNum)
+			valueArgs = append(valueArgs, point.Value)
+
+			query := fmt.Sprintf("INSERT INTO points (id,created_at,updated_at,deleted_at,player_id,category,abbreviation,name,stat_num,value) VALUES %s", strings.Join(valueStrings, ","))
+			_, err := rawdb.Exec(query, valueArgs...)
 			if err != nil {
-				log.Fatalf("Error executing statement %s:\n %s", stmt, err.Error())
+				log.Fatalf("Error executing statement for loading pointsz: %s:\n %s", query, err.Error())
 				return
 			}
-		}(point)
+			valueStrings = make([]string, 0)
+			valueArgs = make([]interface{}, 0)
+		} else {
+			valueStrings = append(valueStrings, "(?,?,?,?,?,?,?,?,?,?)")
+			valueArgs = append(valueArgs, nil)
+			valueArgs = append(valueArgs, nil)
+			valueArgs = append(valueArgs, nil)
+			valueArgs = append(valueArgs, nil)
+			valueArgs = append(valueArgs, point.PlayerID)
+			valueArgs = append(valueArgs, point.Category)
+			valueArgs = append(valueArgs, point.Abbreviation)
+			valueArgs = append(valueArgs, point.Name)
+			valueArgs = append(valueArgs, point.StatNum)
+			valueArgs = append(valueArgs, point.Value)
+		}
+		totalPointCount = totalPointCount + 1
 	}
-	st.Close()
-
-	log.Printf("Finished writing %d fantasy point rows\n", len(points))
-
+	//Catch the last few
+	query := fmt.Sprintf("INSERT INTO points (id,created_at,updated_at,deleted_at,player_id,category,abbreviation,name,stat_num,value) VALUES %s", strings.Join(valueStrings, ","))
+	_, err := rawdb.Exec(query, valueArgs...)
+	if err != nil {
+		log.Fatalf("Error executing statement for loading points: %s:\n %s", query, err.Error())
+		return
+	}
+	log.Printf("Finished writing %d fantasy points\n", totalPointCount)
 }
