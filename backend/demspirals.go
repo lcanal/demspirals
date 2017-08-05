@@ -33,7 +33,7 @@ func main() {
 	doLoads := flag.Bool("doloads", false, "Run initial loads for loading teams, players, stats.")
 	dropTables := flag.Bool("droptables", false, "Drop tables. Must be set along with doloads to run.")
 	calcPoints := flag.Bool("calcpoints", false, "Calculate fantasy points for all players.")
-	//initData := flag.Bool("initdata", false, "Initialize all of your data. Should be run when you want to completely redo and recalculate all of your data.")
+	initData := flag.Bool("initdata", false, "Initialize all of your data. Should be run when you want to completely redo and recalculate all of your data.")
 	//////////////////////////////////////////////////////
 
 	//Global waiting group to coordinate functions. Makes sure to only calc points when all
@@ -41,7 +41,11 @@ func main() {
 	wg := new(sync.WaitGroup)
 
 	flag.Parse()
-
+	if *initData {
+		*doLoads = true
+		*dropTables = true
+		*calcPoints = true
+	}
 	if *doLoads {
 		db := loader.GormConnectDB()
 
