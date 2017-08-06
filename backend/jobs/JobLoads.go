@@ -93,20 +93,12 @@ func CalculatePoints(wg *sync.WaitGroup) {
 	//Wait for relevant functions to finish
 	wg.Wait()
 
-	pointValueFile := viper.New()
-	pointValueFile.SetConfigName("pointvalues")
-	pointValueFile.AddConfigPath(".")
-	pointValueFile.AddConfigPath("config")
 	pointModel := "espn."
-
-	err := pointValueFile.ReadInConfig()
-	if err != nil {
-		log.Fatalf("Fatal error pointvalues.json file: %s", err.Error())
-	}
 
 	db := loader.GormConnectDB()
 
 	//db.LogMode(true)
+	/////////////////////////////Maybe load player game logs here for game specific points //////////////////////////
 	var players []models.Player
 	var points []models.Point
 
@@ -119,22 +111,8 @@ func CalculatePoints(wg *sync.WaitGroup) {
 	for _, player := range players {
 		for _, stat := range player.Stats {
 			var newStatFantasyPoints models.Point
-			newStatFantasyPoints.Abbreviation = stat.Abbreviation
-			newStatFantasyPoints.Category = stat.Category
-			newStatFantasyPoints.PlayerID = stat.PlayerID
-			newStatFantasyPoints.Name = stat.Name
-			newStatFantasyPoints.StatNum, err = strconv.ParseFloat(stat.Value, 32)
-			if err != nil {
-				newStatFantasyPoints.StatNum = 0
-			}
 
-			switch stat.Name {
-			case "RushYards":
-				newStatFantasyPoints.Value = newStatFantasyPoints.StatNum * pointValueFile.GetFloat64(pointModel+"RY10")
-			default:
-				newStatFantasyPoints.Value = 0
-			}
-
+			mapStatsToPoints(&newStatFantasyPoints, stat, pointModel)
 			points = append(points, newStatFantasyPoints)
 
 		}
@@ -209,7 +187,7 @@ func loadPoints(points []models.Point) {
 	for _, point := range points {
 		//Chunk them 25 at a time.
 		if totalPointCount%24 == 0 && totalPointCount != 0 {
-			valueStrings = append(valueStrings, "(?,?,?,?,?,?,?,?,?,?)")
+			valueStrings = append(valueStrings, "(?,?,?,?,?,?,?,?,?,?,?)")
 			valueArgs = append(valueArgs, nil)
 			valueArgs = append(valueArgs, nil)
 			valueArgs = append(valueArgs, nil)
@@ -218,10 +196,11 @@ func loadPoints(points []models.Point) {
 			valueArgs = append(valueArgs, point.Category)
 			valueArgs = append(valueArgs, point.Abbreviation)
 			valueArgs = append(valueArgs, point.Name)
+			valueArgs = append(valueArgs, point.LeagueName)
 			valueArgs = append(valueArgs, point.StatNum)
 			valueArgs = append(valueArgs, point.Value)
 
-			query := fmt.Sprintf("INSERT INTO points (id,created_at,updated_at,deleted_at,player_id,category,abbreviation,name,stat_num,value) VALUES %s", strings.Join(valueStrings, ","))
+			query := fmt.Sprintf("INSERT INTO points (id,created_at,updated_at,deleted_at,player_id,category,abbreviation,name,league_name,stat_num,value) VALUES %s", strings.Join(valueStrings, ","))
 			_, err := rawdb.Exec(query, valueArgs...)
 			if err != nil {
 				log.Fatalf("Error executing statement for loading pointsz: %s:\n %s", query, err.Error())
@@ -230,7 +209,7 @@ func loadPoints(points []models.Point) {
 			valueStrings = make([]string, 0)
 			valueArgs = make([]interface{}, 0)
 		} else {
-			valueStrings = append(valueStrings, "(?,?,?,?,?,?,?,?,?,?)")
+			valueStrings = append(valueStrings, "(?,?,?,?,?,?,?,?,?,?,?)")
 			valueArgs = append(valueArgs, nil)
 			valueArgs = append(valueArgs, nil)
 			valueArgs = append(valueArgs, nil)
@@ -239,17 +218,60 @@ func loadPoints(points []models.Point) {
 			valueArgs = append(valueArgs, point.Category)
 			valueArgs = append(valueArgs, point.Abbreviation)
 			valueArgs = append(valueArgs, point.Name)
+			valueArgs = append(valueArgs, point.LeagueName)
 			valueArgs = append(valueArgs, point.StatNum)
 			valueArgs = append(valueArgs, point.Value)
 		}
 		totalPointCount = totalPointCount + 1
 	}
 	//Catch the last few
-	query := fmt.Sprintf("INSERT INTO points (id,created_at,updated_at,deleted_at,player_id,category,abbreviation,name,stat_num,value) VALUES %s", strings.Join(valueStrings, ","))
+	query := fmt.Sprintf("INSERT INTO points (id,created_at,updated_at,deleted_at,player_id,category,abbreviation,name,league_name,stat_num,value) VALUES %s", strings.Join(valueStrings, ","))
 	_, err := rawdb.Exec(query, valueArgs...)
 	if err != nil {
 		log.Fatalf("Error executing statement for loading points: %s:\n %s", query, err.Error())
 		return
 	}
 	log.Printf("Finished writing %d fantasy points\n", totalPointCount)
+}
+
+func mapStatsToPoints(fPoint *models.Point, stat models.Stat, pointModel string) {
+	//Map stat points to fantasy points. Note, only takes in one point at a time.
+	pointValueFile := viper.New()
+	pointValueFile.SetConfigName("pointvalues")
+	pointValueFile.AddConfigPath(".")
+	pointValueFile.AddConfigPath("config")
+
+	err := pointValueFile.ReadInConfig()
+	if err != nil {
+		log.Fatalf("Fatal error pointvalues file: %s", err.Error())
+	}
+
+	fPoint.Abbreviation = stat.Abbreviation
+	fPoint.Category = stat.Category
+	fPoint.PlayerID = stat.PlayerID
+	fPoint.Name = stat.Name
+
+	fPoint.StatNum, err = strconv.ParseFloat(stat.Value, 32)
+	if err != nil {
+		fPoint.StatNum = 0
+	}
+
+	pointMaps := pointValueFile.GetStringMap("espn")
+	for pointType, pointObject := range pointMaps {
+		if strings.ToLower(pointType) == strings.ToLower(stat.Name) {
+			//Convert pointobject to map , then to a float.
+			pTuple := pointObject.(map[string]interface{})
+			leagueValue := pTuple["leaguevalue"].(float64)
+			leagueName := pTuple["leaguename"].(string)
+
+			fPoint.Value = fPoint.StatNum * leagueValue
+			fPoint.LeagueName = leagueName
+			//log.Printf("Logging %f points for %s stat (num:%f) (LeagueName: %s) (League Value: %f)\n", fPoint.Value, fPoint.Name, fPoint.StatNum, leagueName, leagueValue)
+			return
+		}
+	}
+
+	//If out of loop, means no matching season stat point found
+	fPoint.Value = 0
+	fPoint.LeagueName = ""
 }

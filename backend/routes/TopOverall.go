@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/lcanal/demspirals/backend/loader"
-	"github.com/lcanal/demspirals/backend/models"
 )
 
 //TopOverall returnes a cached sorted or does a live sort of the top 10 players
@@ -18,22 +17,52 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 	num, err := strconv.Atoi(vars["num"])
 	if err != nil {
 		num = 15 //Default return 15
-	}
+	}*/
 
-	//Elim caching for now
-	/*jsonPlayers, found := loader.ReadFromCache("topoverall")
+	//Caching for results
+	jsonPlayers, found := loader.ReadFromCache("topoverall")
 	if found {
 		fmt.Fprintf(w, string(jsonPlayers.([]byte)))
 		return
-	}*/
+	}
 
 	db := loader.GormConnectDB()
-	db.LogMode(true)
+	//db.LogMode(true)
 
 	//var players []models.Player
-	var points []models.Point
+	//var points []models.Point
 
-	db.Order("value desc", true).Find(&points)
+	type result struct {
+		ID                 string
+		LastName           string
+		FirstName          string
+		Position           string
+		TotalFantasyPoints float64
+	}
+
+	var results []result
+
+	topQuery := `
+	SELECT 
+		players.id,
+		players.last_name,
+		players.first_name,
+		players.position,
+		SUM(points.value) total_fantasy_points
+	FROM
+    	players
+	LEFT JOIN 
+    	points
+	ON 
+    	players.id = points.player_id
+	GROUP BY
+    	players.id
+	ORDER BY
+    	total_fantasy_points
+	DESC
+	`
+
+	db.Raw(topQuery).Scan(&results)
 
 	//sort.Sort(ByStats(players))
 
@@ -48,7 +77,7 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 		}
 	}*/
 
-	b, err := json.Marshal(points[:15])
+	b, err := json.Marshal(results)
 	if err != nil {
 		log.Printf("Error marshalling top players: %s", err.Error())
 	}

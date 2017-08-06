@@ -1,0 +1,336 @@
+{
+    "espn": {
+        "GamesPlayed": {
+            "LeagueName": "Games",
+            "LeagueValue": 1
+        },
+        "PassAttempts": {
+            "LeagueName": "",
+            "LeagueValue": 0
+        },
+        "PassCompletions": {
+            "LeagueName": "PC",
+            "LeagueValue": 0
+        },
+        "PassPct": {
+            "LeagueName": "",
+            "LeagueValue": 0
+        },
+        "PassYards": {
+            "LeagueName": "",
+            "LeagueValue": 0
+        },
+        "PassAvg": {
+            "LeagueName": "",
+            "LeagueValue": 0
+        },
+        "PassYardsPerAtt": {
+            "LeagueName": "",
+            "LeagueValue": 0
+        },
+        "PassTD": {
+            "LeagueName": "PTD",
+            "LeagueValue": 0
+        },
+        "PassTDPct": {
+            "LeagueName": "",
+            "LeagueValue": 0
+        },
+        "PassInt": {
+            "LeagueName": "INT",
+            "LeagueValue": 0
+        },
+        "PassIntPct": {
+            "LeagueName": "Int%",
+            "LeagueValue": 0
+        },
+        "PassLng": {
+            "LeagueName": "Lng",
+            "LeagueValue": 0
+        },
+        "Pass20Plus": {
+            "LeagueName": "20+",
+            "LeagueValue": 0
+        },
+        "Pass40Plus": {
+            "LeagueName": "40+",
+            "LeagueValue": 0
+        },
+        "PassSacks": {
+            "LeagueName": "Sacks",
+            "LeagueValue": 0
+        },
+        "PassSackY": {
+            "LeagueName": "SackY",
+            "LeagueValue": 0
+        },
+        "QBRating": {
+            "LeagueName": "QBRating",
+            "LeagueValue": 0
+        },
+        "RushAttempts": {
+            "LeagueName": "Att",
+            "LeagueValue": 0
+        },
+        "RushYards": {
+            "LeagueName": "Yds",
+            "LeagueValue": 0
+        },
+        "RushAverage": {
+            "LeagueName": "Avg",
+            "LeagueValue": 0
+        },
+        "RushTD": {
+            "LeagueName": "TD",
+            "LeagueValue": 0
+        },
+        "RushLng": {
+            "LeagueName": "Lng",
+            "LeagueValue": 0
+        },
+        "Rush20Plus": {
+            "LeagueName": "20+",
+            "LeagueValue": 0
+        },
+        "Rush40Plus": {
+            "LeagueName": "40+",
+            "LeagueValue": 0
+        },
+        "RushFumbles": {
+            "LeagueName": "Fum",
+            "LeagueValue": 0
+        },
+        "Targets": {
+            "LeagueName": "Tgt",
+            "LeagueValue": 0
+        },
+        "Receptions": {
+            "LeagueName": "Rec",
+            "LeagueValue": 0
+        },
+        "RecYards": {
+            "LeagueName": "Yds",
+            "LeagueValue": 0
+        },
+        "RecAverage": {
+            "LeagueName": "Avg",
+            "LeagueValue": 0
+        },
+        "RecTD": {
+            "LeagueName": "TD",
+            "LeagueValue": 0
+        },
+        "RecLng": {
+            "LeagueName": "Lng",
+            "LeagueValue": 0
+        },
+        "Rec20Plus": {
+            "LeagueName": "20+",
+            "LeagueValue": 0
+        },
+        "Rec40Plus": {
+            "LeagueName": "40+",
+            "LeagueValue": 0
+        },
+        "RecFumbles": {
+            "LeagueName": "Fumbles",
+            "LeagueValue": 0
+        },
+        "TackleSolo": {
+            "LeagueName": "Solo",
+            "LeagueValue": 0
+        },
+        "TackleTotal": {
+            "LeagueName": "Total",
+            "LeagueValue": 0
+        },
+        "TackleAst": {
+            "LeagueName": "Ast",
+            "LeagueValue": 0
+        },
+        "Sacks": {
+            "LeagueName": "Sacks",
+            "LeagueValue": 0
+        },
+        "SackYds": {
+            "LeagueName": "SackYds",
+            "LeagueValue": 0
+        },
+        "Safeties": {
+            "LeagueName": "Sfty",
+            "LeagueValue": 0
+        },
+        "TacklesForLoss": {
+            "LeagueName": "TFL",
+            "LeagueValue": 0
+        },
+        "Interceptions": {
+            "LeagueName": "Int",
+            "LeagueValue": 0
+        },
+        "IntTD": {
+            "LeagueName": "TD",
+            "LeagueValue": 0
+        },
+        "IntYds": {
+            "LeagueName": "Yds",
+            "LeagueValue": 0
+        },
+        "IntAverage": {
+            "LeagueName": "Avg",
+            "LeagueValue": 0
+        },
+        "IntLng": {
+            "LeagueName": "Lng",
+            "LeagueValue": 0
+        },
+        "PassesDefended": {
+            "LeagueName": "PD",
+            "LeagueValue": 0
+        },
+        "Stuffs": {
+            "LeagueName": "Stuffs",
+            "LeagueValue": 0
+        },
+        "StuffYds": {
+            "LeagueName": "StuffYds",
+            "LeagueValue": 0
+        },
+        "KB": {
+            "LeagueName": "KB",
+            "LeagueValue": 0
+        },
+        "Fumbles": {
+            "LeagueName": "Fum",
+            "LeagueValue": 0
+        },
+        "FumLost": {
+            "LeagueName": "Lost",
+            "LeagueValue": 0
+        },
+        "FumForced": {
+            "LeagueName": "Forced",
+            "LeagueValue": 0
+        },
+        "FumOwnRec": {
+            "LeagueName": "OwnRec",
+            "LeagueValue": 0
+        },
+        "FumOppRec": {
+            "LeagueName": "OppRec",
+            "LeagueValue": 0
+        },
+        "FumRecYds": {
+            "LeagueName": "RecYds",
+            "LeagueValue": 0
+        },
+        "FumTotalRec": {
+            "LeagueName": "TotalRec",
+            "LeagueValue": 0
+        },
+        "FumTD": {
+            "LeagueName": "TD",
+            "LeagueValue": 0
+        },
+        "KrRet": {
+            "LeagueName": "Ret",
+            "LeagueValue": 0
+        },
+        "KrYds": {
+            "LeagueName": "Yds",
+            "LeagueValue": 0
+        },
+        "KrAvg": {
+            "LeagueName": "Avg",
+            "LeagueValue": 0
+        },
+        "KrLng": {
+            "LeagueName": "Lng",
+            "LeagueValue": 0
+        },
+        "KrTD": {
+            "LeagueName": "TD",
+            "LeagueValue": 0
+        },
+        "Kr20Plus": {
+            "LeagueName": "20+",
+            "LeagueValue": 0
+        },
+        "Kr40Plus": {
+            "LeagueName": "40+",
+            "LeagueValue": 0
+        },
+        "KrFC": {
+            "LeagueName": "FC",
+            "LeagueValue": 0
+        },
+        "KrFum": {
+            "LeagueName": "Fum",
+            "LeagueValue": 0
+        },
+        "PrRet": {
+            "LeagueName": "Ret",
+            "LeagueValue": 0
+        },
+        "PrYds": {
+            "LeagueName": "Yds",
+            "LeagueValue": 0
+        },
+        "PrAvg": {
+            "LeagueName": "Avg",
+            "LeagueValue": 0
+        },
+        "PrLng": {
+            "LeagueName": "Lng",
+            "LeagueValue": 0
+        },
+        "PrTD": {
+            "LeagueName": "TD",
+            "LeagueValue": 0
+        },
+        "Pr20Plus": {
+            "LeagueName": "20+",
+            "LeagueValue": 0
+        },
+        "Pr40Plus": {
+            "LeagueName": "40+",
+            "LeagueValue": 0
+        },
+        "PrFC": {
+            "LeagueName": "FC",
+            "LeagueValue": 0
+        },
+        "PrFum": {
+            "LeagueName": "Fum",
+            "LeagueValue": 0
+        },
+        "TwoPtAtt": {
+            "LeagueName": "2PTAtt",
+            "LeagueValue": 0
+        },
+        "TwoPtMade": {
+            "LeagueName": "2PTMade",
+            "LeagueValue": 0
+        },
+        "TwoPtPassAtt": {
+            "LeagueName": "2PTPassAtt",
+            "LeagueValue": 0
+        },
+        "TwoPtPassMade": {
+            "LeagueName": "2PTPassMade",
+            "LeagueValue": 0
+        },
+        "TwoPtPassRec": {
+            "LeagueName": "2PTPassRec",
+            "LeagueValue": 0
+        },
+        "TwoPtRushAtt": {
+            "LeagueName": "2PTRushAtt",
+            "LeagueValue": 0
+        },
+        "TwoPtRushMade": {
+            "LeagueName": "2PTRushMade",
+            "LeagueValue": 0
+        }
+    }
+}

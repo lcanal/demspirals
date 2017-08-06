@@ -9,6 +9,7 @@ type Point struct {
 	Category     string  `json:"category"`
 	Abbreviation string  `json:"shortname"`
 	Name         string  `json:"name"`
+	LeagueName   string  `json:"leaguename"` //The name the league uses on how it counts points (ie, RY10)
 	StatNum      float64 `json:"stat"`
 	Value        float64 `json:"points"`
 }

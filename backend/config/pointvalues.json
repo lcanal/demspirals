@@ -1,5 +1,80 @@
 {
-    "espn":{
-        "RY10" : 1
+    "espn": {
+        "GamesPlayed": {
+            "LeagueName": "Games",
+            "LeagueValue": 1
+        },
+        "PassCompletions": {
+            "LeagueName": "PC",
+            "LeagueValue": 0.5
+        },
+        "PassYards": {
+            "LeagueName": "PY20",
+            "LeagueValue": 0.05
+        },
+        "PassTD": {
+            "LeagueName": "PTD",
+            "LeagueValue": 4
+        },
+        "PassInt": {
+            "LeagueName": "INT",
+            "LeagueValue": -4
+        },
+        "PassSacks": {
+            "LeagueName": "SK",
+            "LeagueValue": -1
+        },
+        "RushYards": {
+            "LeagueName": "RC10",
+            "LeagueValue": 0.1
+        },
+        "RushTD": {
+            "LeagueName": "RTD",
+            "LeagueValue": 6
+        },
+        "Receptions": {
+            "LeagueName": "REC",
+            "LeagueValue": 0.5
+        },
+        "RecYards": {
+            "LeagueName": "REY10",
+            "LeagueValue": 0.1
+        },
+        "RecAverage": {
+            "LeagueName": "Avg",
+            "LeagueValue": 0.0
+        },
+        "RecTD": {
+            "LeagueName": "RETD",
+            "LeagueValue": 6
+        },
+        "Fumbles": {
+            "LeagueName": "FUML",
+            "LeagueValue": -2
+        },
+        "FumTD": {
+            "LeagueName": "FTD",
+            "LeagueValue": 6
+        },
+        "KrTD": {
+            "LeagueName": "KRTD",
+            "LeagueValue": 6
+        },
+        "PrTD": {
+            "LeagueName": "TD",
+            "LeagueValue": 6
+        },
+        "TwoPtPassMade": {
+            "LeagueName": "2PC",
+            "LeagueValue": 2
+        },
+        "TwoPtPassRec": {
+            "LeagueName": "2PRE",
+            "LeagueValue": 2
+        },
+        "TwoPtRushMade": {
+            "LeagueName": "2PR",
+            "LeagueValue": 2
+        }
     }
 }

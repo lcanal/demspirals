@@ -18,16 +18,17 @@ class StatTable extends Component {
     render(){
         var rows = [];
         this.state.players.forEach( player => {
-            rows.push(<ResultEntry player={player} key={player.slug} />)
+            rows.push(<ResultEntry player={player} key={player.ID} />)
         });
         return (
             <Table condensed hover bordered responsive >
                 <thead><tr>
                     <th>Player</th>
-                    <th>Pos</th>
-                    <th>Team</th>
-                    <th>Gamesplayed</th>
-                    <th>Total Fantasy Pts.</th>
+                    <th>Position</th>
+                   <th>Total Fantasy Points</th>
+                   <th>Field</th>
+                   <th>Field</th>
+                   <th>Field</th>
                 </tr></thead>
                 <tbody>
                     {rows}
@@ -41,12 +42,13 @@ class StatTable extends Component {
 class ResultEntry extends Component {
   render(){
     return(
-      <tr id={this.key}>
-        <td>{this.props.player.name}</td>
-        <td>{this.props.player.pos}</td>
-        <td>{this.props.player.team.nickname}</td>
-        <td>{this.props.player.stats.games_played}</td>
-        <td>{this.props.player.stats.receptions}</td>
+      <tr id={this.id}>
+        <td>{this.props.player.FirstName} {this.props.player.LastName}</td>
+        <td>{this.props.player.Position}</td>
+       <td>{this.props.player.TotalFantasyPoints.toFixed(2)}</td>
+       <td>NA</td>
+       <td>NA</td>
+       <td>NA</td>
       </tr>
     )
   }
