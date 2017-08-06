@@ -16,7 +16,7 @@ class StatTable extends Component {
     }
 
     render(){
-        var rows = [];
+        var rows = []; 
         for (var index = 0; index < this.state.players.length; index++) {
             if (index > 20) {
                 break;
@@ -29,7 +29,7 @@ class StatTable extends Component {
             rows.push(<ResultEntry player={player} key={player.ID} />)
         });*/
         return (
-            <Table condensed hover bordered responsive >
+            <Table className="stats-table" condensed hover bordered responsive >
                 <thead><tr>
                     <th>Player</th>
                     <th>Position</th>
@@ -50,7 +50,7 @@ class StatTable extends Component {
 class ResultEntry extends Component {
   render(){
     return(
-      <tr id={this.id}>
+      <tr className="stat-row" id={this.id}>
         <td>{this.props.player.FirstName} {this.props.player.LastName}</td>
         <td>{this.props.player.Position}</td>
        <td>{this.props.player.TotalFantasyPoints.toFixed(2)}</td>

@@ -66,13 +66,13 @@ func ReadFromCache(key string) (interface{}, bool) {
 }
 
 //WriteToCache writes to cachestore (file) based on key.
-func WriteToCache(key string, obj interface{}) {
+func WriteToCache(key string, obj interface{}, expiration time.Duration) {
 	c := cache.New(5*time.Minute, 10*time.Minute)
-	c.Set(key, obj, cache.DefaultExpiration)
+	c.Set(key, obj, expiration)
 
 	f, err := os.Create("cache/playerstats")
 	if err != nil {
-		log.Printf("Error making cache file %s:%s", "/tmp/cache", err.Error())
+		log.Printf("Error making cache file %s:%s", "cache/playerstats", err.Error())
 		return
 	}
 

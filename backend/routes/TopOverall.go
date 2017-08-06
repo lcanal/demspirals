@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/lcanal/demspirals/backend/loader"
 )
@@ -84,7 +85,7 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, string(b))
 
-	loader.WriteToCache("topoverall", b)
+	loader.WriteToCache("topoverall", b, 6*time.Hour)
 }
 
 //ByStats is meant to be an interface to golang's sort function.
