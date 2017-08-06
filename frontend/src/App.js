@@ -37,13 +37,22 @@ class App extends Component {
               <NavItem eventKey={1} href="/topOverall">Top Overall</NavItem>
             </LinkContainer>
             <LinkContainer to="/topQB">
-              <NavItem eventKey={2} href="/topQB">Top QBs</NavItem>
+              <NavItem eventKey={2} href="/topQB">Top Quarterbacks</NavItem>
+            </LinkContainer>
+            <LinkContainer to="/topWR">
+              <NavItem eventKey={3} href="/topWR">Top Wideouts</NavItem>
+            </LinkContainer>
+            <LinkContainer to="/topRB">
+              <NavItem eventKey={4} href="/topRB">Top Rushers</NavItem>
             </LinkContainer>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        <Route exact path="/" component={Home} />
-        <Route path="/topOverall" component={TopOverall} />
+          <Route exact path="/"     component={Home} />
+          <Route path="/topOverall" component={TopOverall} />
+          <Route path="/topQB"      component={() => <TopOverall statfilter="qb" />}/>
+          <Route path="/topWR"      component={() => <TopOverall statfilter="wr" />}/>
+          <Route path="/topRB"      component={() => <TopOverall statfilter="rb" />}/>
       </div>
     </Router>
     );

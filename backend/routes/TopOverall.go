@@ -7,21 +7,32 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/lcanal/demspirals/backend/loader"
 )
 
 //TopOverall returnes a cached sorted or does a live sort of the top 10 players
 func TopOverall(w http.ResponseWriter, r *http.Request) {
-	//var start int
+	cacheKey := "topoverall"
+	vars := mux.Vars(r)
+	posFilter := vars["position"]
 
-	/*vars := mux.Vars(r)
-	num, err := strconv.Atoi(vars["num"])
-	if err != nil {
-		num = 15 //Default return 15
-	}*/
+	switch posFilter {
+	case "rb":
+		cacheKey = "toprb"
+		posFilter = "WHERE players.position IN ('RB')"
+	case "qb":
+		cacheKey = "topqb"
+		posFilter = "WHERE players.position IN ('QB')"
+	case "wr":
+		cacheKey = "topwr"
+		posFilter = "WHERE players.position IN ('WR')"
+	default:
+		posFilter = ""
+	}
 
 	//Caching for results
-	jsonPlayers, found := loader.ReadFromCache("topoverall")
+	jsonPlayers, found := loader.ReadFromCache(cacheKey)
 	if found {
 		fmt.Fprintf(w, string(jsonPlayers.([]byte)))
 		return
@@ -30,14 +41,12 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 	db := loader.GormConnectDB()
 	//db.LogMode(true)
 
-	//var players []models.Player
-	//var points []models.Point
-
 	type result struct {
 		ID                 string  `json:"id"`
 		LastName           string  `json:"lastname"`
 		FirstName          string  `json:"firstname"`
 		Position           string  `json:"position"`
+		PicURL             string  `json:"picurl"`
 		TeamID             string  `json:"teamid"`
 		TeamName           string  `json:"teamname"`
 		TeamCity           string  `json:"teamcity"`
@@ -53,6 +62,7 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 		players.first_name,
 		players.position,
 		players.team_id,
+		players.pic_url,
         teams.name as team_name,
         teams.city as team_city,
 		SUM(points.value) total_fantasy_points
@@ -65,7 +75,9 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
     LEFT JOIN
     	teams
     ON 
-    	players.team_id = teams.id
+		players.team_id = teams.id
+	`
+	topQuery = topQuery + posFilter + `
 	GROUP BY
     	players.id
 	ORDER BY
@@ -73,20 +85,8 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 	DESC
 	`
 
+	//log.Printf("TopQuery : %s\n", topQuery)
 	db.Raw(topQuery).Scan(&results)
-
-	//sort.Sort(ByStats(players))
-
-	/*for index := start; index < num; index++ {
-		sortedPlayers = append(sortedPlayers, players[index])
-	}*/
-	/*or _, player := range players {
-		//db.Model(&player).Related(&stats)
-		//log.Fatalf("waaaa\n")
-		if player.ID == "7549" {
-			fmt.Printf("Here B Brady Bunch \n%v", player)
-		}
-	}*/
 
 	b, err := json.Marshal(results)
 	if err != nil {
@@ -94,19 +94,6 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintf(w, string(b))
-
-	loader.WriteToCache("topoverall", b, 6*time.Hour)
+	log.Printf("Writing to cache w key %s\n", cacheKey)
+	loader.WriteToCache(cacheKey, b, 6*time.Hour)
 }
-
-//ByStats is meant to be an interface to golang's sort function.
-/*type ByStats []models.Player
-
-func (a ByStats) Len() int { return len(a) }
-
-func (a ByStats) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
-
-func (a ByStats) Less(i, j int) bool {
-	sumI := a[i].Stats.Receptions + a[i].Stats.Rushattempts
-	sumJ := a[j].Stats.Receptions + a[j].Stats.Rushattempts
-	return sumI > sumJ
-}*/

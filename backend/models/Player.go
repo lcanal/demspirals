@@ -14,6 +14,7 @@ type Player struct {
 	FirstName    string
 	JerseyNumber string
 	Position     string
+	PicURL       string
 	TeamID       string
 	Team         Team
 	Stats        []Stat `json:"stats"`
@@ -66,4 +67,25 @@ func (p *Player) MapTeam(playerData []byte) {
 
 	p.Team = newTeam
 	p.TeamID = newTeam.ID
+}
+
+//MapExtra maps additional info like portrait url. Takes in raw json call.
+func (p *Player) MapExtra(extraInfo []byte) {
+	jsonparser.ArrayEach(
+		extraInfo,
+		func(playerData []byte, dataType jsonparser.ValueType, offset int, err error) {
+			player, _, _, err := jsonparser.Get(playerData, "player")
+			if err != nil {
+				log.Printf("Error finding extra player data for %s %s", p.FirstName, p.LastName)
+				return
+			}
+
+			currPlayerID, _ := jsonparser.GetString(player, "ID")
+			if currPlayerID == p.ID {
+				p.PicURL, _ = jsonparser.GetString(player, "officialImageSrc")
+				return
+			}
+		},
+		"activeplayers", "playerentry",
+	)
 }

@@ -7,7 +7,7 @@ class StatTable extends Component {
     }
 
     async componentDidMount(){
-        const response  = await fetch("/api/topoverall")
+        const response  = await fetch(this.props.apiURL)
         const json      = await response.json()
         
         this.setState({
@@ -22,6 +22,7 @@ class StatTable extends Component {
                 break;
             }
             var player = this.state.players[index]
+            player.name = <strong>{player.firstname} {player.lastname}</strong>
             rows.push(<ResultEntry player={player} key={player.id} />)
         }
 
@@ -29,7 +30,7 @@ class StatTable extends Component {
             rows.push(<ResultEntry player={player} key={player.ID} />)
         });*/
         return (
-            <Table className="stats-table" condensed hover bordered responsive >
+            <Table className="stats-table"  hover bordered responsive >
                 <thead><tr>
                     <th>Player</th>
                     <th>Position</th>
@@ -51,7 +52,7 @@ class ResultEntry extends Component {
   render(){
     return(
       <tr className="stat-row" id={this.id}>
-        <td>{this.props.player.firstname} {this.props.player.lastname}</td>
+        <td>{this.props.player.name}</td>
         <td>{this.props.player.position}</td>
         <td>{this.props.player.teamname} </td>
        <td>{this.props.player.totalfantasypoints.toFixed(2)}</td>

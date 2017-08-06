@@ -1,9 +1,15 @@
 .stats-table {
-  text-align: left;
    text-indent: 1em;
 }
 
+.portrait {
+    height: 50%;
+}
 
 .top-overall-container {
     padding: 0 2em;  
+}
+
+.stats-table th {
+    text-align: center;
 }

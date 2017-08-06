@@ -24,16 +24,22 @@ func LoadAllPlayerData(wg *sync.WaitGroup) {
 
 	seasonKey := "2016-regular"
 	apiBase := viper.GetString("apiBaseURL") + "/v1.1/pull/nfl/"
-	activePlayersEndPoint := apiBase + seasonKey + "/cumulative_player_stats.json"
+	cumPlayerSeasonStats := apiBase + seasonKey + "/cumulative_player_stats.json"
+	activePlayerInfo := apiBase + seasonKey + "/active_players.json"
 
-	//log.Printf("Endpoint URL: %s", activePlayersEndPoint)
-
-	data, err := ioutil.ReadAll(routes.CallAPI(activePlayersEndPoint))
+	data, err := ioutil.ReadAll(routes.CallAPI(cumPlayerSeasonStats))
 	if err != nil {
-		log.Printf("Error loading url '%s': %s", activePlayersEndPoint, err.Error())
+		log.Printf("Error loading url '%s': %s", cumPlayerSeasonStats, err.Error())
 		return
 	}
 
+	extraInfo, erre := ioutil.ReadAll(routes.CallAPI(activePlayerInfo))
+	if erre != nil {
+		log.Printf("Error loading url '%s': %s", activePlayerInfo, err.Error())
+		return
+	}
+
+	//Parse through
 	_, errArray := jsonparser.ArrayEach(
 		data,
 		func(playerData []byte, dataType jsonparser.ValueType, offset int, err error) {
@@ -49,6 +55,7 @@ func LoadAllPlayerData(wg *sync.WaitGroup) {
 
 			newPlayer.MapStats(playerData)
 			newPlayer.MapTeam(playerData)
+			newPlayer.MapExtra(extraInfo)
 
 			players[newPlayer.ID] = newPlayer
 			teams[newPlayer.Team.ID] = newPlayer.Team
@@ -124,7 +131,7 @@ func CalculatePoints(wg *sync.WaitGroup) {
 
 func loadPlayers(players map[string]models.Player, wg *sync.WaitGroup) {
 	//Create raw load strings
-	stmt := "INSERT INTO players (id,last_name,first_name,jersey_number,position,team_id) VALUES (?,?,?,?,?,?)"
+	stmt := "INSERT INTO players (id,last_name,first_name,jersey_number,position,pic_url,team_id) VALUES (?,?,?,?,?,?,?)"
 	rawdb := loader.ConnectDB()
 	st, err := rawdb.Prepare(stmt)
 	if err != nil {
@@ -133,7 +140,7 @@ func loadPlayers(players map[string]models.Player, wg *sync.WaitGroup) {
 	}
 	count := 0
 	for _, player := range players {
-		_, err := st.Exec(player.ID, player.LastName, player.FirstName, player.JerseyNumber, player.Position, player.TeamID)
+		_, err := st.Exec(player.ID, player.LastName, player.FirstName, player.JerseyNumber, player.Position, player.PicURL, player.TeamID)
 		if err != nil {
 			log.Fatalf("Error executing statement for saving players %s:\n %s", stmt, err.Error())
 			return

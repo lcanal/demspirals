@@ -50,7 +50,7 @@ func ReadFromCache(key string) (interface{}, bool) {
 
 	f, err := os.Open("cache/playerstats")
 	if err != nil {
-		log.Printf("Error opening cache file %s:%v\n", "/tmp/cache", err)
+		log.Printf("Error opening cache file %s:%v\n", "cache/playerstats", err)
 		return nil, false
 	}
 	gob.Register(cachedobjs)

@@ -5,7 +5,7 @@ class TopOverall extends Component {
     render(){
         return (
         <Panel>
-        <TopContainer dataFrom="/api/topoverall" />  
+        <TopContainer statfilter={this.props.statfilter}/>  
         </Panel>
         );
     }
