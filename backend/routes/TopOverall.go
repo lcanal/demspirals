@@ -94,6 +94,5 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintf(w, string(b))
-	log.Printf("Writing to cache w key %s\n", cacheKey)
 	loader.WriteToCache(cacheKey, b, 6*time.Hour)
 }

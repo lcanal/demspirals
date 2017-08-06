@@ -6,20 +6,26 @@ import (
 	"log"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/lcanal/demspirals/backend/jobs"
 	"github.com/lcanal/demspirals/backend/loader"
 	"github.com/lcanal/demspirals/backend/models"
 	"github.com/lcanal/demspirals/backend/routes"
+	cache "github.com/patrickmn/go-cache"
 	"github.com/spf13/viper"
 )
+
+//Global cache
+var mainCache = cache.New(5*time.Minute, 10*time.Minute)
 
 func main() {
 	//Read in and set all settings
 	configRead("settings")
 	httpPort := viper.GetString("httpPort")
 	frontendFiles := viper.GetString("frontendFiles")
+	loader.MainCache = mainCache
 
 	muxie := mux.NewRouter()
 
