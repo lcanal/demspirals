@@ -65,4 +65,5 @@ func (p *Player) MapTeam(playerData []byte) {
 	}
 
 	p.Team = newTeam
+	p.TeamID = newTeam.ID
 }

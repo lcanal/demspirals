@@ -34,11 +34,14 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 	//var points []models.Point
 
 	type result struct {
-		ID                 string
-		LastName           string
-		FirstName          string
-		Position           string
-		TotalFantasyPoints float64
+		ID                 string  `json:"id"`
+		LastName           string  `json:"lastname"`
+		FirstName          string  `json:"firstname"`
+		Position           string  `json:"position"`
+		TeamID             string  `json:"teamid"`
+		TeamName           string  `json:"teamname"`
+		TeamCity           string  `json:"teamcity"`
+		TotalFantasyPoints float64 `json:"totalfantasypoints"`
 	}
 
 	var results []result
@@ -49,6 +52,9 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 		players.last_name,
 		players.first_name,
 		players.position,
+		players.team_id,
+        teams.name as team_name,
+        teams.city as team_city,
 		SUM(points.value) total_fantasy_points
 	FROM
     	players
@@ -56,6 +62,10 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
     	points
 	ON 
     	players.id = points.player_id
+    LEFT JOIN
+    	teams
+    ON 
+    	players.team_id = teams.id
 	GROUP BY
     	players.id
 	ORDER BY

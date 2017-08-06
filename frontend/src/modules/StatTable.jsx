@@ -22,7 +22,7 @@ class StatTable extends Component {
                 break;
             }
             var player = this.state.players[index]
-            rows.push(<ResultEntry player={player} key={player.ID} />)
+            rows.push(<ResultEntry player={player} key={player.id} />)
         }
 
         /*this.state.players.forEach( player => {
@@ -33,8 +33,8 @@ class StatTable extends Component {
                 <thead><tr>
                     <th>Player</th>
                     <th>Position</th>
+                    <th>Team</th>
                    <th>Total Fantasy Points</th>
-                   <th>Field</th>
                    <th>Field</th>
                    <th>Field</th>
                 </tr></thead>
@@ -51,10 +51,10 @@ class ResultEntry extends Component {
   render(){
     return(
       <tr className="stat-row" id={this.id}>
-        <td>{this.props.player.FirstName} {this.props.player.LastName}</td>
-        <td>{this.props.player.Position}</td>
-       <td>{this.props.player.TotalFantasyPoints.toFixed(2)}</td>
-       <td>NA</td>
+        <td>{this.props.player.firstname} {this.props.player.lastname}</td>
+        <td>{this.props.player.position}</td>
+        <td>{this.props.player.teamname} </td>
+       <td>{this.props.player.totalfantasypoints.toFixed(2)}</td>
        <td>NA</td>
        <td>NA</td>
       </tr>
