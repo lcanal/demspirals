@@ -18,8 +18,8 @@
     "start": "concurrently \"cd frontend && cross-env PORT=3000 npm start\" \"cd backend && go run demspirals.go\"",
     "build": "concurrently \"cd frontend && npm run build\" \"cd backend && go build \"",
     "prepackage": "rm -r package || true",
-    "package": "(mkdir package) && (cd package && mkdir cache && mkdir config) && (cd ../) && (cp -r frontend/build backend/backend* package/) && (mv package/build package/frontend)",
-    "fullclean": "(rimraf backend/backend* backend/cache/* backend/vendor/*) && (rimraf frontend/build) && (rimraf frontend/node_modules)",
-    "clean": "(rimraf frontend/build) && (rimraf backend/cache/*)"
+    "package": "(mkdir package) && (cd package && mkdir config) && (cd ../) && (cp -r frontend/build backend/backend* package/) && (mv package/build package/frontend)",
+    "fullclean": "(rimraf backend/backend* backend/vendor/*) && (rimraf frontend/build) && (rimraf frontend/node_modules)",
+    "clean": "(rimraf frontend/build)"
   }
 }
