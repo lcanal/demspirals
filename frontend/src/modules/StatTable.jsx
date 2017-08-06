@@ -17,9 +17,17 @@ class StatTable extends Component {
 
     render(){
         var rows = [];
-        this.state.players.forEach( player => {
+        for (var index = 0; index < this.state.players.length; index++) {
+            if (index > 20) {
+                break;
+            }
+            var player = this.state.players[index]
             rows.push(<ResultEntry player={player} key={player.ID} />)
-        });
+        }
+
+        /*this.state.players.forEach( player => {
+            rows.push(<ResultEntry player={player} key={player.ID} />)
+        });*/
         return (
             <Table condensed hover bordered responsive >
                 <thead><tr>
