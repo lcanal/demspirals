@@ -194,20 +194,18 @@ func loadPoints(points []models.Point) {
 	for _, point := range points {
 		//Chunk them 25 at a time.
 		if totalPointCount%24 == 0 && totalPointCount != 0 {
-			valueStrings = append(valueStrings, "(?,?,?,?,?,?,?,?,?,?,?)")
-			valueArgs = append(valueArgs, nil)
-			valueArgs = append(valueArgs, nil)
-			valueArgs = append(valueArgs, nil)
+			valueStrings = append(valueStrings, "(?,?,?,?,?,?,?,?,?)")
 			valueArgs = append(valueArgs, nil)
 			valueArgs = append(valueArgs, point.PlayerID)
 			valueArgs = append(valueArgs, point.Category)
 			valueArgs = append(valueArgs, point.Abbreviation)
 			valueArgs = append(valueArgs, point.Name)
 			valueArgs = append(valueArgs, point.LeagueName)
+			valueArgs = append(valueArgs, point.StatID)
 			valueArgs = append(valueArgs, point.StatNum)
 			valueArgs = append(valueArgs, point.Value)
 
-			query := fmt.Sprintf("INSERT INTO points (id,created_at,updated_at,deleted_at,player_id,category,abbreviation,name,league_name,stat_num,value) VALUES %s", strings.Join(valueStrings, ","))
+			query := fmt.Sprintf("INSERT INTO points (id,player_id,category,abbreviation,name,league_name,stat_id,stat_num,value) VALUES %s", strings.Join(valueStrings, ","))
 			_, err := rawdb.Exec(query, valueArgs...)
 			if err != nil {
 				log.Fatalf("Error executing statement for loading pointsz: %s:\n %s", query, err.Error())
@@ -216,23 +214,21 @@ func loadPoints(points []models.Point) {
 			valueStrings = make([]string, 0)
 			valueArgs = make([]interface{}, 0)
 		} else {
-			valueStrings = append(valueStrings, "(?,?,?,?,?,?,?,?,?,?,?)")
-			valueArgs = append(valueArgs, nil)
-			valueArgs = append(valueArgs, nil)
-			valueArgs = append(valueArgs, nil)
+			valueStrings = append(valueStrings, "(?,?,?,?,?,?,?,?,?)")
 			valueArgs = append(valueArgs, nil)
 			valueArgs = append(valueArgs, point.PlayerID)
 			valueArgs = append(valueArgs, point.Category)
 			valueArgs = append(valueArgs, point.Abbreviation)
 			valueArgs = append(valueArgs, point.Name)
 			valueArgs = append(valueArgs, point.LeagueName)
+			valueArgs = append(valueArgs, point.StatID)
 			valueArgs = append(valueArgs, point.StatNum)
 			valueArgs = append(valueArgs, point.Value)
 		}
 		totalPointCount = totalPointCount + 1
 	}
 	//Catch the last few
-	query := fmt.Sprintf("INSERT INTO points (id,created_at,updated_at,deleted_at,player_id,category,abbreviation,name,league_name,stat_num,value) VALUES %s", strings.Join(valueStrings, ","))
+	query := fmt.Sprintf("INSERT INTO points (id,player_id,category,abbreviation,name,league_name,stat_id,stat_num,value) VALUES %s", strings.Join(valueStrings, ","))
 	_, err := rawdb.Exec(query, valueArgs...)
 	if err != nil {
 		log.Fatalf("Error executing statement for loading points: %s:\n %s", query, err.Error())
@@ -257,6 +253,7 @@ func mapStatsToPoints(fPoint *models.Point, stat models.Stat, pointModel string)
 	fPoint.Category = stat.Category
 	fPoint.PlayerID = stat.PlayerID
 	fPoint.Name = stat.Name
+	fPoint.StatID = stat.ID
 
 	fPoint.StatNum, err = strconv.ParseFloat(stat.Value, 32)
 	if err != nil {
