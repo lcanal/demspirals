@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/json"
 	"log"
+	"strconv"
 
 	"github.com/buger/jsonparser"
 )
@@ -15,6 +16,11 @@ type Player struct {
 	JerseyNumber string
 	Position     string
 	PicURL       string
+	Age          string
+	Height       string
+	Weight       string
+	Rookie       bool
+	NflID        string
 	TeamID       string
 	Team         Team
 	Stats        []Stat `json:"stats"`
@@ -83,6 +89,12 @@ func (p *Player) MapExtra(extraInfo []byte) {
 			currPlayerID, _ := jsonparser.GetString(player, "ID")
 			if currPlayerID == p.ID {
 				p.PicURL, _ = jsonparser.GetString(player, "officialImageSrc")
+				p.Age, _ = jsonparser.GetString(player, "Age")
+				p.Height, _ = jsonparser.GetString(player, "Height")
+				p.Weight, _ = jsonparser.GetString(player, "Weight")
+				r, _ := jsonparser.GetString(player, "IsRookie")
+				p.Rookie, _ = strconv.ParseBool(r)
+				p.NflID, _ = jsonparser.GetString(player, "externalMapping", "ID")
 				return
 			}
 		},

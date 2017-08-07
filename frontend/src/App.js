@@ -4,6 +4,7 @@ import { Link,Route,BrowserRouter as Router } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import Home from './components/Home';
 import TopOverall from './components/TopOverall';
+import TopPosition from './components/TopPosition';
 import './css/App.css';
 
 class App extends Component {
@@ -50,9 +51,9 @@ class App extends Component {
         </Navbar>
           <Route exact path="/"     component={Home} />
           <Route path="/topOverall" component={TopOverall} />
-          <Route path="/topQB"      component={() => <TopOverall statfilter="qb" />}/>
-          <Route path="/topWR"      component={() => <TopOverall statfilter="wr" />}/>
-          <Route path="/topRB"      component={() => <TopOverall statfilter="rb" />}/>
+          <Route path="/topQB"      component={() => <TopPosition position="qb" />}/>
+          <Route path="/topWR"      component={() => <TopPosition position="wr" />}/>
+          <Route path="/topRB"      component={() => <TopPosition position="rb" />}/>
       </div>
     </Router>
     );

@@ -11,8 +11,8 @@ import (
 	"github.com/lcanal/demspirals/backend/loader"
 )
 
-//TopPlayers returnes a cached sorted or does a live sort of the top 10 players
-func TopPlayers(w http.ResponseWriter, r *http.Request) {
+//TopOverall returnes a cached sorted or does a live sort of the top 10 players
+func TopOverall(w http.ResponseWriter, r *http.Request) {
 	cacheKey := "topplayers"
 	vars := mux.Vars(r)
 	posFilter := vars["position"]
@@ -43,10 +43,16 @@ func TopPlayers(w http.ResponseWriter, r *http.Request) {
 
 	type result struct {
 		ID                 string  `json:"id"`
+		Age                string  `json:"age"`
 		LastName           string  `json:"lastname"`
 		FirstName          string  `json:"firstname"`
+		JerseyNumber       string  `json:"jerseynum"`
 		Position           string  `json:"position"`
 		PicURL             string  `json:"picurl"`
+		Height             string  `json:"height"`
+		Weight             string  `json:"weight"`
+		Rookie             bool    `json:"rookie"`
+		NFLID              string  `json:"nflid"`
 		TeamID             string  `json:"teamid"`
 		TeamName           string  `json:"teamname"`
 		TeamCity           string  `json:"teamcity"`
@@ -57,12 +63,7 @@ func TopPlayers(w http.ResponseWriter, r *http.Request) {
 
 	topQuery := `
 	SELECT 
-		players.id,
-		players.last_name,
-		players.first_name,
-		players.position,
-		players.team_id,
-		players.pic_url,
+		players.*,
         teams.name as team_name,
         teams.city as team_city,
 		SUM(points.value) total_fantasy_points
@@ -154,5 +155,5 @@ func PlayerInfo(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprintf(w, string(b))
 	db.Close()
-	loader.WriteToCache(pid, b, 6*time.Hour)
+	loader.WriteToCache(pid, b, 4*time.Hour)
 }

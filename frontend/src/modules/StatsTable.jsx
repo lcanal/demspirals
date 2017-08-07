@@ -17,9 +17,9 @@ class StatTable extends Component {
         var headerset = false;
 
         for (var index = 0; index < json.playerdata.length; index++) {
-            if (index > 20) {
+            /*if (index > 20) {
                 break;
-            }
+            }*/
             var player = json.playerdata[index]
             player.name = <strong>{player.firstname} {player.lastname}</strong>
             
@@ -52,14 +52,6 @@ class StatTable extends Component {
 
     render(){
         var headers = []
-
-        if (this.state.headerType === "topplayers"){
-            headers.push(<th>Player</th>)
-            headers.push(<th>Position</th>)
-            headers.push(<th>Team</th>)
-            headers.push(<th>Total Points</th>)
-        }
-
         if (this.state.headerType === "topwr"){
             headers.push(<th>Player</th>)
             headers.push(<th>Position</th>)

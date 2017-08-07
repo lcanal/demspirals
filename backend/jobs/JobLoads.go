@@ -23,9 +23,10 @@ func LoadAllPlayerData(wg *sync.WaitGroup) {
 	//stats := make(map[string][]models.Stat)
 
 	seasonKey := "2016-regular"
+	currSeasonKey := "2017-regular"
 	apiBase := viper.GetString("apiBaseURL") + "/v1.1/pull/nfl/"
 	cumPlayerSeasonStats := apiBase + seasonKey + "/cumulative_player_stats.json"
-	activePlayerInfo := apiBase + seasonKey + "/active_players.json"
+	activePlayerInfo := apiBase + currSeasonKey + "/active_players.json"
 
 	data, err := ioutil.ReadAll(routes.CallAPI(cumPlayerSeasonStats))
 	if err != nil {
@@ -77,7 +78,7 @@ func LoadAllPlayerData(wg *sync.WaitGroup) {
 			db.Save(&team)
 		}
 	}
-	log.Printf("Finished loading %d teams\n", len(teams))
+	log.Printf("Finished loading %d teams into database.\n", len(teams))
 
 	/*//This query both runs insert on player AND update team.
 	for _, player := range players {
@@ -131,7 +132,10 @@ func CalculatePoints(wg *sync.WaitGroup) {
 
 func loadPlayers(players map[string]models.Player, wg *sync.WaitGroup) {
 	//Create raw load strings
-	stmt := "INSERT INTO players (id,last_name,first_name,jersey_number,position,pic_url,team_id) VALUES (?,?,?,?,?,?,?)"
+	stmt := `INSERT INTO players 
+	(id,last_name,first_name,jersey_number,position,pic_url,age,height,weight,rookie,nfl_id,team_id) 
+	VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+	`
 	rawdb := loader.ConnectDB()
 	st, err := rawdb.Prepare(stmt)
 	if err != nil {
@@ -140,7 +144,12 @@ func loadPlayers(players map[string]models.Player, wg *sync.WaitGroup) {
 	}
 	count := 0
 	for _, player := range players {
-		_, err := st.Exec(player.ID, player.LastName, player.FirstName, player.JerseyNumber, player.Position, player.PicURL, player.TeamID)
+		_, err := st.Exec(
+			player.ID, player.LastName, player.FirstName,
+			player.JerseyNumber, player.Position, player.PicURL,
+			player.Age, player.Height, player.Weight, player.Rookie, player.NflID,
+			player.TeamID,
+		)
 		if err != nil {
 			log.Fatalf("Error executing statement for saving players %s:\n %s", stmt, err.Error())
 			return
