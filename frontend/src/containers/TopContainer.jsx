@@ -4,7 +4,7 @@ import "../css/TopContainer.css";
 
 class TopContainer extends Component{
     render(){
-        var apiURL = "/api/topoverall"
+        var apiURL = "/api/topplayers"
         if (typeof this.props.statfilter !== 'undefined' && this.props.statfilter.length > 0){
             apiURL = apiURL + "/" + this.props.statfilter
         }
