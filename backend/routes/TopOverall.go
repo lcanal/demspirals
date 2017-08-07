@@ -56,7 +56,7 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 	var results []result
 
 	topQuery := `
-SELECT 
+	SELECT 
 		players.id,
 		players.last_name,
 		players.first_name,
@@ -64,14 +64,7 @@ SELECT
 		players.team_id,
 		players.pic_url,
         teams.name as team_name,
-		teams.city as team_city,
-		points.id as pid,
-		points.category,
-		points.abbreviation,
-		points.name,
-		points.league_name,
-		points.stat_num,
-		points.value,
+        teams.city as team_city,
 		SUM(points.value) total_fantasy_points
 	FROM
     	players
@@ -86,8 +79,7 @@ SELECT
 	`
 	topQuery = topQuery + posFilter + `
 	GROUP BY
-		players.id,
-		points.id
+    	players.id
 	ORDER BY
     	total_fantasy_points
 	DESC
