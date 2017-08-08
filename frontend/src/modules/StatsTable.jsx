@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Table,Fade } from 'react-bootstrap';
+import { Table,Fade,ProgressBar } from 'react-bootstrap';
+import "../css/StatsTable.css";
 
 class StatTable extends Component {
     state = {
@@ -7,6 +8,7 @@ class StatTable extends Component {
         playerHeaders: [],
         rows: [],
         showTable: false,
+        loadState: 0.0,
         numLimit: 20
     }
 
@@ -28,7 +30,7 @@ class StatTable extends Component {
             //console.log("Fetching: http://localhost:8080/api/player/"+position+"/"+player.id)
             var playerstatsresponse =  await fetch("/api/player/"+position+"/"+player.id)
             var stats = await playerstatsresponse.json()
-            rows.push(<ResultEntry player={player} key={player.id} playerstats={stats} />)
+            rows.push(<ResultEntry player={player} key={player.id} pid={player.id} playerstats={stats} />)
 
             if (!headerset){
                for (var idx in stats) {
@@ -42,6 +44,10 @@ class StatTable extends Component {
                }
                headerset = true;
             }
+
+            this.setState({
+                "loadState": index
+            })
         }
        
         
@@ -55,18 +61,22 @@ class StatTable extends Component {
 
     render(){
         var headers = []
-        headers.push(<th>Player</th>)
-        headers.push(<th>Position</th>)
-        headers.push(<th>Team</th>)
+        headers.push(<th key="Player">Player</th>)
+        headers.push(<th key="Position">Position</th>)
+        headers.push(<th key="Team">Team</th>)
         //Build headers as we get them from the api
         this.state.playerHeaders.forEach(function(header) {
-            headers.push(<th>{header}</th>)
+            headers.push(<th key={header}>{header}</th>)
         }, this);
-        headers.push(<th>Total Points</th>)
+        headers.push(<th key="TotalPoints">Total Points</th>)
         return (
-            <Fade in={this.state.showTable} transitionAppear={true}>
+            <div>
+            <Fade in={!this.state.showTable} unmountOnExit={true} >
+                <ProgressBar className="stats-table-load-status" now={this.state.loadState} max={this.state.numLimit} />
+            </Fade>
+            <Fade in={this.state.showTable} transitionAppear={true} >
             <Table className="stats-table"  hover bordered responsive >
-                <thead><tr key="1">
+                <thead><tr>
                     {headers}
                 </tr></thead>
                 <tbody>
@@ -74,6 +84,7 @@ class StatTable extends Component {
                 </tbody>
             </Table>
             </Fade>
+            </div>
         )
     }
 }
@@ -86,14 +97,14 @@ class ResultEntry extends Component {
       for (var index in stats) {
           if (stats.hasOwnProperty(index)) {
              if (stats[index].leaguename.length > 0) {
-                statsTD.push(<td>{stats[index].value.toFixed(2)}</td>)
+                statsTD.push(<td key={stats[index].playerid+"-"+stats[index].name}>{stats[index].value.toFixed(2)}</td>)
              }else{
-                statsTD.push(<td>{stats[index].statnum.toFixed(2)}</td>)
+                statsTD.push(<td key={stats[index].playerid+"-"+stats[index].name}>{stats[index].statnum.toFixed(2)}</td>)
              }
           }
       }
     return(
-      <tr className="stat-row" id={this.key}>
+      <tr className="stat-row" key={this.props.pid}>
         <td>{this.props.player.name}</td>
         <td>{this.props.player.position}</td>
         <td>{this.props.player.teamname} </td>

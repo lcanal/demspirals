@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
-import { Table,Fade } from 'react-bootstrap';
+import { Table,Fade,ProgressBar } from 'react-bootstrap';
 import '../css/TopOverall.css';
 
 class OverallTable extends Component {
     state = {
         players: [],
-        showTable: false
+        showTable: false,
+        loadState: 0
+    }
+
+     handleProgressUpdate(updateValue){
+        this.setState({
+            "loadState": updateValue
+        })
     }
 
     async componentDidMount(){
@@ -27,7 +34,10 @@ class OverallTable extends Component {
             var player = this.state.players[index]
             rows.push(<ResultEntry player={player} key={player.id} />)
         }
+        
         return (
+            <div>
+        <ProgressBar active now={this.state.loadState} />
             <Fade in={this.state.showTable} transitionAppear={true}>
             <Table className="stats-table" condensed hover bordered responsive >
                 <thead>
@@ -48,6 +58,7 @@ class OverallTable extends Component {
                 </tbody>
             </Table>
             </Fade>
+            </div>
         )
     }
 }
