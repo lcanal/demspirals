@@ -9,20 +9,32 @@ class OverallTable extends Component {
         loadState: 0
     }
 
-     handleProgressUpdate(updateValue){
-        this.setState({
-            "loadState": updateValue
-        })
+    updateProgress(oEvent){
+        if (oEvent.lengthComputable) {
+        var percentComplete = oEvent.loaded / oEvent.total;
+           this.setState({
+               "loadState": percentComplete
+           })
+        } else {
+            //console.log("Byte size for computing % done is unknown.")
+            this.setState({
+                "loadState": this.state.loadState + 60
+            })
+        }
     }
 
     async componentDidMount(){
-        const response  = await fetch(this.props.apiURL)
-        const json      = await response.json()
         
+        //const response  = await fetch(this.props.apiURL)
+        //const json      = await response.json()
+        const response = await fetchOverallPlayers(this.props.apiURL,this.updateProgress.bind(this))
+       // const json      = await response.json()
         this.setState({
-            "players" : json.playerdata,
+            "players" : response.playerdata,
             "showTable": true
         })
+
+        
     }
 
     render(){
@@ -37,7 +49,9 @@ class OverallTable extends Component {
         
         return (
             <div>
-        <ProgressBar active now={this.state.loadState} />
+            <Fade in={!this.state.showTable} unmountOnExit={true} >
+                <ProgressBar className="stats-table-load-status" now={this.state.loadState} max={this.state.numLimit} />
+            </Fade>
             <Fade in={this.state.showTable} transitionAppear={true}>
             <Table className="stats-table" condensed hover bordered responsive >
                 <thead>
@@ -84,4 +98,33 @@ class ResultEntry extends Component {
   }
 }
 
+//This is to implement progress 
+export const fetchOverallPlayers = (apiURL,progress) => {
+    return new Promise((resolve,reject) => {
+        var req = new XMLHttpRequest();
+        req.addEventListener("progress",progress);
+        //req.addEventListener("load",transferComplete);
+
+        req.open("GET",apiURL);
+        req.send();
+        req.onreadystatechange = function(){
+            if (req.readyState === XMLHttpRequest.DONE){
+                let data = JSON.parse(req.responseText)
+                resolve(data)
+            }
+        }
+    });
+}
+
+
+/*
+function transferComplete(evt) {
+        console.log("The transfer is complete.");
+        console.log("Event print ",evt)
+        this.setState({
+            "loadState": 100,
+            "showTable": "true"
+        })
+    }
+*/
 export default OverallTable;
