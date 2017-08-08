@@ -14,7 +14,7 @@
     "url": "https://github.com/lcanal/demspirals.git"
   },
   "scripts": {
-    "install": "(cd frontend && npm install) && (cd ../) && (cd backend && dep ensure)",
+    "install": "(cd frontend && npm install) && (cd ../) && (cd backend && dep ensure -v)",
     "start": "concurrently \"cd frontend && cross-env PORT=3000 npm start\" \"cd backend && go run demspirals.go\"",
     "build": "concurrently \"cd frontend && npm run build\" \"cd backend && go build \"",
     "prepackage": "rm -r package || true",
