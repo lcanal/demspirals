@@ -29,7 +29,7 @@ To start a development instance with live reloading on the frontend side:
 
     $ npm start
 
-To et ready to package a build for distribution, you can build the binary and JS bundles:
+To get ready to package a build for distribution, you can build the binary and JS bundles:
 
     $ npm run build
 
