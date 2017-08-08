@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Table } from 'react-bootstrap';
+import { Table,Fade } from 'react-bootstrap';
+import '../css/TopOverall.css';
 
 class OverallTable extends Component {
     state = {
-        players: []
+        players: [],
+        showTable: false
     }
 
     async componentDidMount(){
@@ -11,12 +13,13 @@ class OverallTable extends Component {
         const json      = await response.json()
         
         this.setState({
-            "players" : json.playerdata
+            "players" : json.playerdata,
+            "showTable": true
         })
     }
 
     render(){
-        var rows = []; 
+        var rows = [];
         for (var index = 0; index < this.state.players.length; index++) {
             if (index > 10) {
                 break;
@@ -24,11 +27,11 @@ class OverallTable extends Component {
             var player = this.state.players[index]
             rows.push(<ResultEntry player={player} key={player.id} />)
         }
-
         return (
+            <Fade in={this.state.showTable} transitionAppear={true}>
             <Table className="stats-table" condensed hover bordered responsive >
                 <thead>
-                    <tr><th colSpan="100"><h4>{this.props.title}</h4></th></tr>
+                    <tr><th colSpan="100"><h4>Top 10 {this.props.title}</h4></th></tr>
                     <tr>
                     <th>Player</th>
                     <th>Age</th>
@@ -44,6 +47,7 @@ class OverallTable extends Component {
                     {rows}
                 </tbody>
             </Table>
+            </Fade>
         )
     }
 }

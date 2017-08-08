@@ -34,7 +34,7 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 	//Caching for results
 	jsonPlayers, found := loader.ReadFromCache(cacheKey)
 	if found {
-		fmt.Fprintf(w, string(jsonPlayers.([]byte)))
+		fmt.Fprint(w, string(jsonPlayers.([]byte)))
 		return
 	}
 
@@ -103,32 +103,46 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, string(b))
+	fmt.Fprint(w, string(b))
 	loader.WriteToCache(cacheKey, b, 6*time.Hour)
 }
 
 //PlayerInfo returns proper headers for overall players.
 func PlayerInfo(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+	position := vars["position"]
 	pid := vars["pid"]
+	var posFilter string
 
 	//Caching for results
 	jsonPlayerInfo, found := loader.ReadFromCache(pid)
 	if found {
-		fmt.Fprintf(w, string(jsonPlayerInfo.([]byte)))
+		fmt.Fprint(w, string(jsonPlayerInfo.([]byte)))
+		return
+	}
+
+	switch position {
+	case "rb":
+		posFilter = "Rushing"
+	case "qb":
+		posFilter = "Passing"
+	case "wr":
+		posFilter = "Receiving"
+	default:
+		fmt.Fprintf(w, "{\"invalid_call_status\" : \"Position key required.\"}")
 		return
 	}
 
 	type result struct {
-		ID           string
-		PlayerID     string
-		Category     string
-		Abbreviation string
-		Name         string
-		LeagueName   string
-		StatID       string
-		StatNum      float64
-		Value        float64
+		ID           string  `json:"id"`
+		PlayerID     string  `json:"playerid"`
+		Category     string  `json:"category"`
+		Abbreviation string  `json:"abbreviation"`
+		Name         string  `json:"name"`
+		LeagueName   string  `json:"leaguename"`
+		StatID       string  `json:"statid"`
+		StatNum      float64 `json:"statnum"`
+		Value        float64 `json:"value"`
 	}
 
 	var results []result
@@ -141,7 +155,7 @@ func PlayerInfo(w http.ResponseWriter, r *http.Request) {
 	ON players.id = points.player_id
 	WHERE
 		players.id IN ('` + pid + `')
-    AND points.category = "Receiving"
+    AND points.category = '` + posFilter + `'
 	`
 
 	db := loader.GormConnectDB()
@@ -153,7 +167,8 @@ func PlayerInfo(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error marshalling top players: %s", err.Error())
 		return
 	}
-	fmt.Fprintf(w, string(b))
+
+	fmt.Fprint(w, string(b))
 	db.Close()
 	loader.WriteToCache(pid, b, 4*time.Hour)
 }

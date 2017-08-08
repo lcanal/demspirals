@@ -13,3 +13,9 @@
 .stats-table th {
     text-align: center;
 }
+
+.loading-div {
+   margin: 40px auto 0;
+    width: 100%;
+    max-width: 60px;
+}

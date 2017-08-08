@@ -12,7 +12,7 @@ class TopOverall extends Component {
         return (
         <Panel>
             <div className="top-overall-container">
-                <OverallTable apiURL={qbURL} title="Quarterbacks"/>
+                <OverallTable apiURL={qbURL} title="Quarterbacks" />
                 <OverallTable apiURL={wrURL} title="Wideouts" />
                 <OverallTable apiURL={rbURL} title="Running Backs" />
             </div>

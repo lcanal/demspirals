@@ -7,7 +7,7 @@ class TopPosContainer extends Component{
         var apiURL = "/api/topplayers/" + this.props.position
         return(
             <div className="top-overall-container">
-                <StatsTable apiURL={apiURL} />
+                <StatsTable apiURL={apiURL} position={this.props.position}/>
             </div>
         )
     }

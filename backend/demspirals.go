@@ -32,7 +32,7 @@ func main() {
 	muxie.HandleFunc("/api/hello", hello)
 	muxie.HandleFunc("/api/topplayers", routes.TopOverall)
 	muxie.HandleFunc("/api/topplayers/{position}", routes.TopOverall)
-	muxie.HandleFunc("/api/player/{pid}", routes.PlayerInfo)
+	muxie.HandleFunc("/api/player/{position}/{pid}", routes.PlayerInfo)
 	muxie.PathPrefix("/").Handler(http.FileServer(http.Dir("./" + frontendFiles)))
 	http.Handle("/", muxie)
 
