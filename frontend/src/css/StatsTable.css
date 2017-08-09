@@ -5,3 +5,11 @@
 .stat-player-selected {
     font-weight: bold;
 }
+
+.custom-modal{
+    width: 90%;
+}
+
+.show-modal-button{
+    float: right;
+}

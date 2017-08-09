@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Fade,ProgressBar } from 'react-bootstrap';
+import { Fade,ProgressBar,Button } from 'react-bootstrap';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import MyLargeModal from "../components/ExampleModal.jsx";
 import '../css/react-bootstrap-table-all.min.css';
 import "../css/StatsTable.css";
 
@@ -8,13 +9,13 @@ const selectRowProp = {
   mode: 'checkbox',
   hideSelectColumn: true,
   clickToSelect: true, // enable click to select
-  bgColor: '#337ab7',
+  bgColor: 'rgba(51, 122, 183, 0.48)',
+  showOnlySelected: true,
   className: 'stat-player-selected'
 };
 
 
 class StatTable extends Component {
-    
     state = {
         players: [],
         playerHeaders: [],
@@ -26,6 +27,11 @@ class StatTable extends Component {
     options = {
       sortIndicator: true 
     };
+
+    getInitialState() {
+        return { lgShow: false };
+    }
+
 
     setStateAsync(state) {
         return new Promise((resolve) => {
@@ -97,6 +103,9 @@ class StatTable extends Component {
 
     render(){
         var headers = []
+        let lgClose = () => this.setState({ lgShow: false });
+        
+        //Build some headers manually
         headers.push(<TableHeaderColumn key="id" isKey={true} dataField="id" hidden={true}>#</TableHeaderColumn>)
         headers.push(<TableHeaderColumn key="name" dataField="name">Player</TableHeaderColumn>)
        
@@ -108,6 +117,8 @@ class StatTable extends Component {
             
         }, this);
         headers.push(<TableHeaderColumn key="totalfantasypoints" dataField="totalfantasypoints" dataSort caretRender={getCaret}>Total Points</TableHeaderColumn>)
+        
+        
         return (
             <div>
             <Fade in={!this.state.showTable} unmountOnExit={true} >
@@ -115,6 +126,10 @@ class StatTable extends Component {
             </Fade>
             <Fade in={this.state.showTable} transitionAppear={true} >
                 <div>
+                <Button bsStyle="primary" bsSize="small" onClick={()=>this.setState({ lgShow: true })} className="show-modal-button" >
+                    Show Point Composition
+                </Button>
+                <MyLargeModal show={this.state.lgShow} onHide={lgClose} />
                 <BootstrapTable selectRow={ selectRowProp } 
                                 data={this.state.players} 
                                 options={this.options}
