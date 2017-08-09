@@ -8,19 +8,6 @@ import TopPosition from './components/TopPosition';
 import './css/App.css';
 
 class App extends Component {
-  state = {
-    welcomeword: "None"
-  }
-
-  async componentDidMount(){
-    const response = await fetch("/api/hello")
-    const json = await response.json()   
-
-    this.setState({
-      "welcomeword" : json.hello
-    })
-  }
-
   render() {
     return (
       <Router basename={process.env.PUBLIC_URL}>

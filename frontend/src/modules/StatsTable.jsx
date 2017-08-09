@@ -6,7 +6,10 @@ import "../css/StatsTable.css";
 
 const selectRowProp = {
   mode: 'checkbox',
-  clickToSelect: true  // enable click to select
+  hideSelectColumn: true,
+  clickToSelect: true, // enable click to select
+  bgColor: '#337ab7',
+  className: 'stat-player-selected'
 };
 
 
@@ -24,6 +27,13 @@ class StatTable extends Component {
       sortIndicator: true 
     };
 
+    setStateAsync(state) {
+        return new Promise((resolve) => {
+            this.setState(state, resolve)
+        });
+    }
+
+    
     async componentDidMount(){
         const response  = await fetch(this.props.apiURL)
         const json      = await response.json()
@@ -31,11 +41,10 @@ class StatTable extends Component {
         var players = []
 
         var headerset = false;
-        var position = this.props.position
+        var position  = this.props.position
 
-        this.setState({
-            "numLimit" : json.playerdata.length
-        });
+        await this.setStateAsync({"numLimit" : json.playerdata.length}); //causes setstate error.
+        //this.setState({"numLimit" : json.playerdata.length}); //causes setstate error.
 
         for (var index = 0; index < json.playerdata.length; index++) {
             var player = json.playerdata[index]
@@ -67,30 +76,23 @@ class StatTable extends Component {
                             player[statkey] = stats[pidx].value.toFixed(2)
                        }else{
                             statkey = stats[pidx].name
-                            player[statkey] = stats[pidx].statnum
+                            player[statkey] = stats[pidx].statnum.toFixed(2)
                        }
                    }
                }
 
-
-            this.setState({
-                "loadState": index
-            })
-
+            //Fix totalpoint. HARD assumption key exists
+            player.totalfantasypoints = player.totalfantasypoints.toFixed(2)
+            
+            await this.setStateAsync({"loadState": index})
             players.push(player)
         }
        
-        this.setState({
+        await this.setStateAsync({
             "players" : players,
             "playerHeaders" : playerHeaders,
             "showTable": true
-        })
-    }
-
-    componentWillUnmount () {
-     //Trying to see why I get setstate() errors only on refresh.
-     //Async set state: 
-     //https://medium.com/front-end-hacking/async-await-with-react-lifecycle-methods-802e7760d802
+        });
     }
 
     render(){

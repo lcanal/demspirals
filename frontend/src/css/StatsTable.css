@@ -1,3 +1,7 @@
 .stats-table-load-status {
     margin-top: 5em;
 }
+
+.stat-player-selected {
+    font-weight: bold;
+}

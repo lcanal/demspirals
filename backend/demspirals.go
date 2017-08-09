@@ -29,7 +29,6 @@ func main() {
 
 	muxie := mux.NewRouter()
 
-	muxie.HandleFunc("/api/hello", hello)
 	muxie.HandleFunc("/api/topplayers", routes.TopOverall)
 	muxie.HandleFunc("/api/topplayers/{position}", routes.TopOverall)
 	muxie.HandleFunc("/api/player/{position}/{pid}", routes.PlayerInfo)
@@ -82,10 +81,6 @@ func main() {
 	log.Printf("Using database %s:%s", viper.GetString("db.host"), viper.GetString("db.port"))
 
 	log.Fatal(http.ListenAndServe(":"+httpPort, muxie))
-}
-
-func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "{\"hello\":\"world\"}")
 }
 
 func configRead(configName string) (string, string) {
