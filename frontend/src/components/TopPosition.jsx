@@ -1,13 +1,15 @@
-import React, { Component } from 'react';
-import { Panel } from 'react-bootstrap';
-import TopPosContainer from '../containers/TopPosContainer';
-class TopPosition extends Component {
+import React,{ Component } from 'react';
+import StatsTable from '../modules/StatsTable';
+//import "../css/TopPosition.css";
+
+class TopPosition extends Component{
     render(){
-        return (
-        <Panel>
-        <TopPosContainer position={this.props.position}/>  
-        </Panel>
-        );
+        var apiURL = "/api/topplayers/" + this.props.position
+        return(
+            <div className="top-overall-container">
+                <StatsTable apiURL={apiURL} position={this.props.position}/>
+            </div>
+        )
     }
 }
 

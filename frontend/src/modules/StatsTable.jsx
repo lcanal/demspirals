@@ -75,7 +75,7 @@ class StatTable extends Component {
                 <ProgressBar className="stats-table-load-status" now={this.state.loadState} max={this.state.numLimit} />
             </Fade>
             <Fade in={this.state.showTable} transitionAppear={true} >
-            <Table className="stats-table"  hover bordered responsive >
+            <Table className="stats-table"  condensed hover bordered responsive >
                 <thead><tr>
                     {headers}
                 </tr></thead>

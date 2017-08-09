@@ -7,9 +7,6 @@ class Home extends Component {
         return (
         <Jumbotron>
             <h1>You ready to lob these?!</h1>
-            <p>
-                Use the nav bars to the top to explore.
-            </p>
         </Jumbotron>
         )
     }
