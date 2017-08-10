@@ -31,6 +31,10 @@ class StatTable extends Component {
       sortIndicator: true 
     };
 
+    pointFormatter(cell, row) { 
+        return `${cell.toFixed(2)}`;
+    }
+
     getInitialState() {
         return { lgShow: false };
     }
@@ -82,16 +86,16 @@ class StatTable extends Component {
                    if (stats.hasOwnProperty(pidx)) {
                        if (stats[pidx].leaguename.length > 0){
                             statkey = stats[pidx].leaguename
-                            player[statkey] = stats[pidx].value.toFixed(2)
+                            player[statkey] = parseFloat(stats[pidx].value)
                        }else{
                             statkey = stats[pidx].name
-                            player[statkey] = stats[pidx].statnum.toFixed(2)
+                            player[statkey] = parseFloat(stats[pidx].statnum)
                        }
                    }
                }
 
             //Fix totalpoint. HARD assumption key exists
-            player.totalfantasypoints = player.totalfantasypoints.toFixed(2)
+            player.totalfantasypoints = parseFloat(player.totalfantasypoints)
             
             await this.setStateAsync({"loadState": index})
             players.push(player)
@@ -116,10 +120,10 @@ class StatTable extends Component {
         headers.push(<TableHeaderColumn key="teamname" dataField="teamname">Team</TableHeaderColumn>)
         //Build headers as we get them from the api
         this.state.playerHeaders.forEach(function(header) {
-            headers.push(<TableHeaderColumn key={header} dataField={header} dataSort={true} caretRender={getCaret}>{header}</TableHeaderColumn>)
+            headers.push(<TableHeaderColumn key={header} dataFormat={ this.pointFormatter } dataField={header} dataSort caretRender={getCaret}>{header}</TableHeaderColumn>)
             
         }, this);
-        headers.push(<TableHeaderColumn key="totalfantasypoints" dataField="totalfantasypoints" dataSort caretRender={getCaret}>Total Points</TableHeaderColumn>)
+        headers.push(<TableHeaderColumn key="totalfantasypoints" dataFormat={ this.pointFormatter } dataField="totalfantasypoints" dataSort caretRender={getCaret}>Total Points</TableHeaderColumn>)
         
         
         return (
