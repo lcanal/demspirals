@@ -139,10 +139,10 @@ class StatTable extends Component {
                 <ToggleButtonGroup type="radio" name="whichstats" defaultValue={1}>
         
                 <ToggleButton value={1} bsStyle="primary" bsSize="small" onClick={()=>this.setState({ statsShow: true,espnShow: false })} className="reg-stats-button" >
-                    Player Stats
+                    Stats
                 </ToggleButton>
                 <ToggleButton value={2} bsStyle="primary" bsSize="small" onClick={()=>this.setState({ statsShow: false, espnShow: true })} className="espn-stats-button" >
-                    ESPN Value
+                    ESPN Points
                 </ToggleButton>
                 </ToggleButtonGroup>
                 <Button id="show-modal-button" bsStyle="primary" bsSize="small" disabled={this.state.lgShow} onClick={()=>this.setState({ lgShow: true })} className="show-modal-button" >
