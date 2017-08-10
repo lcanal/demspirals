@@ -18,50 +18,61 @@ class PointCompModal extends Component {
       }
     }
 
+
+    var options = {
+      responsive: false,
+      maintainAspectRatio: false,
+      stacked: true,
+      spanGaps: true,
+      lineTension: 0.1,
+    }
+
+    //Main logic of adding player data to display
     for (var id in this.props.players) {
       if (this.props.players.hasOwnProperty(id)) {
-        var player = this.props.players[id]
+        var player = this.props.players[id];
+        var playerData = [];
+
+        //Add data to display to chart. Match stat by the header type.
+        for (var key in player) {
+          if (player.hasOwnProperty(key)) {
+            //Match stat with header
+            for (var h in this.props.headers) {
+              if (this.props.headers.hasOwnProperty(h)) {
+                //Negative numbers OK, just don't want to fill chart with 0 bars.
+                if (key === this.props.headers[h] && player[key] !== 0 ){
+                  var stats = [];
+                  stats.push(player[key])
+                  //Construct datapoint for use in charts
+                  var datapoint = {
+                    label: this.props.headers[h],
+                    data: stats,
+                    backgroundColor: headerColorMap(this.props.headers[h])
+                  }
+                  playerData.push(datapoint)
+                } // endif
+              }
+            }//end headerfor
+          }
+        }//end playerfor
+
+        //Consturct data for particular chart
+        var data = {
+          labels: [ "Total Points: "+player.totalfantasypoints ],
+          datasets: playerData
+        }
+
         if (player.picurl.length <= 0){
           player.picurl = process.env.PUBLIC_URL + "/no-image.png"
         }
         playas.push(
           <tr key={player.id}>
-            <td className="modal-player">{player.name}
-              <br /><img src={player.picurl} alt=" " /></td>
-            <td className="modal-data">{player.totalfantasypoints}</td>
+            <td className="modal-player">{player.name} <br /><img src={player.picurl} alt=" " /></td>
+            <td><Bar data={data} options={options} height={300} width={1000}/></td>
           </tr>
           )
       }
     }
-
-    var options = {
-      responsive: true,
-      maintainAspectRatio: false,
-      stacked: true,
-      spanGaps: true,
-      lineTension: 0.1,
-      scales: {
-            yAxes: [{
-                stacked: true
-            }]
-        }
-    }
-
-    var data = {
-      labels: ["1","2","3","4"],
-      dataSets: [
-        {
-          label: "Age",
-          data: [10,3,5,10],
-          backgroundColor: generateColors([10,3,5,10],'rgba(75, 192, 192, 0.2)')
-        },
-        {
-        label: "Age2",
-          data: [12,9,7,11],
-          backgroundColor: generateColors([10,3,5,10],'rgba(255, 99, 132, 0.2)')
-        }
-      ]
-    }// data
 
     return (
       <Modal {...this.props} bsSize="large" dialogClassName="custom-modal" aria-labelledby="contained-modal-title-lg">
@@ -74,9 +85,8 @@ class PointCompModal extends Component {
               <th><strong>Player</strong></th>
               <th><strong>Point Composition</strong></th>
             </tr></thead>
-            <tbody></tbody>
+            <tbody>{playas}</tbody>
           </Table>
-          <Bar data={data} options={options} height={200} />
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.props.onHide}>Close</Button>
@@ -86,18 +96,17 @@ class PointCompModal extends Component {
   }
 }
 
-function generateColors(dataArray,colorString){
-  var colorArray = [colorString];
-
-  if(typeof dataArray === "undefined"){
-    return colorArray.push(colorString);
+//Generate consistent colors based on the header type.
+function headerColorMap(headerString){
+  switch (headerString) {
+    //Rushing stats
+    case "RY10":
+      return 'rgba(191, 191, 74, 0.2)'
+    case "RTD":
+      return 'rgba(74, 191, 74, 0.2)'
+    default:
+      return 'rgba(78, 192, 192, 0.2)'
   }
-
-  for (var i = 0; i < dataArray.length; i++) {
-    colorArray.push(colorString);
-  }
-
-  return colorArray;
 }
 
 export default PointCompModal;
