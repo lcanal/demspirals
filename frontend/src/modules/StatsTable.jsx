@@ -108,6 +108,11 @@ class StatTable extends Component {
         });
     }
 
+    componentWillUnmount(){
+        //Don't want to carry over other players from other tabs.
+        playersToPointComp = {};
+    }
+
     render(){
         var headers = []
         let lgClose = () => this.setState({ lgShow: false });

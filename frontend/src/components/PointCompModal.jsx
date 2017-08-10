@@ -65,9 +65,12 @@ class PointCompModal extends Component {
         if (player.picurl.length <= 0){
           player.picurl = process.env.PUBLIC_URL + "/no-image.png"
         }
+        var nflprofileURL = "http://www.nfl.com/player/pid/"+player.nflid+"/profile"
+        var nameField = <a href={nflprofileURL} target="_">{player.name}</a>
+
         playas.push(
           <tr key={player.id}>
-            <td className="modal-player">{player.name} <br /><img src={player.picurl} alt=" " /></td>
+            <td className="modal-player">{nameField} <br /><img src={player.picurl} alt=" " /></td>
             <td><Bar data={data} options={options} height={300} width={1000}/></td>
           </tr>
           )
