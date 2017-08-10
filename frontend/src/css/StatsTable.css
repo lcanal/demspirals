@@ -13,3 +13,7 @@
 .show-modal-button{
     float: right;
 }
+
+.react-bs-table-pagination {
+    padding-bottom: 8em;
+}

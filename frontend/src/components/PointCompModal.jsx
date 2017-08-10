@@ -19,6 +19,9 @@ class PointCompModal extends Component {
     for (var id in this.props.players) {
       if (this.props.players.hasOwnProperty(id)) {
         var player = this.props.players[id]
+        if (player.picurl.length <= 0){
+          player.picurl = process.env.PUBLIC_URL + "/no-image.png"
+        }
         playas.push(
           <tr key={player.id}>
             <td className="modal-player">{player.name}
