@@ -25,6 +25,13 @@ class PointCompModal extends Component {
       stacked: true,
       spanGaps: true,
       lineTension: 0.1,
+       scales: {
+            yAxes: [{
+                ticks: {
+                    suggestedMax: 350
+                }
+            }]
+        }
     }
 
     //Main logic of adding player data to display
@@ -40,7 +47,7 @@ class PointCompModal extends Component {
             for (var h in this.props.headers) {
               if (this.props.headers.hasOwnProperty(h)) {
                 //Negative numbers OK, just don't want to fill chart with 0 bars.
-                if (key === this.props.headers[h] && player[key] !== 0 ){
+                if (key === this.props.headers[h] ){
                   var stats = [];
                   stats.push(player[key])
                   //Construct datapoint for use in charts
@@ -58,7 +65,7 @@ class PointCompModal extends Component {
 
         //Consturct data for particular chart
         var data = {
-          labels: [ "Total Points: "+player.totalfantasypoints ],
+          labels: [ "Total Points: "+player.totalfantasypoints.toFixed(2) ],
           datasets: playerData
         }
 
