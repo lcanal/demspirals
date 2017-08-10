@@ -1,5 +1,6 @@
 import React, {Component } from 'react';
 import {Table,Button,Modal} from 'react-bootstrap';
+import "../css/Modals.css";
 
 class PointCompModal extends Component {
   render() {
@@ -20,10 +21,8 @@ class PointCompModal extends Component {
         var player = this.props.players[id]
         playas.push(
           <tr key={player.id}>
-            <td><img src={player.picurl} /> yknow</td>
-            <td>Hello derr {player.name}</td>
-            <td>And youuuuu {player.height}</td>
-            <td>And HUUUUUUUUU {player.weight}</td>
+            <td className="modal-player">{player.name}<br /><img src={player.picurl} alt={player.name}/></td>
+            <td className="modal-data">{player.totalfantasypoints}</td>
           </tr>
           )
       }
@@ -35,7 +34,10 @@ class PointCompModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <Table>
-            <thead><tr>{headers}</tr></thead>
+            <thead><tr>
+              <th><strong>Player</strong></th>
+              <th><strong>Point Composition</strong></th>
+            </tr></thead>
             <tbody>{playas}</tbody>
           </Table>
         </Modal.Body>
