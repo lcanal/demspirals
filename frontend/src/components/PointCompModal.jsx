@@ -8,9 +8,8 @@ class PointCompModal extends Component {
   render() {
     var playas = [];
     var headers = [];
+    
     //Build headers as we get them from the api
-   
-
     for (var idx in this.props.headers) {
       if (this.props.headers.hasOwnProperty(idx)) {
         var header = this.props.headers[idx]

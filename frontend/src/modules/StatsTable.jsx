@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Fade,ProgressBar,Button } from 'react-bootstrap';
+import { Fade,ProgressBar,Button,ToggleButton,ButtonToolbar,ToggleButtonGroup } from 'react-bootstrap';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import PointCompModal from "../components/PointCompModal.jsx";
 import '../css/react-bootstrap-table-all.min.css';
@@ -24,21 +24,18 @@ class StatTable extends Component {
         playerHeaders: [],
         showTable: false,
         loadState: 0.0,
-        numLimit: 0
+        numLimit: 0,
+        lgShow: false
     }
     
-    options = {
-      sortIndicator: true 
+    tableOptions = {
+      sortIndicator: true,
+      clearSearch: true
     };
 
     pointFormatter(cell, row) { 
         return `${cell.toFixed(2)}`;
     }
-
-    getInitialState() {
-        return { lgShow: false };
-    }
-
 
     setStateAsync(state) {
         return new Promise((resolve) => {
@@ -130,23 +127,37 @@ class StatTable extends Component {
         }, this);
         headers.push(<TableHeaderColumn key="totalfantasypoints" dataFormat={ this.pointFormatter } dataField="totalfantasypoints" dataSort caretRender={getCaret}>Total Points</TableHeaderColumn>)
         
-        
-        return (
+        return ( 
             <div>
             <Fade in={!this.state.showTable} unmountOnExit={true} >
                 <ProgressBar className="stats-table-load-status" now={this.state.loadState} max={this.state.numLimit} />
             </Fade>
             <Fade in={this.state.showTable} transitionAppear={true} >
                 <div>
-                <Button bsStyle="primary" bsSize="small" onClick={()=>this.setState({ lgShow: true })} className="show-modal-button" >
+
+                 <ButtonToolbar className="main-button-toolbar" >
+                <ToggleButtonGroup type="radio" name="whichstats" defaultValue={1}>
+        
+                <ToggleButton value={1} bsStyle="primary" bsSize="small" onClick={()=>this.setState({ statsShow: true,espnShow: false })} className="reg-stats-button" >
+                    Player Stats
+                </ToggleButton>
+                <ToggleButton value={2} bsStyle="primary" bsSize="small" onClick={()=>this.setState({ statsShow: false, espnShow: true })} className="espn-stats-button" >
+                    ESPN Point Value
+                </ToggleButton>
+                </ToggleButtonGroup>
+                <Button bsStyle="primary" bsSize="small" disabled={this.state.lgShow} onClick={()=>this.setState({ lgShow: true })} className="show-modal-button" >
                     Show Point Composition
                 </Button>
+                </ButtonToolbar>
+
+                                            
+
                 <PointCompModal show={this.state.lgShow} onHide={lgClose} players={playersToPointComp} headers={this.state.playerHeaders} />
                 <BootstrapTable selectRow={ selectRowProp } 
                                 data={this.state.players} 
-                                options={this.options}
+                                options={this.tableOptions}
                                 multiColumnSort={ 2 }
-                                pagination condensed bordered hover responsive version='4'>
+                                pagination search condensed bordered hover responsive version='4'>
                     {headers}
                 </BootstrapTable>
                 </div>
