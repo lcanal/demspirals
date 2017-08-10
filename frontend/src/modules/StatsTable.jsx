@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import { Fade,ProgressBar,Button } from 'react-bootstrap';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
-import MyLargeModal from "../components/ExampleModal.jsx";
+import PointCompModal from "../components/PointCompModal.jsx";
 import '../css/react-bootstrap-table-all.min.css';
 import "../css/StatsTable.css";
+
+var playersToPointComp = {};
 
 const selectRowProp = {
   mode: 'checkbox',
   hideSelectColumn: true,
   clickToSelect: true, // enable click to select
-  bgColor: 'rgba(51, 122, 183, 0.48)',
+  onSelect: onRowSelect,
   showOnlySelected: true,
+  bgColor: 'rgba(51, 122, 183, 0.48)',
   className: 'stat-player-selected'
 };
 
@@ -129,7 +132,7 @@ class StatTable extends Component {
                 <Button bsStyle="primary" bsSize="small" onClick={()=>this.setState({ lgShow: true })} className="show-modal-button" >
                     Show Point Composition
                 </Button>
-                <MyLargeModal show={this.state.lgShow} onHide={lgClose} />
+                <PointCompModal show={this.state.lgShow} onHide={lgClose} players={playersToPointComp} />
                 <BootstrapTable selectRow={ selectRowProp } 
                                 data={this.state.players} 
                                 options={this.options}
@@ -158,6 +161,23 @@ function getCaret(direction) {
   return (
     <span></span>
   );
+}
+
+function onRowSelect(row, isSelected, e) {
+    /*let rowStr = '';
+    for (const prop in row) {
+        rowStr += prop + ': "' + row[prop] + '"';
+    }
+    //console.log(e);
+    //console.log(`is selected: ${isSelected} =======  ${rowStr}`);
+    // console.log("ID I got: ", row["id"])*/
+    //console.log("ID I got: ", row["id"])
+    if (isSelected) {
+        playersToPointComp[row["id"]] = row
+    }else{
+        delete playersToPointComp[row["id"]]
+    }
+    console.log("Player array id size..",Object.keys(playersToPointComp).length)
 }
 
 export default StatTable;
