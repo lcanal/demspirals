@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Fade,ProgressBar,Button,ToggleButton,ButtonToolbar,ToggleButtonGroup } from 'react-bootstrap';
+import { Fade,ProgressBar,Button,DropdownButton,MenuItem } from 'react-bootstrap';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 import PointCompModal from "../components/PointCompModal.jsx";
 import '../css/react-bootstrap-table-all.min.css';
@@ -45,64 +45,7 @@ class StatTable extends Component {
 
     
     async componentDidMount(){
-        const response  = await fetch(this.props.apiURL)
-        const json      = await response.json()
-        var playerHeaders = []
-        var players = []
-
-        var headerset = false;
-        var position  = this.props.position
-
-        await this.setStateAsync({"numLimit" : json.playerdata.length}); //causes setstate error.
-        //this.setState({"numLimit" : json.playerdata.length}); //causes setstate error.
-
-        for (var index = 0; index < json.playerdata.length; index++) {
-            var player = json.playerdata[index]
-            player.name = player.firstname + " " + player.lastname
-
-            var playerstatsresponse =  await fetch("/api/player/"+position+"/"+player.id)
-            var stats = await playerstatsresponse.json()
-
-            //Set once for headers.
-            if (!headerset){
-               for (var hidx in stats) {
-                   if (stats.hasOwnProperty(hidx)) {
-                       if (stats[hidx].leaguename.length > 0){
-                            playerHeaders.push(stats[hidx].leaguename)
-                       }else{
-                            playerHeaders.push(stats[hidx].name)
-                       }
-                   }
-               }
-               headerset = true;
-            }
-
-            //Actually grab data in headers
-            for (var pidx in stats) {
-                var statkey
-                   if (stats.hasOwnProperty(pidx)) {
-                       if (stats[pidx].leaguename.length > 0){
-                            statkey = stats[pidx].leaguename
-                            player[statkey] = parseFloat(stats[pidx].value)
-                       }else{
-                            statkey = stats[pidx].name
-                            player[statkey] = parseFloat(stats[pidx].statnum)
-                       }
-                   }
-               }
-
-            //Fix totalpoint. HARD assumption key exists
-            player.totalfantasypoints = parseFloat(player.totalfantasypoints)
-            
-            await this.setStateAsync({"loadState": index})
-            players.push(player)
-        }
-       
-        await this.setStateAsync({
-            "players" : players,
-            "playerHeaders" : playerHeaders,
-            "showTable": true
-        });
+        await this.grabPlayerData(this.props.position,"stats")    //Default stat set is stats
     }
 
     componentWillUnmount(){
@@ -110,6 +53,76 @@ class StatTable extends Component {
         playersToPointComp = {};
     }
 
+    async recalcHeaders(eventKey,event){
+        this.setState({ showTable: false,numLimit: 0,loadState: 0})
+        await this.grabPlayerData(this.props.position,eventKey);
+    }
+
+    //Main data gathering function
+    async grabPlayerData(position,statSet){
+        return new Promise(async (resolve) => {
+            const response  = await fetch(this.props.apiURL);
+            const json      = await response.json();
+
+            await this.setStateAsync({"numLimit" : json.playerdata.length}); //causes setstate error.
+
+            var playerHeaders = []
+            var players = []
+
+            var headerset = false;
+            var position  = this.props.position
+            for (var index = 0; index < json.playerdata.length; index++) {
+                var player = json.playerdata[index]
+                player.name = player.firstname + " " + player.lastname
+
+                var playerstatsresponse =  await fetch("/api/player/"+position+"/"+player.id)
+                var stats = await playerstatsresponse.json()
+
+                //Set once for headers.
+                if (!headerset){
+                for (var hidx in stats) {
+                    if (stats.hasOwnProperty(hidx)) {
+                        if (statSet === "stats"){
+                                playerHeaders.push(stats[hidx].name)
+                        }else{
+                                playerHeaders.push(stats[hidx].leaguename)
+                        }
+                    }
+                }
+                headerset = true;
+                }
+
+                //Actually grab data in headers
+                for (var pidx in stats) {
+                    var statkey
+                    if (stats.hasOwnProperty(pidx)) {
+                        if (statSet === "stats"){
+                                statkey = stats[pidx].name
+                                player[statkey] = parseFloat(stats[pidx].statnum)
+                        }else{
+                                statkey = stats[pidx].leaguename
+                                player[statkey] = parseFloat(stats[pidx].value)
+                        }
+                    }
+                    }
+
+                //Fix totalpoint. HARD assumption key exists
+                player.totalfantasypoints = parseFloat(player.totalfantasypoints)
+                
+                this.setStateAsync({"loadState": index})
+                players.push(player)
+            }// endFor
+
+                this.setStateAsync({
+                "players" : players,
+                "playerHeaders" : playerHeaders,
+                "showTable": true
+            }); //setAsync
+            return resolve;
+        }); //Promise
+    }
+
+    
     render(){
         var headers = []
         let lgClose = () => this.setState({ lgShow: false });
@@ -135,22 +148,14 @@ class StatTable extends Component {
             <Fade in={this.state.showTable} transitionAppear={true} >
                 <div>
 
-                 <ButtonToolbar className="main-button-toolbar" >
-                <ToggleButtonGroup type="radio" name="whichstats" defaultValue={1}>
-        
-                <ToggleButton value={1} bsStyle="primary" bsSize="small" onClick={()=>this.setState({ statsShow: true,espnShow: false })} className="reg-stats-button" >
-                    Stats
-                </ToggleButton>
-                <ToggleButton value={2} bsStyle="primary" bsSize="small" onClick={()=>this.setState({ statsShow: false, espnShow: true })} className="espn-stats-button" >
-                    ESPN Points
-                </ToggleButton>
-                </ToggleButtonGroup>
+                <DropdownButton bsSize="small" bsStyle="primary" title="Stats" key="stats" noCaret id="stats-dropdown"> 
+                    <MenuItem eventKey="stats" active onSelect={this.recalcHeaders.bind(this)}>Player Stats</MenuItem>
+                    <MenuItem eventKey="espn" onSelect={this.recalcHeaders.bind(this)}>ESPN Point Value</MenuItem>
+                </DropdownButton>
+
                 <Button id="show-modal-button" bsStyle="primary" bsSize="small" disabled={this.state.lgShow} onClick={()=>this.setState({ lgShow: true })} className="show-modal-button" >
                     Show Point Composition
                 </Button>
-                </ButtonToolbar>
-
-                                            
 
                 <PointCompModal show={this.state.lgShow} onHide={lgClose} players={playersToPointComp} headers={this.state.playerHeaders} />
                 <BootstrapTable selectRow={ selectRowProp } 

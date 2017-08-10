@@ -71,7 +71,7 @@ class PointCompModal extends Component {
         if (player.picurl.length <= 0){
           player.picurl = process.env.PUBLIC_URL + "/no-image.png"
         }
-        var nflprofileURL = "http://www.nfl.com/player/pid/"+player.nflid+"/profile"
+        var nflprofileURL = "http://www.nfl.com/player/pid/"+player.nflid+"/careerstats"
         var nameField = <a href={nflprofileURL} target="_">{player.name}</a>
 
         playas.push(

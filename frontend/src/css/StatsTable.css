@@ -3,7 +3,6 @@
     top: 20em;
 }
 
-
 .stat-player-selected {
     font-weight: bold;
 }
@@ -17,20 +16,10 @@
 }
 
 
-/* Buttons */
-
-.main-button-toolbar {
-    padding-bottom: 1em;
-}
-
 #show-modal-button {
     float: right;
 }
 
-.reg-stats-button {
-    margin: 0 0.2em;
-}
-
-.espn-stats-button {
-    margin: 0 0.2em;
+#stats-dropdown {
+    margin-bottom: 0.2em;
 }
