@@ -136,7 +136,7 @@ class StatTable extends Component {
                 <Button bsStyle="primary" bsSize="small" onClick={()=>this.setState({ lgShow: true })} className="show-modal-button" >
                     Show Point Composition
                 </Button>
-                <PointCompModal show={this.state.lgShow} onHide={lgClose} players={playersToPointComp} />
+                <PointCompModal show={this.state.lgShow} onHide={lgClose} players={playersToPointComp} headers={this.state.playerHeaders} />
                 <BootstrapTable selectRow={ selectRowProp } 
                                 data={this.state.players} 
                                 options={this.options}
@@ -151,6 +151,8 @@ class StatTable extends Component {
     }
 }
 
+
+//Helper functions
 function getCaret(direction) {
     if (direction === 'asc') {
         return (
