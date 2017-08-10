@@ -23,14 +23,14 @@
     padding-bottom: 1em;
 }
 
-.show-modal-button {
+#show-modal-button {
     float: right;
 }
 
 .reg-stats-button {
-    margin-left: 2.5em;
+    margin: 0 2em;
 }
 
 .espn-stats-button {
-    margin-right: 20.5em;
+    margin: 0 2em;
 }

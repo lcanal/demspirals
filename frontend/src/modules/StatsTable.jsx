@@ -142,7 +142,7 @@ class StatTable extends Component {
                     Player Stats
                 </ToggleButton>
                 <ToggleButton value={2} bsStyle="primary" bsSize="small" onClick={()=>this.setState({ statsShow: false, espnShow: true })} className="espn-stats-button" >
-                    ESPN Point Value
+                    ESPN Value
                 </ToggleButton>
                 </ToggleButtonGroup>
                 <Button bsStyle="primary" bsSize="small" disabled={this.state.lgShow} onClick={()=>this.setState({ lgShow: true })} className="show-modal-button" >
