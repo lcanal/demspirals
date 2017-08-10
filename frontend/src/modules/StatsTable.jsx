@@ -145,7 +145,7 @@ class StatTable extends Component {
                     ESPN Value
                 </ToggleButton>
                 </ToggleButtonGroup>
-                <Button bsStyle="primary" bsSize="small" disabled={this.state.lgShow} onClick={()=>this.setState({ lgShow: true })} className="show-modal-button" >
+                <Button id="show-modal-button" bsStyle="primary" bsSize="small" disabled={this.state.lgShow} onClick={()=>this.setState({ lgShow: true })} className="show-modal-button" >
                     Show Point Composition
                 </Button>
                 </ButtonToolbar>
