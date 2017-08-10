@@ -170,20 +170,11 @@ function getCaret(direction) {
 }
 
 function onRowSelect(row, isSelected, e) {
-    /*let rowStr = '';
-    for (const prop in row) {
-        rowStr += prop + ': "' + row[prop] + '"';
-    }
-    //console.log(e);
-    //console.log(`is selected: ${isSelected} =======  ${rowStr}`);
-    // console.log("ID I got: ", row["id"])*/
-    //console.log("ID I got: ", row["id"])
     if (isSelected) {
         playersToPointComp[row["id"]] = row
     }else{
         delete playersToPointComp[row["id"]]
     }
-    console.log("Player array id size..",Object.keys(playersToPointComp).length)
 }
 
 export default StatTable;

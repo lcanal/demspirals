@@ -21,7 +21,8 @@ class PointCompModal extends Component {
         var player = this.props.players[id]
         playas.push(
           <tr key={player.id}>
-            <td className="modal-player">{player.name}<br /><img src={player.picurl} alt={player.name}/></td>
+            <td className="modal-player">{player.name}
+              <br /><img src={player.picurl} alt=" " /></td>
             <td className="modal-data">{player.totalfantasypoints}</td>
           </tr>
           )
