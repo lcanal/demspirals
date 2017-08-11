@@ -5,10 +5,37 @@ import { Bar } from 'react-chartjs-2';
 import "../css/Modals.css";
 
 class PointCompModal extends Component {
+  state = {
+    topNumber: 0,
+  }
+
+  componentDidMount(){
+    //Find largest number to keep scaling consistent
+      for (var id in this.props.players) {
+        if (this.props.players.hasOwnProperty(id)) {
+          var player = this.props.players[id];
+          for (var key in player) {
+            if (player.hasOwnProperty(key)) {
+              for (var h in this.props.headers) {
+                if (this.props.headers.hasOwnProperty(h)) {
+                  if (key === this.props.headers[h] ){    
+                  //Let's keep the highest number to keep all scales the same.
+                    if(player[key] > this.state.topNumber){
+                      this.setState({topNumber: player[key]})
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+  }
+
   render() {
     var playas = [];
     var headers = [];
-    
+
     //Build headers as we get them from the api
     for (var idx in this.props.headers) {
       if (this.props.headers.hasOwnProperty(idx)) {
@@ -19,15 +46,16 @@ class PointCompModal extends Component {
 
 
     var options = {
-      responsive: false,
+      responsive: true,
       maintainAspectRatio: false,
-      stacked: true,
+      stacked: false,
       spanGaps: true,
       lineTension: 0.1,
        scales: {
             yAxes: [{
                 ticks: {
-                    suggestedMax: 150
+                    suggestedMax: this.state.topNumber,
+                    type: 'logarithmic'
                 }
             }]
         }
@@ -45,7 +73,7 @@ class PointCompModal extends Component {
             //Match stat with header
             for (var h in this.props.headers) {
               if (this.props.headers.hasOwnProperty(h)) {
-                //Negative numbers OK, just don't want to fill chart with 0 bars.
+                //Negative numbers OK
                 if (key === this.props.headers[h] ){
                   var stats = [];
                   stats.push(player[key])
@@ -77,7 +105,7 @@ class PointCompModal extends Component {
         playas.push(
           <tr key={player.id}>
             <td className="modal-player">{nameField} <br /><img src={player.picurl} alt=" " /></td>
-            <td><Bar data={data} options={options} height={300} width={1000}/></td>
+            <td><Bar data={data} options={options} height={400}/></td>
           </tr>
           )
       }

@@ -178,7 +178,7 @@ class StatTable extends Component {
             <Fade in={this.state.showTable} transitionAppear={true} >
                 <div>
 
-                <DropdownButton bsSize="small" bsStyle="primary" title={this.state.statStatus} key="stats"  id="stats-dropdown"> 
+                <DropdownButton bsSize="small" bsStyle="default" title={this.state.statStatus} key="stats"  id="stats-dropdown"> 
                     <MenuItem eventKey="stats" active onSelect={this.recalcHeaders.bind(this)}>Player Stats</MenuItem>
                     <MenuItem eventKey="espn" onSelect={this.recalcHeaders.bind(this)}>ESPN Point Value</MenuItem>
                 </DropdownButton>
