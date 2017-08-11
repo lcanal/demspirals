@@ -55,6 +55,7 @@ class StatTable extends Component {
 
     async recalcHeaders(eventKey,event){
         this.setState({ showTable: false,numLimit: 0,loadState: 0})
+        playersToPointComp = {};
         await this.grabPlayerData(this.props.position,eventKey);
     }
 
@@ -84,7 +85,7 @@ class StatTable extends Component {
                     if (stats.hasOwnProperty(hidx)) {
                         if (statSet === "stats"){
                                 playerHeaders.push(stats[hidx].name)
-                        }else{
+                        }else if (stats[hidx].leaguename.length > 0) {
                                 playerHeaders.push(stats[hidx].leaguename)
                         }
                     }
@@ -99,12 +100,12 @@ class StatTable extends Component {
                         if (statSet === "stats"){
                                 statkey = stats[pidx].name
                                 player[statkey] = parseFloat(stats[pidx].statnum)
-                        }else{
+                        }else if (stats[pidx].leaguename.length > 0) {
                                 statkey = stats[pidx].leaguename
                                 player[statkey] = parseFloat(stats[pidx].value)
                         }
                     }
-                    }
+                }
 
                 //Fix totalpoint. HARD assumption key exists
                 player.totalfantasypoints = parseFloat(player.totalfantasypoints)
@@ -122,7 +123,7 @@ class StatTable extends Component {
         }); //Promise
     }
 
-    
+
     render(){
         var headers = []
         let lgClose = () => this.setState({ lgShow: false });
@@ -136,7 +137,6 @@ class StatTable extends Component {
         //Build headers as we get them from the api
         this.state.playerHeaders.forEach(function(header) {
             headers.push(<TableHeaderColumn key={header} dataFormat={ this.pointFormatter } dataField={header} dataSort caretRender={getCaret}>{header}</TableHeaderColumn>)
-            
         }, this);
         headers.push(<TableHeaderColumn key="totalfantasypoints" dataFormat={ this.pointFormatter } dataField="totalfantasypoints" dataSort caretRender={getCaret}>Total Points</TableHeaderColumn>)
         
@@ -148,7 +148,7 @@ class StatTable extends Component {
             <Fade in={this.state.showTable} transitionAppear={true} >
                 <div>
 
-                <DropdownButton bsSize="small" bsStyle="primary" title="Stats" key="stats" noCaret id="stats-dropdown"> 
+                <DropdownButton bsSize="small" bsStyle="primary" title="Stats" key="stats" pullRight id="stats-dropdown"> 
                     <MenuItem eventKey="stats" active onSelect={this.recalcHeaders.bind(this)}>Player Stats</MenuItem>
                     <MenuItem eventKey="espn" onSelect={this.recalcHeaders.bind(this)}>ESPN Point Value</MenuItem>
                 </DropdownButton>
