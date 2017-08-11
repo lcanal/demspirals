@@ -2,7 +2,7 @@
     "espn": {
         "GamesPlayed": {
             "LeagueName": "Games",
-            "LeagueValue": 1
+            "LeagueValue": 0
         },
         "PassCompletions": {
             "LeagueName": "PC",

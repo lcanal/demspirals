@@ -33,6 +33,9 @@ class App extends Component {
             <LinkContainer to="/topRB">
               <NavItem eventKey={4} href="/topRB">Top Rushers</NavItem>
             </LinkContainer>
+            <LinkContainer to="/topTE">
+              <NavItem eventKey={5} href="/topTE">Top Tight Ends</NavItem>
+            </LinkContainer>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
@@ -41,6 +44,7 @@ class App extends Component {
           <Route path="/topQB"      component={() => <TopPosition position="qb" />}/>
           <Route path="/topWR"      component={() => <TopPosition position="wr" />}/>
           <Route path="/topRB"      component={() => <TopPosition position="rb" />}/>
+          <Route path="/topTE"      component={() => <TopPosition position="te" />}/>
       </div>
     </Router>
     );

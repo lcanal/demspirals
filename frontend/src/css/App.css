@@ -2,6 +2,13 @@
   text-align: left;
 }*/
 
+/* Margin causes scrollbar to always be present from Material Design theme */
+html {
+  margin-bottom: 0px;
+  margin-top: 0px;
+  padding-top: 16px;
+}
+
 .welcome-jumbotron {
   text-align: center;
 }

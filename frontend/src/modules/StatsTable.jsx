@@ -14,7 +14,7 @@ class StatTable extends Component {
         loadState: 0.0,
         numLimit: 0,
         lgShow: false,
-        statStatus: "Player Stats",
+        statStatus: "ESPN Point Value",
         playersToPointComp: {}
     }
     
@@ -45,7 +45,7 @@ class StatTable extends Component {
     }
 
     async componentDidMount(){
-        await this.grabPlayerData(this.props.position,"stats")    //Default stat set is stats
+        await this.grabPlayerData(this.props.position,"espn")    //Default stat set is espn
     }
 
     componentWillUnmount(){
@@ -132,7 +132,11 @@ class StatTable extends Component {
                                 player[statkey] = parseFloat(stats[pidx].statnum)
                         }else if (stats[pidx].leaguename.length > 0) {
                                 statkey = stats[pidx].leaguename
-                                player[statkey] = parseFloat(stats[pidx].value)
+                                if (statkey === "Games"){              //Special exception for games since they're not computed as having a "value"
+                                    player[statkey] = parseFloat(stats[pidx].statnum)
+                                }else{
+                                    player[statkey] = parseFloat(stats[pidx].value)
+                                }
                         }
                     }
                 }
@@ -178,9 +182,9 @@ class StatTable extends Component {
             <Fade in={this.state.showTable} transitionAppear={true} >
                 <div>
 
-                <DropdownButton bsSize="small" bsStyle="default" title={this.state.statStatus} key="stats"  id="stats-dropdown"> 
-                    <MenuItem eventKey="stats" active onSelect={this.recalcHeaders.bind(this)}>Player Stats</MenuItem>
-                    <MenuItem eventKey="espn" onSelect={this.recalcHeaders.bind(this)}>ESPN Point Value</MenuItem>
+                <DropdownButton bsSize="small" bsStyle="default" title={this.state.statStatus} key="stats"  id="stats-dropdown">
+                    <MenuItem eventKey="espn" active onSelect={this.recalcHeaders.bind(this)}>ESPN Point Value</MenuItem>
+                    <MenuItem eventKey="stats" onSelect={this.recalcHeaders.bind(this)}>Player Stats</MenuItem>
                 </DropdownButton>
 
                 <Button id="show-modal-button" bsStyle="primary" bsSize="small" disabled={this.state.lgShow} onClick={()=>this.setState({ lgShow: true })} className="show-modal-button" >
