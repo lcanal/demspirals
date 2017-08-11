@@ -27,7 +27,7 @@ class PointCompModal extends Component {
        scales: {
             yAxes: [{
                 ticks: {
-                    suggestedMax: 350
+                    suggestedMax: 150
                 }
             }]
         }

@@ -5,18 +5,6 @@ import PointCompModal from "../components/PointCompModal.jsx";
 import '../css/react-bootstrap-table-all.min.css';
 import "../css/StatsTable.css";
 
-var playersToPointComp = {};
-
-const selectRowProp = {
-  mode: 'checkbox',
-  hideSelectColumn: true,
-  clickToSelect: true, // enable click to select
-  onSelect: onRowSelect,
-  showOnlySelected: true,
-  bgColor: 'rgba(51, 122, 183, 0.48)',
-  className: 'stat-player-selected'
-};
-
 
 class StatTable extends Component {
     state = {
@@ -25,12 +13,25 @@ class StatTable extends Component {
         showTable: false,
         loadState: 0.0,
         numLimit: 0,
-        lgShow: false
+        lgShow: false,
+        statStatus: "Player Stats",
+        playersToPointComp: {}
     }
     
     tableOptions = {
       sortIndicator: true,
       clearSearch: true
+    };
+
+    selectRowProp = {
+        mode: 'checkbox',
+        hideSelectColumn: false,
+        clickToSelect: true, // enable click to select
+        onSelect: this.onRowSelect.bind(this),
+        onSelectAll: this.onRowSelectAll.bind(this),
+        showOnlySelected: true,
+        bgColor: 'rgba(51, 122, 183, 0.48)',
+        className: 'stat-player-selected'
     };
 
     pointFormatter(cell, row) { 
@@ -43,20 +44,49 @@ class StatTable extends Component {
         });
     }
 
-    
     async componentDidMount(){
         await this.grabPlayerData(this.props.position,"stats")    //Default stat set is stats
     }
 
     componentWillUnmount(){
         //Don't want to carry over other players from other tabs.
-        playersToPointComp = {};
+        this.setState({ playersToPointComp: {}})
     }
 
     async recalcHeaders(eventKey,event){
+        if(eventKey === "espn"){
+            this.setState({statStatus: "ESPN Point Value"})
+        }else{
+            this.setState({statStatus: "Player Stats" })
+        }
         this.setState({ showTable: false,numLimit: 0,loadState: 0})
-        playersToPointComp = {};
+        this.setState({ playersToPointComp: {}})
         await this.grabPlayerData(this.props.position,eventKey);
+    }
+
+    onRowSelect(row, isSelected, e) {
+        var newComp = this.state.playersToPointComp
+        if (isSelected) {
+            newComp[row["id"]] = row
+            this.setState({ playersToPointComp: newComp })
+        }else{
+            delete newComp[row["id"]]
+            this.setState({ playersToPointComp: newComp })
+        }
+    }
+
+    onRowSelectAll(isSelected, rows) {
+        var newComp = this.state.playersToPointComp
+        if (isSelected) {
+            for (let i = 0; i < rows.length; i++) {
+                newComp[rows[i].id] = rows[i]
+            }
+        } else {
+            for (let i = 0; i < rows.length; i++) {
+                delete newComp[rows[i].id]
+            }
+        }
+        this.setState({ playersToPointComp: newComp})
     }
 
     //Main data gathering function
@@ -117,7 +147,7 @@ class StatTable extends Component {
                 this.setStateAsync({
                 "players" : players,
                 "playerHeaders" : playerHeaders,
-                "showTable": true
+                "showTable": true,
             }); //setAsync
             return resolve;
         }); //Promise
@@ -148,7 +178,7 @@ class StatTable extends Component {
             <Fade in={this.state.showTable} transitionAppear={true} >
                 <div>
 
-                <DropdownButton bsSize="small" bsStyle="primary" title="Stats" key="stats" pullRight id="stats-dropdown"> 
+                <DropdownButton bsSize="small" bsStyle="primary" title={this.state.statStatus} key="stats"  id="stats-dropdown"> 
                     <MenuItem eventKey="stats" active onSelect={this.recalcHeaders.bind(this)}>Player Stats</MenuItem>
                     <MenuItem eventKey="espn" onSelect={this.recalcHeaders.bind(this)}>ESPN Point Value</MenuItem>
                 </DropdownButton>
@@ -157,8 +187,8 @@ class StatTable extends Component {
                     Show Point Composition
                 </Button>
 
-                <PointCompModal show={this.state.lgShow} onHide={lgClose} players={playersToPointComp} headers={this.state.playerHeaders} />
-                <BootstrapTable selectRow={ selectRowProp } 
+                <PointCompModal show={this.state.lgShow} onHide={lgClose} players={this.state.playersToPointComp} headers={this.state.playerHeaders} />
+                <BootstrapTable selectRow={ this.selectRowProp } 
                                 data={this.state.players} 
                                 options={this.tableOptions}
                                 multiColumnSort={ 2 }
@@ -190,12 +220,5 @@ function getCaret(direction) {
   );
 }
 
-function onRowSelect(row, isSelected, e) {
-    if (isSelected) {
-        playersToPointComp[row["id"]] = row
-    }else{
-        delete playersToPointComp[row["id"]]
-    }
-}
 
 export default StatTable;
