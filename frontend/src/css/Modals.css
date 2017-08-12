@@ -1,0 +1,10 @@
+td.modal-player a {
+    font-weight: bold;
+    padding-left: 3.5em;
+}
+
+.bar-div {
+    position: relative;
+    height:35vh; 
+    width:120vh;
+}

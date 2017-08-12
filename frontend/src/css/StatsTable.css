@@ -1,3 +1,21 @@
 .stats-table-load-status {
-    margin-top: 5em;
+    position:relative;
+    top: 20em;
+}
+
+.custom-modal{
+    width: 90%;
+}
+
+.react-bs-table-pagination {
+    padding-bottom: 8em;
+}
+
+
+#show-modal-button {
+    float: right;
+}
+
+#stats-dropdown {
+    margin-bottom: 0.5em;
 }

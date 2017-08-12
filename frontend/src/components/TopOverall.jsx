@@ -8,6 +8,7 @@ class TopOverall extends Component {
         var qbURL = apiURL + "/qb"
         var wrURL = apiURL + "/wr"
         var rbURL = apiURL + "/rb"
+        var teURL = apiURL + "/te"
         
         return (
         <Panel>
@@ -15,6 +16,7 @@ class TopOverall extends Component {
                 <OverallTable apiURL={qbURL} title="Quarterbacks" />
                 <OverallTable apiURL={wrURL} title="Wideouts" />
                 <OverallTable apiURL={rbURL} title="Running Backs" />
+                <OverallTable apiURL={teURL} title="Tight Ends" />
             </div>
         </Panel>
         );

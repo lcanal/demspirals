@@ -77,10 +77,9 @@ class OverallTable extends Component {
     }
 }
 
-
 class ResultEntry extends Component {
   render(){
-      var nflprofileURL = "http://www.nfl.com/player/pid/"+this.props.player.nflid+"/profile"
+      var nflprofileURL = "http://www.nfl.com/player/pid/"+this.props.player.nflid+"/careerstats"
       var nameField = <a href={nflprofileURL} target="_">{this.props.player.firstname} {this.props.player.lastname}</a>
        
     return(

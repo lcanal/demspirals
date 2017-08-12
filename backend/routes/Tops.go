@@ -27,6 +27,9 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 	case "wr":
 		cacheKey = "topwr"
 		posFilter = "WHERE players.position IN ('WR')"
+	case "te":
+		cacheKey = "topwr"
+		posFilter = "WHERE players.position IN ('TE')"
 	default:
 		posFilter = ""
 	}
@@ -123,11 +126,13 @@ func PlayerInfo(w http.ResponseWriter, r *http.Request) {
 
 	switch position {
 	case "rb":
-		posFilter = "Rushing"
+		posFilter = "points.category IN ('Rushing','Receiving')"
 	case "qb":
-		posFilter = "Passing"
+		posFilter = "points.category IN ('Passing') OR points.name IN ('Interceptions')"
 	case "wr":
-		posFilter = "Receiving"
+		posFilter = "points.category IN ('Rushing','Receiving')"
+	case "te":
+		posFilter = "points.category IN ('Rushing','Receiving')"
 	default:
 		fmt.Fprintf(w, "{\"invalid_call_status\" : \"Position key required.\"}")
 		return
@@ -155,7 +160,11 @@ func PlayerInfo(w http.ResponseWriter, r *http.Request) {
 	ON players.id = points.player_id
 	WHERE
 		players.id IN ('` + pid + `')
-    AND points.category = '` + posFilter + `'
+	AND 
+	(
+		` + posFilter + `
+		OR points.name IN ('Fumbles','GamesPlayed')
+	)
 	`
 
 	db := loader.GormConnectDB()

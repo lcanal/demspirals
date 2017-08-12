@@ -2,7 +2,7 @@
     "espn": {
         "GamesPlayed": {
             "LeagueName": "Games",
-            "LeagueValue": 1
+            "LeagueValue": 0
         },
         "PassCompletions": {
             "LeagueName": "PC",
@@ -25,7 +25,7 @@
             "LeagueValue": -1
         },
         "RushYards": {
-            "LeagueName": "RC10",
+            "LeagueName": "RY10",
             "LeagueValue": 0.1
         },
         "RushTD": {
@@ -39,10 +39,6 @@
         "RecYards": {
             "LeagueName": "REY10",
             "LeagueValue": 0.1
-        },
-        "RecAverage": {
-            "LeagueName": "Avg",
-            "LeagueValue": 0.0
         },
         "RecTD": {
             "LeagueName": "RETD",

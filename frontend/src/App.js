@@ -8,24 +8,11 @@ import TopPosition from './components/TopPosition';
 import './css/App.css';
 
 class App extends Component {
-  state = {
-    welcomeword: "None"
-  }
-
-  async componentDidMount(){
-    const response = await fetch("/api/hello")
-    const json = await response.json()   
-
-    this.setState({
-      "welcomeword" : json.hello
-    })
-  }
-
   render() {
     return (
       <Router basename={process.env.PUBLIC_URL}>
         <div className="App">
-        <Navbar inverse collapseOnSelect>
+        <Navbar collapseOnSelect>
           <Navbar.Header>
             <Navbar.Brand>
               <Link to="/">Home</Link>
@@ -46,6 +33,9 @@ class App extends Component {
             <LinkContainer to="/topRB">
               <NavItem eventKey={4} href="/topRB">Top Rushers</NavItem>
             </LinkContainer>
+            <LinkContainer to="/topTE">
+              <NavItem eventKey={5} href="/topTE">Top Tight Ends</NavItem>
+            </LinkContainer>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
@@ -54,6 +44,7 @@ class App extends Component {
           <Route path="/topQB"      component={() => <TopPosition position="qb" />}/>
           <Route path="/topWR"      component={() => <TopPosition position="wr" />}/>
           <Route path="/topRB"      component={() => <TopPosition position="rb" />}/>
+          <Route path="/topTE"      component={() => <TopPosition position="te" />}/>
       </div>
     </Router>
     );
