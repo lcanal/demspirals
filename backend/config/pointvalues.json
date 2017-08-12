@@ -40,10 +40,6 @@
             "LeagueName": "REY10",
             "LeagueValue": 0.1
         },
-        "RecAverage": {
-            "LeagueName": "Avg",
-            "LeagueValue": 0.0
-        },
         "RecTD": {
             "LeagueName": "RETD",
             "LeagueValue": 6

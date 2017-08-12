@@ -9,19 +9,20 @@ class PointCompModal extends Component {
     topNumber: 0,
   }
 
-  componentDidMount(){
+  calcTopNumber(){
+    var topNumber = this.state.topNumber;
     //Find largest number to keep scaling consistent
       for (var id in this.props.players) {
-        if (this.props.players.hasOwnProperty(id)) {
           var player = this.props.players[id];
+        if (this.props.players.hasOwnProperty(id)) {
           for (var key in player) {
             if (player.hasOwnProperty(key)) {
               for (var h in this.props.headers) {
                 if (this.props.headers.hasOwnProperty(h)) {
                   if (key === this.props.headers[h] ){    
                   //Let's keep the highest number to keep all scales the same.
-                    if(player[key] > this.state.topNumber){
-                      this.setState({topNumber: player[key]})
+                    if(player[key] > topNumber){
+                      topNumber = player[key]
                     }
                   }
                 }
@@ -30,8 +31,9 @@ class PointCompModal extends Component {
           }
         }
       }
-  }
 
+      return topNumber;
+  }
   render() {
     var playas = [];
     var headers = [];
@@ -48,17 +50,14 @@ class PointCompModal extends Component {
     var options = {
       responsive: true,
       maintainAspectRatio: false,
-      stacked: false,
-      spanGaps: true,
-      lineTension: 0.1,
-       scales: {
-            yAxes: [{
-                ticks: {
-                    suggestedMax: this.state.topNumber,
-                    type: 'logarithmic'
-                }
-            }]
-        }
+      scales: {
+        yAxes: [{
+          ticks: {
+            suggestedMax: this.calcTopNumber(),
+            type: 'logarithmic'
+          }
+        }]
+       }
     }
 
     //Main logic of adding player data to display
@@ -105,7 +104,7 @@ class PointCompModal extends Component {
         playas.push(
           <tr key={player.id}>
             <td className="modal-player">{nameField} <br /><img src={player.picurl} alt=" " /></td>
-            <td><Bar data={data} options={options} height={400}/></td>
+            <td><div className="bar-div"><Bar data={data} options={options}/></div></td>
           </tr>
           )
       }
@@ -137,10 +136,28 @@ class PointCompModal extends Component {
 function headerColorMap(headerString){
   switch (headerString) {
     //Rushing stats
-    case "RY10":
+    case "RY10":                        //Rushing
       return 'rgba(191, 191, 74, 0.2)'
     case "RTD":
       return 'rgba(74, 191, 74, 0.2)'
+    case "REC":                         //Receiving
+      return 'rgba(42, 127, 247, 0.2)'
+    case "REY10":
+      return 'rgba(24, 153, 1, 0.2)'
+    case "RETD":
+      return 'rgba(196, 0, 189, 0.2)'
+    case "FUML":                        //Fumble
+      return 'rgba(247, 0, 0, 0.2)'
+    case "PC":                          //Passing
+      return 'rgba(51, 234, 118, 0.2)'
+    case "PY20":
+      return 'rgba(40, 70, 140, 0.2)'
+    case "PTD":
+      return 'rgba(188, 185 , 1, 0.2)'
+    case "INT":
+      return 'rgba(181, 42 , 193, 0.2)'
+    case "SK":
+      return 'rgba(142, 78 , 18, 0.2)'
     default:
       return 'rgba(78, 192, 192, 0.2)'
   }
