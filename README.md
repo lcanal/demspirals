@@ -57,7 +57,7 @@ Full options:
 ### Run-time Dependencies
 In order to run this app you'll need:
  * A MySQL Backend
- * A [Stattleship API Key](https://api.stattleship.com/)
+ * A [MySportsFeed API Key](https://www.mysportsfeeds.com/data-feeds/)
  
  Database portion will just need a database location. It takes care of creating its own schemas and table definitions.
 ### Settings
