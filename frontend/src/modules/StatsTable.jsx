@@ -13,7 +13,7 @@ class StatTable extends Component {
         showTable: false,
         loadState: 0.0,
         numLimit: 0,
-        lgShow: false,
+        modalShow: false,
         statStatus: "ESPN Point Value",
         playersToPointComp: {}
     }
@@ -54,14 +54,23 @@ class StatTable extends Component {
     }
 
     async recalcHeaders(eventKey,event){
+        var statusString;
         if(eventKey === "espn"){
-            this.setState({statStatus: "ESPN Point Value"})
+            statusString = "ESPN Point Value"
         }else{
-            this.setState({statStatus: "Player Stats" })
+            statusString = "Player Stats"
         }
-        this.setState({ showTable: false,numLimit: 0,loadState: 0})
-        this.setState({ playersToPointComp: {}})
-        await this.grabPlayerData(this.props.position,eventKey);
+
+        this.setStateAsync({ 
+            showTable: false,
+            numLimit: 0,
+            loadState: 0,
+            statStatus: statusString,
+            //playersToPointComp: {},
+            //playerHeaders: [],
+        });
+
+        //await this.grabPlayerData(this.props.position,eventKey);
     }
 
     onRowSelect(row, isSelected, e) {
@@ -160,20 +169,23 @@ class StatTable extends Component {
 
     render(){
         var headers = []
-        let lgClose = () => this.setState({ lgShow: false });
+        let lgClose = () => this.setState({ modalShow: false });
         
         //Build some headers manually
         headers.push(<TableHeaderColumn key="id" isKey={true} dataField="id" hidden={true}>#</TableHeaderColumn>)
-        headers.push(<TableHeaderColumn key="name" dataField="name">Player</TableHeaderColumn>)
+        if(this.state.showTable){
+            headers.push(<TableHeaderColumn key="name" dataField="name">Player</TableHeaderColumn>)
+            
+             headers.push(<TableHeaderColumn key="position" dataField="position">Position</TableHeaderColumn>)
+             headers.push(<TableHeaderColumn key="teamname" dataField="teamname">Team</TableHeaderColumn>)
+             //Build headers as we get them from the api
+             this.state.playerHeaders.forEach(function(header) {
+                 headers.push(<TableHeaderColumn key={header} dataFormat={ this.pointFormatter } dataField={header} dataSort caretRender={getCaret}>{header}</TableHeaderColumn>)
+             }, this);
+             headers.push(<TableHeaderColumn key="totalfantasypoints" dataFormat={ this.pointFormatter } dataField="totalfantasypoints" dataSort caretRender={getCaret}>Total Points</TableHeaderColumn>)
+             
+        }
        
-        headers.push(<TableHeaderColumn key="position" dataField="position">Position</TableHeaderColumn>)
-        headers.push(<TableHeaderColumn key="teamname" dataField="teamname">Team</TableHeaderColumn>)
-        //Build headers as we get them from the api
-        this.state.playerHeaders.forEach(function(header) {
-            headers.push(<TableHeaderColumn key={header} dataFormat={ this.pointFormatter } dataField={header} dataSort caretRender={getCaret}>{header}</TableHeaderColumn>)
-        }, this);
-        headers.push(<TableHeaderColumn key="totalfantasypoints" dataFormat={ this.pointFormatter } dataField="totalfantasypoints" dataSort caretRender={getCaret}>Total Points</TableHeaderColumn>)
-        
         return ( 
             <div>
             <Fade in={!this.state.showTable} unmountOnExit={true} >
@@ -187,11 +199,11 @@ class StatTable extends Component {
                     <MenuItem eventKey="stats" onSelect={this.recalcHeaders.bind(this)}>Player Stats</MenuItem>
                 </DropdownButton>
 
-                <Button id="show-modal-button" bsStyle="primary" bsSize="small" disabled={this.state.lgShow} onClick={()=>this.setState({ lgShow: true })} className="show-modal-button" >
+                <Button id="show-modal-button" bsStyle="primary" bsSize="small" disabled={this.state.modalShow} onClick={()=>this.setState({ modalShow: true })} className="show-modal-button" >
                     Show Point Composition
                 </Button>
 
-                <PointCompModal show={this.state.lgShow} onHide={lgClose} players={this.state.playersToPointComp} headers={this.state.playerHeaders} />
+                <PointCompModal show={this.state.modalShow} onHide={lgClose} players={this.state.playersToPointComp} headers={this.state.playerHeaders} />
                 <BootstrapTable selectRow={ this.selectRowProp } 
                                 data={this.state.players} 
                                 options={this.tableOptions}
