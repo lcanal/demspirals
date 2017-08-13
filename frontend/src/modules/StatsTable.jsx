@@ -30,7 +30,7 @@ class StatTable extends Component {
         onSelect: this.onRowSelect.bind(this),
         onSelectAll: this.onRowSelectAll.bind(this),
         showOnlySelected: true,
-        bgColor: 'rgba(51, 122, 183, 0.48)',
+        bgColor: 'rgba(70, 140, 40, 0.2)',
         className: 'stat-player-selected'
     };
 
