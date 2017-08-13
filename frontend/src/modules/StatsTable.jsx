@@ -66,11 +66,10 @@ class StatTable extends Component {
             numLimit: 0,
             loadState: 0,
             statStatus: statusString,
-            //playersToPointComp: {},
-            //playerHeaders: [],
+            playersToPointComp: {},    
         });
 
-        //await this.grabPlayerData(this.props.position,eventKey);
+        await this.grabPlayerData(this.props.position,eventKey);
     }
 
     onRowSelect(row, isSelected, e) {
@@ -208,6 +207,7 @@ class StatTable extends Component {
                                 data={this.state.players} 
                                 options={this.tableOptions}
                                 multiColumnSort={ 2 }
+                                replace={!this.state.showTable}       //Only replace when not showing table. Otherwise, can't select.
                                 pagination search condensed bordered hover responsive version='4'>
                     {headers}
                 </BootstrapTable>
