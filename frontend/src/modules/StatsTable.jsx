@@ -171,17 +171,17 @@ class StatTable extends Component {
         let lgClose = () => this.setState({ modalShow: false });
         
         //Build some headers manually
-        headers.push(<TableHeaderColumn key="id" isKey={true} dataField="id" hidden={true}>#</TableHeaderColumn>)
+        headers.push(<TableHeaderColumn key="id" width='2' isKey={true} dataField="id" hidden={true}>#</TableHeaderColumn>)
         if(this.state.showTable){
-            headers.push(<TableHeaderColumn key="name" dataField="name">Player</TableHeaderColumn>)
+            headers.push(<TableHeaderColumn key="name" width='125' dataField="name">Player</TableHeaderColumn>)
             
              //headers.push(<TableHeaderColumn key="position" dataField="position">Position</TableHeaderColumn>)
-             headers.push(<TableHeaderColumn key="teamname"  dataSort caretRender={getCaret} dataField="teamname">Team</TableHeaderColumn>)
+             headers.push(<TableHeaderColumn key="teamname"  width='125' dataSort caretRender={getCaret} dataField="teamname" className="sortable-header">Team</TableHeaderColumn>)
              //Build headers as we get them from the api
              this.state.playerHeaders.forEach(function(header) {
-                 headers.push(<TableHeaderColumn key={header} dataFormat={ this.pointFormatter } dataField={header} dataSort caretRender={getCaret}>{header}</TableHeaderColumn>)
+                 headers.push(<TableHeaderColumn key={header} width='125' dataFormat={ this.pointFormatter } dataField={header} dataSort caretRender={getCaret} className="sortable-header">{header}</TableHeaderColumn>)
              }, this);
-             headers.push(<TableHeaderColumn key="totalfantasypoints" dataFormat={ this.pointFormatter } dataField="totalfantasypoints" dataSort caretRender={getCaret}>Total Points</TableHeaderColumn>)
+             headers.push(<TableHeaderColumn key="totalfantasypoints" width='125' dataFormat={ this.pointFormatter } dataField="totalfantasypoints" dataSort caretRender={getCaret} className="sortable-header">Total Points</TableHeaderColumn>)
              
         }
        
@@ -223,16 +223,16 @@ class StatTable extends Component {
 function getCaret(direction) {
     if (direction === 'asc') {
         return (
-        <span><strong> ^</strong></span>
+            <i className="fa fa-fw fa-sort-asc"></i>
         );
     }
     if (direction === 'desc') {
         return (
-        <span><strong> v</strong></span>
+            <i className="fa fa-fw fa-sort-desc"></i>
         );
     }
   return (
-    <span>-</span>
+    <i className="fa fa-fw fa-sort"></i>
   );
 }
 

@@ -19,3 +19,7 @@
 #stats-dropdown {
     margin-bottom: 0.5em;
 }
+
+.sortable-header:hover {
+    background: rgba(0, 0, 0, 0.12);
+}
