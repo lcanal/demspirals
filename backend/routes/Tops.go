@@ -28,7 +28,7 @@ func TopOverall(w http.ResponseWriter, r *http.Request) {
 		cacheKey = "topwr"
 		posFilter = "WHERE players.position IN ('WR')"
 	case "te":
-		cacheKey = "topwr"
+		cacheKey = "topte"
 		posFilter = "WHERE players.position IN ('TE')"
 	default:
 		posFilter = ""

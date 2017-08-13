@@ -175,8 +175,8 @@ class StatTable extends Component {
         if(this.state.showTable){
             headers.push(<TableHeaderColumn key="name" dataField="name">Player</TableHeaderColumn>)
             
-             headers.push(<TableHeaderColumn key="position" dataField="position">Position</TableHeaderColumn>)
-             headers.push(<TableHeaderColumn key="teamname" dataField="teamname">Team</TableHeaderColumn>)
+             //headers.push(<TableHeaderColumn key="position" dataField="position">Position</TableHeaderColumn>)
+             headers.push(<TableHeaderColumn key="teamname"  dataSort caretRender={getCaret} dataField="teamname">Team</TableHeaderColumn>)
              //Build headers as we get them from the api
              this.state.playerHeaders.forEach(function(header) {
                  headers.push(<TableHeaderColumn key={header} dataFormat={ this.pointFormatter } dataField={header} dataSort caretRender={getCaret}>{header}</TableHeaderColumn>)
@@ -232,7 +232,7 @@ function getCaret(direction) {
         );
     }
   return (
-    <span></span>
+    <span>-</span>
   );
 }
 
