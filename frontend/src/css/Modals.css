@@ -6,5 +6,15 @@ td.modal-player a {
 .bar-div {
     position: relative;
     height:35vh; 
-    width:120vh;
+    width:90%;
+}
+
+.modal-player-pic {
+    height: 20vh;
+    margin-left:10%;
+    margin-top: 2vh;
+}
+
+#contained-modal-title-lg{
+    text-align: center;
 }

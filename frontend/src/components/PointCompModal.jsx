@@ -103,7 +103,7 @@ class PointCompModal extends Component {
 
         playas.push(
           <tr key={player.id}>
-            <td className="modal-player">{nameField} <br /><img src={player.picurl} alt=" " /></td>
+            <td className="modal-player">{nameField} <br /><img className="modal-player-pic" src={player.picurl} alt=" " /></td>
             <td><div className="bar-div"><Bar data={data} options={options}/></div></td>
           </tr>
           )
