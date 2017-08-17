@@ -44,14 +44,14 @@ You can enable cross compilation via the GOOS environment varibable:
 	
 	$ GOOS=windows go build
 
-Produces a *opseb.exe* binary file.
+Produces a *backend.exe* binary file.
 Full options:
 
 | GOOS Value         | Notes                                                                                            |
 |:----------------------|:-------------------------------------------------------------------------------------------------------|
-| `windows`             | Name of the application, will be used to construct the node service context name.    
-| `darwin`              | Instance of the application (dev/tst/stg). This will be used to construct the node service context name. |
-| `linux`               | Absolute path on build server where the built artifact files are stored |
+| `windows`             | Creates windows binary.
+| `darwin`              | Creates MacOS binary. No specific OS versions needed.
+| `linux`               | Creates an POSIX compatible binary.
     
 
 ### Run-time Dependencies
