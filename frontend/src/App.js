@@ -5,6 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import Home from './components/Home';
 import TopOverall from './components/TopOverall';
 import TopPosition from './components/TopPosition';
+import GraphPlayers from './components/GraphPlayers';
 import './css/App.css';
 
 class App extends Component {
@@ -37,14 +38,34 @@ class App extends Component {
               <NavItem eventKey={5} href="/app/topTE">Top Tight Ends</NavItem>
             </LinkContainer>
             </Nav>
+            <Nav pullRight>
+              <LinkContainer to="/app/graphQB">
+                <NavItem eventKey={6} href="/app/graphQB">QB Chart</NavItem>
+              </LinkContainer>
+              <LinkContainer to="/app/graphWR">
+                <NavItem eventKey={6} href="/app/graphWR">WR Chart</NavItem>
+              </LinkContainer>
+              <LinkContainer to="/app/graphRB">
+                <NavItem eventKey={6} href="/app/graphRB">RB Chart</NavItem>
+              </LinkContainer>
+              <LinkContainer to="/app/graphTE">
+                <NavItem eventKey={6} href="/app/graphTE">TE Chart</NavItem>
+              </LinkContainer>
+            </Nav>
           </Navbar.Collapse>
         </Navbar>
+        
           <Route exact path="/"     component={Home} />
           <Route path="/app/topOverall" component={TopOverall} />
           <Route path="/app/topQB"      component={() => <TopPosition position="qb" />}/>
           <Route path="/app/topWR"      component={() => <TopPosition position="wr" />}/>
           <Route path="/app/topRB"      component={() => <TopPosition position="rb" />}/>
           <Route path="/app/topTE"      component={() => <TopPosition position="te" />}/>
+
+          <Route path="/app/graphQB"      component={() => <GraphPlayers position="qb" />}/>
+          <Route path="/app/graphWR"      component={() => <GraphPlayers position="wr" />}/>
+          <Route path="/app/graphRB"      component={() => <GraphPlayers position="rb" />}/>
+          <Route path="/app/graphTE"      component={() => <GraphPlayers position="te" />}/>
       </div>
     </Router>
     );
