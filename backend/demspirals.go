@@ -31,9 +31,15 @@ func main() {
 
 	fe := http.FileServer(http.Dir("./" + frontendFiles))
 
+	//Backend Routes
 	muxie.HandleFunc("/api/topplayers", routes.TopOverall)
 	muxie.HandleFunc("/api/topplayers/{position}", routes.TopOverall)
 	muxie.HandleFunc("/api/player/{position}/{pid}", routes.PlayerInfo)
+
+	//Frontend React routes.
+	muxie.PathPrefix("/app/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./"+frontendFiles+"/index.html")
+	})
 	muxie.PathPrefix("/").Handler(fe)
 
 	//Flags //////////////////////////////////////////////
@@ -115,4 +121,8 @@ func configRead(configName string) (string, string) {
 	loader.GormConnectDB()
 
 	return apiBaseURL, accessToken
+}
+
+func serveReactRoute(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "index.html")
 }

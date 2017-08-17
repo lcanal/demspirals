@@ -21,30 +21,30 @@ class App extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-            <LinkContainer to="/stats/topOverall">
-              <NavItem eventKey={1} href="/stats/topOverall">Top Overall</NavItem>
+            <LinkContainer to="/app/topOverall">
+              <NavItem eventKey={1} href="/app/topOverall">Top Overall</NavItem>
             </LinkContainer>
-            <LinkContainer to="/stats/topQB">
-              <NavItem eventKey={2} href="/stats/topQB">Top Quarterbacks</NavItem>
+            <LinkContainer to="/app/topQB">
+              <NavItem eventKey={2} href="/app/topQB">Top Quarterbacks</NavItem>
             </LinkContainer>
-            <LinkContainer to="/stats/topWR">
-              <NavItem eventKey={3} href="/stats/topWR">Top Wideouts</NavItem>
+            <LinkContainer to="/app/topWR">
+              <NavItem eventKey={3} href="/app/topWR">Top Wideouts</NavItem>
             </LinkContainer>
-            <LinkContainer to="/stats/topRB">
-              <NavItem eventKey={4} href="/stats/topRB">Top Rushers</NavItem>
+            <LinkContainer to="/app/topRB">
+              <NavItem eventKey={4} href="/app/topRB">Top Rushers</NavItem>
             </LinkContainer>
-            <LinkContainer to="/stats/topTE">
-              <NavItem eventKey={5} href="/stats/topTE">Top Tight Ends</NavItem>
+            <LinkContainer to="/app/topTE">
+              <NavItem eventKey={5} href="/app/topTE">Top Tight Ends</NavItem>
             </LinkContainer>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
           <Route exact path="/"     component={Home} />
-          <Route path="/stats/topOverall" component={TopOverall} />
-          <Route path="/stats/topQB"      component={() => <TopPosition position="qb" />}/>
-          <Route path="/stats/topWR"      component={() => <TopPosition position="wr" />}/>
-          <Route path="/stats/topRB"      component={() => <TopPosition position="rb" />}/>
-          <Route path="/stats/topTE"      component={() => <TopPosition position="te" />}/>
+          <Route path="/app/topOverall" component={TopOverall} />
+          <Route path="/app/topQB"      component={() => <TopPosition position="qb" />}/>
+          <Route path="/app/topWR"      component={() => <TopPosition position="wr" />}/>
+          <Route path="/app/topRB"      component={() => <TopPosition position="rb" />}/>
+          <Route path="/app/topTE"      component={() => <TopPosition position="te" />}/>
       </div>
     </Router>
     );
