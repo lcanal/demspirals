@@ -22,7 +22,7 @@ func LoadAllPlayerData(wg *sync.WaitGroup) {
 	teams := make(map[string]models.Team)
 	//stats := make(map[string][]models.Stat)
 
-	seasonKey := "2016-regular"
+	seasonKey := "2017-regular"
 	currSeasonKey := "2017-regular"
 	apiBase := viper.GetString("apiBaseURL") + "/v1.1/pull/nfl/"
 	cumPlayerSeasonStats := apiBase + seasonKey + "/cumulative_player_stats.json"
